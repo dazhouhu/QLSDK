@@ -49,6 +49,6 @@
         NULL_DEVICE,                                    //(ERRNO_START.getValue() + 9),
         NULL_CALLEE_ADDR,                                    //(ERRNO_START.getValue() + 10),
         NULL_DEVICE_NAME                                    //(ERRNO_START.getValue() + 11);
-                                                            //MORE...add sample error code
+                                                                        //MORE...add sample error code
     }
 }

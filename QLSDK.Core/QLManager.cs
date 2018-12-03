@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QLSDK.Core
+﻿namespace QLSDK.Core
 {
     public class QLManager
     {
@@ -168,10 +162,7 @@ namespace QLSDK.Core
         /// </summary>
         /// <param name="callHandle">呼叫处理器ID</param>
         /// <param name="bufType">BufType类型</param>
-        public void StartSendContent(QLCallHandle callHandle, BufType bufType)
-        {
-
-        }
+        //public void StartSendContent(QLCallHandle callHandle, BufType bufType){ }
 
         /// <summary>
         /// 停止发送content

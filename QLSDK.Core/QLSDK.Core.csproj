@@ -42,12 +42,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AutoDiscoveryStatus.cs" />
+    <Compile Include="Enums\CallEventState.cs" />
     <Compile Include="Enums\CallMode.cs" />
+    <Compile Include="Enums\CallState.cs" />
+    <Compile Include="Enums\CallStreamType.cs" />
+    <Compile Include="Enums\CallType.cs" />
+    <Compile Include="Enums\CertificateChoiceType.cs" />
+    <Compile Include="Enums\DeviceType.cs" />
+    <Compile Include="Enums\DTMFKey.cs" />
     <Compile Include="Enums\ErrorNumber.cs" />
     <Compile Include="Enums\EventType.cs" />
+    <Compile Include="Enums\FECCAction.cs" />
+    <Compile Include="Enums\FECCKey.cs" />
+    <Compile Include="Enums\ICEStatus.cs" />
+    <Compile Include="Enums\ImageFormat.cs" />
+    <Compile Include="Enums\LayoutType.cs" />
+    <Compile Include="Enums\MediaType.cs" />
     <Compile Include="Enums\PropertyKey.cs" />
     <Compile Include="Enums\Protocal.cs" />
+    <Compile Include="Enums\QoECaptureType.cs" />
+    <Compile Include="Enums\QoEMediaType.cs" />
+    <Compile Include="Enums\QoEType.cs" />
+    <Compile Include="Enums\RecordingPlaybackStatus.cs" />
+    <Compile Include="Enums\RecordPipeType.cs" />
+    <Compile Include="Enums\RecordWaveFormat.cs" />
+    <Compile Include="Enums\ResolutionFormat.cs" />
+    <Compile Include="Enums\SelectMode.cs" />
     <Compile Include="EvenFilter.cs" />
+    <Compile Include="Helper\IntPtrHelper.cs" />
     <Compile Include="Model\QlEvent.cs" />
     <Compile Include="OnQlEventListener.cs" />
     <Compile Include="PlcmDll\PlcmHelper.cs" />

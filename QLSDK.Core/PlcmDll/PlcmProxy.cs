@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QLSDK.Core
 {
-    public class PlcmProxy
+    internal class PlcmProxy
     {
         public static ErrorNumber FreeEvent(IntPtr evt)
         {
