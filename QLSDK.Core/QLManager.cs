@@ -27,13 +27,19 @@
         /// <summary>
         /// polc sdk 初始化
         /// </summary>
+        /// <param name="password">注册用户名</param>
+        /// <param name="password">注册用户密码</param>
         /// <param name="qlConfig">初始化配置  获取默认配置：QlConfig.GetDefaultConfig()</param>
-        /// <param name="evenFilter">事件过滤器 null：不设置过滤器 在 addOnEventListener中添加的事件监听可以接受所有type的事件</param>
-        public void Initialize(QlConfig qlConfig, EvenFilter evenFilter)
+        public void Initialize(string username,string password,QlConfig qlConfig)
         {
 
         }
-        // PLCM_MFW_CoreHandle GetCoreHandle();
+
+        /// <summary>
+        /// 获取plcm核心句柄
+        /// </summary>
+        /// <returns></returns>
+        //public intPtr GetCoreHandle();
 
         /// <summary>
         /// 登录绑定polc服务
@@ -41,10 +47,7 @@
         /// <param name="userName">用户名</param>
         /// <param name="passWord">密码</param>
         /// <param name="displayName">显示名</param>
-        public void Login(string userName, string passWord, string displayName)
-        {
-
-        }
+        //public void Login(string userName, string passWord, string displayName) { }
 
         /// <summary>
         /// 获取当前的regId
