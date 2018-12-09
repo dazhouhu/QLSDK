@@ -1,15 +1,18 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
+    public delegate void QLEvent(QLEvent evt);
     public class QLManager
     {
         #region Fields
-        private static ILog log = LogUtil.GetLoger("QLSDK.QLManager");
+        private static ILog log = LogUtil.GetLogger("QLSDK.QLManager");
+        private  ObservableCollection<QLMediaStatistics> mediaStatistics = new ObservableCollection<QLMediaStatistics>();
         #endregion
 
         #region Constructors        
@@ -48,6 +51,16 @@ namespace QLSDK.Core
                 throw new Exception("未注册成功，请进行注册！");
             }
         }
+        #endregion
+
+        #region Properties
+        public Action RegisterAction { get; set; }
+        public Action UnregisterAction { get; set; }
+        #endregion
+
+        #region Events
+        public event QLEvent QLEvent;
+        internal event QLEvent InternalQLEvent;
         #endregion
 
         /// <summary>
@@ -109,6 +122,7 @@ namespace QLSDK.Core
                     LogUtil.SetLogLevel(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel]);
                 }
                 #endregion
+                //SDK初始化
                 SDKInit(ps);
             }
             else
@@ -204,7 +218,7 @@ namespace QLSDK.Core
         private static object synObject = new object();
         private static bool isRunning = false;
         
-        public static void StartEventMonitor()
+        private static void StartEventMonitor()
         {
             autoEvent = new AutoResetEvent(false);
             isRunning = true;
@@ -236,7 +250,7 @@ namespace QLSDK.Core
                         }
                         try
                         {
-                            callView.Invoke(new Action(() =>
+                            QLCallView.GetInstance().Invoke(new Action(() =>
                             {
                                 DoEvent(evt);
                             }));
@@ -252,12 +266,12 @@ namespace QLSDK.Core
             });
             thread.Start();
         }
-        public static void StopEventMonitor()
+        private static void StopEventMonitor()
         {
             isRunning = false;
             DispatchEvents();
         }
-        public static void DispatchEvents()
+        private static void DispatchEvents()
         {
             //lock (synObject)
             {
@@ -265,7 +279,7 @@ namespace QLSDK.Core
                 autoEvent.Set();
             }
         }
-        public static void AddEvent(QLEvent evt)
+        private static void AddEvent(QLEvent evt)
         {
             log.Info("addEvent, type is" + evt.EventType);
             //lock (synObject)
@@ -284,7 +298,7 @@ namespace QLSDK.Core
             log.Info(string.Format("EventType:{0},CallHandle:{1}", evt.EventType, evt.CallHandle));
             switch (evt.EventType)
             {
-                #region Device
+                #region QLDevice
                 case EventType.DEVICE_VIDEOINPUTCHANGED:
                     {
                         string deviceName = evt.PlugDeviceName;
@@ -296,12 +310,12 @@ namespace QLSDK.Core
                         }
                         if (true == evt.PlugDeviceStatus)
                         {   /*plug in a device*/
-                            var device = new Device(DeviceType.VIDEOINPUT, deviceHandle, deviceName);
-                            deviceManager.AddDevice(device);
+                            var device = new QLDevice(DeviceType.VIDEOINPUT, deviceHandle, deviceName);
+                            QLDeviceManager.GetInstance().AddDevice(device);
                         }
                         else
                         {
-                            deviceManager.RemoveDevice(deviceHandle);
+                            QLDeviceManager.GetInstance().RemoveDevice(deviceHandle);
                         }
                     }
                     break;   /* from MP */
@@ -316,12 +330,12 @@ namespace QLSDK.Core
                         }
                         if (true == evt.PlugDeviceStatus)
                         {   /*plug in a device*/
-                            var device = new Device(DeviceType.AUDIOINPUT, deviceHandle, deviceName);
-                            deviceManager.AddDevice(device);
+                            var device = new QLDevice(DeviceType.AUDIOINPUT, deviceHandle, deviceName);
+                            QLDeviceManager.GetInstance().AddDevice(device);
                         }
                         else
                         {
-                            deviceManager.RemoveDevice(deviceHandle);
+                            QLDeviceManager.GetInstance().RemoveDevice(deviceHandle);
                         }
                     }
                     break;  /* from MP */
@@ -336,12 +350,12 @@ namespace QLSDK.Core
                         }
                         if (true == evt.PlugDeviceStatus)
                         {   /*plug in a device*/
-                            var device = new Device(DeviceType.AUDIOOUTPUT, deviceHandle, deviceName);
-                            deviceManager.AddDevice(device);
+                            var device = new QLDevice(DeviceType.AUDIOOUTPUT, deviceHandle, deviceName);
+                            QLDeviceManager.GetInstance().AddDevice(device);
                         }
                         else
                         {
-                            deviceManager.RemoveDevice(deviceHandle);
+                            QLDeviceManager.GetInstance().RemoveDevice(deviceHandle);
                         }
                     }
                     break; /* from MP */
@@ -357,12 +371,12 @@ namespace QLSDK.Core
                         }
                         if (true == evt.PlugDeviceStatus)
                         {   /*plug in a device*/
-                            var device = new Device(DeviceType.MONITOR, deviceHandle, deviceName);
-                            deviceManager.AddDevice(device);
+                            var device = new QLDevice(DeviceType.MONITOR, deviceHandle, deviceName);
+                            QLDeviceManager.GetInstance().AddDevice(device);
                         }
                         else
                         {
-                            deviceManager.RemoveDevice(deviceHandle);
+                            QLDeviceManager.GetInstance().RemoveDevice(deviceHandle);
                         }
                     }
                     break;  /* from MP */
@@ -373,12 +387,14 @@ namespace QLSDK.Core
                 case EventType.UNKNOWN: break;
                 case EventType.SIP_REGISTER_SUCCESS:
                     {
-                        RegisterAction?.Invoke();
+                        QLManager.GetInstance().isRegisted = true;
+                        QLManager.GetInstance().RegisterAction?.Invoke();
                     }
                     break;
                 case EventType.SIP_REGISTER_FAILURE:
                     {
-                        UnregisterAction?.Invoke();
+                        QLManager.GetInstance().isRegisted = false;
+                        QLManager.GetInstance().UnregisterAction?.Invoke();
                     }
                     break;
                 case EventType.SIP_REGISTER_UNREGISTERED: break;
@@ -436,8 +452,8 @@ namespace QLSDK.Core
                     #endregion
             }
 
-            InternalMFWEvent?.Invoke(evt);
-            MFWEvent?.Invoke(evt);
+            QLManager.GetInstance().InternalQLEvent?.Invoke(evt);
+            QLManager.GetInstance().QLEvent?.Invoke(evt);
         }
         #endregion
 
@@ -488,7 +504,7 @@ namespace QLSDK.Core
             var appName = IntPtrHelper.IntPtrTostring(appNamePtr);
             log.Info("AddAppCallbackF: appHandle:" + appHandle + "  appName:" + appName);
             var device = new QLDevice(DeviceType.APPLICATIONS, appHandle.ToString(), appName);
-            deviceManager.AddDevice(device);
+            QLDeviceManager.GetInstance().AddDevice(device);
         }
 
 
@@ -499,8 +515,8 @@ namespace QLSDK.Core
                 var deviceHandle = IntPtrHelper.IntPtrToUTF8string(deviceHandlePtr);
                 var deviceName = IntPtrHelper.IntPtrToUTF8string(deviceNamePtr);
                 log.Info("AddDeviceCallback: deviceType:" + deviceType + "  deviceHandle:" + deviceHandle + "  deviceName:" + deviceName);
-                var device = new Device((DeviceType)deviceType, deviceHandle, deviceName);
-                deviceManager.AddDevice(device);
+                var device = new QLDevice((DeviceType)deviceType, deviceHandle, deviceName);
+                QLDeviceManager.GetInstance().AddDevice(device);
             }
             else
             {
@@ -545,7 +561,7 @@ namespace QLSDK.Core
             int channelNo = 0;
             if (int.TryParse(IntPtrHelper.IntPtrTostring(channelNumPtr), out channelNo))
             {
-                var statistics = new MediaStatistics()
+                var statistics = new QLMediaStatistics()
                 {
                     ChannelName = channelName,
                     ParticipantName = participantName,
@@ -576,9 +592,9 @@ namespace QLSDK.Core
                     OverallCPULoad = overallCPULoad,
                     ChannelNum = channelNo
                 };
-                callView.Invoke(new Action(() =>
+                QLCallView.GetInstance().Invoke(new Action(() =>
                 {
-                    MFWCore.mediaStatistics.Add(statistics);
+                    QLManager.GetInstance().mediaStatistics.Add(statistics);
                 }));
             }
         }
@@ -607,6 +623,10 @@ namespace QLSDK.Core
         }
         #endregion
 
+        /// <summary>
+        /// SDK初始化
+        /// </summary>
+        /// <param name="config">配置信息</param>
         private void SDKInit(IDictionary<PropertyKey,string> config)
         {
             var errno = ErrorNumber.OK;
@@ -638,7 +658,7 @@ namespace QLSDK.Core
             }
             var version = PlcmProxy.GetVersion();
             log.Info("**********************************************************************");
-            log.Info("        PLCM MFW  App Initialized Successful ( version: " + version + " )");
+            log.Info("        PLCM QLSDK  App Initialized Successful ( version: " + version + " )");
             log.Info("**********************************************************************");
 
             errno = PlcmProxy.UpdateConfig();
@@ -656,7 +676,7 @@ namespace QLSDK.Core
                 throw new Exception(errMsg);
             }
 
-            //Get Devices
+            //获取音频输入设备信息
             var errNo = PlcmProxy.GetDevice(DeviceType.AUDIOINPUT);
             if (ErrorNumber.OK != errNo)
             {
@@ -664,6 +684,7 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
+            //获取视频输入设备信息
             errNo = PlcmProxy.GetDevice(DeviceType.VIDEOINPUT);
             if (ErrorNumber.OK != errNo)
             {
@@ -671,6 +692,7 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
+            //获取音频输出设备信息
             errNo = PlcmProxy.GetDevice(DeviceType.AUDIOOUTPUT);
             if (ErrorNumber.OK != errNo)
             {
@@ -678,6 +700,7 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
+            //获取显示器信息
             errNo = PlcmProxy.GetDevice(DeviceType.MONITOR);
             if (ErrorNumber.OK != errNo)
             {
@@ -782,10 +805,7 @@ namespace QLSDK.Core
         /// 设置扬声器静音
         /// </summary>
         /// <param name="isMute">是否静音</param>
-        public void MuteSpeaker(bool isMute)
-        {
-
-        }
+        //public void MuteSpeaker(bool isMute){}
 
         /// <summary>
         /// 切换音频视频模式
@@ -830,7 +850,7 @@ namespace QLSDK.Core
         /// </summary>
         public void Release()
         {
-
+            PlcmProxy.UnregisterClient();
         }
         /// <summary>
         /// 添加事件监听
@@ -856,5 +876,162 @@ namespace QLSDK.Core
         {
 
         }
+
+
+        #region Device Setting
+        public void MuteMic(bool isMute)
+        {
+            if (null != QLCallManager.GetInstance().CurrentCall)
+            {
+                var errno = PlcmProxy.MuteMic(QLCallManager.GetInstance().CurrentCall.CallHandle, isMute);
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("麦克风静音设置失败,errno=" + errno);
+                }
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，不能进行麦克风静音设置");
+            }
+        }
+
+        public void MuteSpeaker(bool isMute)
+        {
+            var errno = PlcmProxy.MuteSpeaker(isMute);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("扬声器静音设置失败,errno=" + errno);
+            }
+        }
+
+        public void SetMicVolume(int volume)
+        {
+            var errno = PlcmProxy.SetMicVolume(volume);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("麦克风音量设置失败,errno=" + errno);
+            }
+        }
+
+        public int GetMicVolume()
+        {
+            return PlcmProxy.GetMicVolume();
+        }
+
+        public void SetSpeakerVolume(int volume)
+        {
+            var errno = PlcmProxy.SetSpeakerVolume(volume);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("扬声器音量设置失败,errno=" + errno);
+            }
+        }
+
+        public int GetSpeakerVolume()
+        {
+            return PlcmProxy.GetSpeakerVolume();
+        }
+        public void StartCamera()
+        {
+            var errno = PlcmProxy.StartCamera();
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("开启摄像头失败,errno=" + errno);
+            }
+        }
+
+        public void StopCamera()
+        {
+            var errno = PlcmProxy.StopCamera();
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("关闭摄像头失败,errno=" + errno);
+            }
+        }
+
+        public void StartShareContent(string deviceHandle, IntPtr appWndHandle)
+        {
+            if (null != QLCallManager.GetInstance().CurrentCall)
+            {
+                var errno = PlcmProxy.StartShareContent(QLCallManager.GetInstance().CurrentCall.CallHandle, deviceHandle, appWndHandle);
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("开始共享内容失败,errno=" + errno);
+                }
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，不能共享内容");
+            }
+        }
+        public void StartBFCPContent()
+        {
+            if (null != QLCallManager.GetInstance().CurrentCall)
+            {
+                var errno = PlcmProxy.StartBFCPContent(QLCallManager.GetInstance().CurrentCall.CallHandle);
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("开始共享内容失败,errno=" + errno);
+                }
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，不能共享内容");
+            }
+        }
+
+        public void StopShareContent()
+        {
+            if (null != QLCallManager.GetInstance().CurrentCall)
+            {
+                var errno = PlcmProxy.StopShareContent(QLCallManager.GetInstance().CurrentCall.CallHandle);
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("结束共享内容失败,errno=" + errno);
+                }
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，不能结束共享内容");
+            }
+        }
+
+        public void SetContentBuffer(ImageFormat format, int width, int height)
+        {
+            var errno = PlcmProxy.SetContentBuffer(format, width, height);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("开始共享内容失败,errno=" + errno);
+            }
+        }
+        #endregion
+        #region 
+        public void GetMediaStatistics(Action<ObservableCollection<QLMediaStatistics>> callBack)
+        {
+            mediaStatistics.Clear();
+            if (null !=QLCallManager.GetInstance().CurrentCall)
+            {
+                var errno = PlcmProxy.GetMediaStatistics(QLCallManager.GetInstance().CurrentCall.CallHandle);
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("获取信号流信息失败,errno=" + errno);
+                }
+                //mediaStatisticsCallBack = callBack;
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，获取信号流信息");
+            }
+        }
+
+        #endregion
+
+        #region ViewLayout
+        public void SetLayout(LayoutType layout)
+        {
+            QlConfig.GetInstance().SetProperty(PropertyKey.LayoutType, layout.ToString());
+            QLCallView.GetInstance().ViewRender();
+        }
+        #endregion
     }
 }

@@ -25,7 +25,7 @@ namespace QLSDK.Core
             rfa.Threshold = Level.Error;
             log4net.Config.BasicConfigurator.Configure(rfa);
         }
-        public static ILog GetLoger(string name)
+        public static ILog GetLogger(string name)
         {
             return LogManager.GetLogger(name);
         }

@@ -11,7 +11,7 @@ namespace QLSDK.Core
     {
         #region Fields
         private IDictionary<PropertyKey, string> properties;
-        private ILog log = LogUtil.GetLoger("QLSDK.QlConfig");
+        private ILog log = LogUtil.GetLogger("QLSDK.QlConfig");
         private IDictionary<PropertyKey, string> defaultProperties;
         #endregion
 
@@ -37,7 +37,7 @@ namespace QLSDK.Core
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_AnonymousToken_Cred,"YWxpY2U6c2FtZXRpbWU="},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Anonymous_Cred,"anonymous"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_MaxCallNum,"6"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate,"384"},
+                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate,"1024"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_AesEcription,"off"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultAudioStartPort,"3230"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultAudioEndPort,"3550"},
@@ -150,7 +150,7 @@ namespace QLSDK.Core
                     throw new Exception(errMsg);
                 }
                 /*
-                errno = WrapperProxy.UpdateConfig();
+                errno = PlcmProxy.UpdateConfig();
                 if (errno != ErrorNumber.OK)
                 {
                     var errMsg = string.Format("{0}更新配置失败,err={1}", key, errno);
@@ -219,7 +219,7 @@ namespace QLSDK.Core
                     }
                 }
                 /*
-                errno = WrapperProxy.UpdateConfig();
+                errno = PlcmProxy.UpdateConfig();
                 if (errno != ErrorNumber.OK)
                 {
                     var errMsg = string.Format("更新配置失败,err={0}", errno);

@@ -13,7 +13,7 @@ namespace QLSDK.Core
 {
     internal static class HttpUtil<T>
     {
-        public static readonly ILog logger = LogUtil.GetLoger("QLSDK.HttpUtil");
+        public static readonly ILog logger = LogUtil.GetLogger("QLSDK.HttpUtil");
 
         #region 发送Post请求
         public static HttpResullt<T> Post(string url, object data)

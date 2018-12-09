@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,6 +44,110 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="QLToolBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="QLToolBar.Designer.cs">
+      <DependentUpon>QLToolBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UX\ContentSelectPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\ContentSelectPanel.designer.cs">
+      <DependentUpon>ContentSelectPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UX\SignalPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\SignalPanel.designer.cs">
+      <DependentUpon>SignalPanel.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\ContentSelectPanel.resx">
+      <DependentUpon>ContentSelectPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\SignalPanel.resx">
+      <DependentUpon>SignalPanel.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\attender.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\more.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ok24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\share.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\share_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\speaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\speaker_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QLSDK.Core\QLSDK.Core.csproj">
+      <Project>{47a6a8fb-ef46-4a34-a203-d1c1f99f1aee}</Project>
+      <Name>QLSDK.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

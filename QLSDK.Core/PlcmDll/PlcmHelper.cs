@@ -46,7 +46,7 @@ namespace QLSDK.Core
         internal static extern int preInitialize();
 
         /**
-	     * Initial the MFW SDK instance. In this native method MFW initialize, set user info, register client, and get device enum are finished
+	     * Initial the QLSDK SDK instance. In this native method QLSDK initialize, set user info, register client, and get device enum are finished
 	     * <ref>PLCM_Wrapper_Errno initialize();</ref>
 	     * @return ErrorNumber constant.
 	     */
