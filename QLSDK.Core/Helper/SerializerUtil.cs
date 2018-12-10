@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 序列化处理辅助类
+    /// </summary>
     class SerializerUtil
     {
+        /// <summary>
+        /// 序列化成Json数据
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static string SerializeJson(object val)
         {
             return JsonConvert.SerializeObject(val, new JsonSerializerSettings()

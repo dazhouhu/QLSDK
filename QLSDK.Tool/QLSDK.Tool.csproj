@@ -73,6 +73,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="QLToolBar.resx">
+      <DependentUpon>QLToolBar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UX\ContentSelectPanel.resx">
       <DependentUpon>ContentSelectPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -148,6 +151,15 @@
       <Project>{47a6a8fb-ef46-4a34-a203-d1c1f99f1aee}</Project>
       <Name>QLSDK.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hangup24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\call24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal6.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

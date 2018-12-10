@@ -87,7 +87,6 @@
     <Compile Include="Model\QLDevice.cs" />
     <Compile Include="Model\QlEvent.cs" />
     <Compile Include="Model\QLMediaStatistics.cs" />
-    <Compile Include="OnQlEventListener.cs" />
     <Compile Include="PlcmDll\PlcmHelper.cs" />
     <Compile Include="PlcmDll\PlcmProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

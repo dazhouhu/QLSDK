@@ -49,11 +49,10 @@ namespace QLSDK.Tool.UX
         {
             grdMediaStatistics.AutoGenerateColumns = false;
 
-            QLSDKCore.GetMediaStatistics(BindSignals);
+            QLManager.GetInstance().GetMediaStatistics(BindSignals);
             
             this.txtCallRate.Text = "SIP";
-            this.txtCallRate.Text = QlConfig.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
-        }
-        
+            this.txtCallRate.Text = QLConfig.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
+        }        
     }
 }

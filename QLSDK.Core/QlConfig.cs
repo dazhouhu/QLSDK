@@ -7,21 +7,19 @@ using System.Threading.Tasks;
 
 namespace QLSDK.Core
 {
-    public class QlConfig
+    public class QLConfig
     {
         #region Fields
         private IDictionary<PropertyKey, string> properties;
-        private ILog log = LogUtil.GetLogger("QLSDK.QlConfig");
-        private IDictionary<PropertyKey, string> defaultProperties;
+        private ILog log = LogUtil.GetLogger("QLSDK.QLConfig");
         #endregion
 
         #region Constructors
         private static readonly object lockObj = new object();
-        private static QlConfig instance = null;
-        private QlConfig()
+        private static QLConfig instance = null;
+        private QLConfig()
         {
-            properties = new Dictionary<PropertyKey, string>();
-            var defaultProperties = new Dictionary<PropertyKey, string>()
+            properties = new Dictionary<PropertyKey, string>()
             {
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_MINSYS,""},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ProxyServer,""},
@@ -119,7 +117,7 @@ namespace QLSDK.Core
                 {PropertyKey.LayoutType,"Presentation" }
             };
         }
-        public static QlConfig GetInstance()
+        public static QLConfig GetInstance()
         {
             if (null == instance)
             {
@@ -127,7 +125,7 @@ namespace QLSDK.Core
                 {
                     if (instance == null)
                     {
-                        instance = new QlConfig();
+                        instance = new QLConfig();
                     }
                 }
             }
@@ -242,10 +240,6 @@ namespace QLSDK.Core
         {
             log.Info(string.Format("GetProperty:{0}:{1}", key, properties[key]));
             return properties[key];
-        }
-        public IDictionary<PropertyKey,string> GetDefaultConfig()
-        {
-            return defaultProperties;
         }
         #endregion
     }

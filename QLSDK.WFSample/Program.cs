@@ -16,7 +16,16 @@ namespace QLSDK.WFSample
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
+            if (loginWindow.DialogResult == DialogResult.OK)
+            {
+                Application.Run(new MainWindow());
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

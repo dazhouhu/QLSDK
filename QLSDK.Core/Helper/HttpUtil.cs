@@ -7,10 +7,13 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// HTTP请求处理类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal static class HttpUtil<T>
     {
         public static readonly ILog logger = LogUtil.GetLogger("QLSDK.HttpUtil");

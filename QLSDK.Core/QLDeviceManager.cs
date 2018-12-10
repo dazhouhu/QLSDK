@@ -13,7 +13,7 @@ namespace QLSDK.Core
     {
         #region Fields
         private ILog log = LogUtil.GetLogger("QLSDK.QLDeviceManager");
-        private QlConfig qlConfig = QlConfig.GetInstance();
+        private QLConfig qlConfig = QLConfig.GetInstance();
         private ObservableCollection<QLDevice> devices = new ObservableCollection<QLDevice>();
         #endregion
 
@@ -148,7 +148,22 @@ namespace QLSDK.Core
         }
         public void RemoveDevice(QLDevice device)
         {
-            devices.Remove(device);
+            if (null != device)
+            {
+                devices.Remove(device);
+                switch(device.DeviceType)
+                {
+                    case DeviceType.AUDIOINPUT:
+                        CurrentAudioInputDevice = GetDevicesByType(DeviceType.AUDIOINPUT).FirstOrDefault();
+                        break;
+                    case DeviceType.AUDIOOUTPUT:
+                        CurrentAudioInputDevice = GetDevicesByType(DeviceType.AUDIOOUTPUT).FirstOrDefault();
+                        break;
+                    case DeviceType.VIDEOINPUT:
+                        CurrentAudioInputDevice = GetDevicesByType(DeviceType.VIDEOINPUT).FirstOrDefault();
+                        break;
+                }
+            }
         }
 
         public QLDevice GetDevice(string deviceHandle)
@@ -163,6 +178,27 @@ namespace QLSDK.Core
         public List<QLDevice> GetDevicesByType(DeviceType deviceType)
         {
             return devices.Where(d => d.DeviceType == deviceType).ToList();
+        }
+        #endregion
+
+        #region Sound
+
+        public void PlaySound(string filePath, bool isLoop, int interval)
+        {
+            log.Info("startPlayingAlert filePath:" + filePath);
+            var errno = PlcmProxy.StartPlayAlert(filePath, isLoop, interval);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("开启铃声播放失败，ErrorNo=" + errno);
+            }
+        }
+        public void StopSound()
+        {
+            var errno = PlcmProxy.StopPlayAlert();
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("关闭铃声播放失败，ErrorNo=" + errno);
+            }
         }
         #endregion
     }

@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 日志处理类
+    /// </summary>
     public class LogUtil
     {
         static LogUtil()
@@ -36,18 +39,18 @@ namespace QLSDK.Core
             {
                 return;
             }
-            var lvl = Level.Error;
+            var logLevel = Level.Error;
             switch (level.ToLower())
             {
-                case "all": lvl = Level.All; break;
-                case "debug": lvl = Level.All; break;
-                case "info": lvl = Level.All; break;
-                case "warn": lvl = Level.All; break;
-                case "error": lvl = Level.All; break;
-                case "fatal": lvl = Level.All; break;
-                case "off": lvl = Level.All; break;
+                case "all": logLevel = Level.All; break;
+                case "debug": logLevel = Level.All; break;
+                case "info": logLevel = Level.All; break;
+                case "warn": logLevel = Level.All; break;
+                case "error": logLevel = Level.All; break;
+                case "fatal": logLevel = Level.All; break;
+                case "off": logLevel = Level.All; break;
             }
-            LogManager.GetLogger("QLSDKFileAppender").Logger.Repository.Threshold = lvl;
+            LogManager.GetLogger("QLSDKFileAppender").Logger.Repository.Threshold = logLevel;
         }
     }
 }

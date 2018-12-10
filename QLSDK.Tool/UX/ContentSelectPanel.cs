@@ -68,7 +68,7 @@ namespace QLSDK.Tool.UX
             }
         }
 
-        public Func<string, ImageFormat, string,IntPtr,bool> OKAction { get; set; }
+        public Func<string, ImageFormat, string,string,bool> OKAction { get; set; }
         private void btnOK_Click(object sender, EventArgs e)
         {
             if(null != OKAction)
@@ -84,10 +84,10 @@ namespace QLSDK.Tool.UX
                 {
                     monitor = cbxMonitor.SelectedValue.ToString();
                 }
-                IntPtr app = IntPtr.Zero;
+                string app = null;
                 if(cbxApp.SelectedIndex>=0)
                 {
-                    app = (IntPtr) cbxApp.SelectedValue;
+                    app =  cbxApp.SelectedValue.ToString();
                 }
                 var result = OKAction(type,format,monitor, app);
                 if(result)

@@ -17,6 +17,7 @@ namespace QLSDK.Tool
         #region Fields
         private Control ownerContainer;
         private QLCall _currentCall;
+        private QLManager qlManager = QLManager.GetInstance();
         private QLCallManager callManager = QLCallManager.GetInstance();
         private QLDeviceManager deviceManager = QLDeviceManager.GetInstance();
         #endregion
@@ -28,8 +29,8 @@ namespace QLSDK.Tool
         }
         #endregion
 
-        #region BindPanel
-        public void BindPanel(Control container)
+        #region AttachViewContainer
+        public void AttachViewContainer(Control container)
         {
             if (null == container)
             {
@@ -51,32 +52,49 @@ namespace QLSDK.Tool
         #endregion
 
         #region ToolBar
-        private void MFWToolBar_Load(object sender, EventArgs e)
+        private void QLToolBar_Load(object sender, EventArgs e)
         {
-            bindDeviceStatus();
-            deviceManager.DevicesChanged += (obj, args) => {
-                bindDeviceStatus();
-            };
-            callManager.PropertyChanged += (obj, args) =>
+            deviceManager.PropertyChanged += OnDevicePropertyChangedHandle;
+            callManager.CurrentCallChanged +=() =>
             {
-                switch (args.PropertyName)
+                if (null != _currentCall)
                 {
-                    case "CurrentCall":
-                        {
-                            if (null != _currentCall)
-                            {
-                                _currentCall.PropertyChanged -= OnCallPropertyChangedHandle;
-                            }
-                            _currentCall = callManager.CurrentCall;
-                            if (null != _currentCall)
-                            {
-                                _currentCall.PropertyChanged += OnCallPropertyChangedHandle;
-                            }
-                            bindDeviceStatus();
-                        }
-                        break;
+                    _currentCall.PropertyChanged -= OnCallPropertyChangedHandle;
                 }
+                _currentCall = callManager.CurrentCall;
+                if (null != _currentCall)
+                {
+                    _currentCall.PropertyChanged += OnCallPropertyChangedHandle;
+                }
+                SetToolsStatus();
             };
+
+            this.tbMicVolume.LostFocus += (obj, args) => { this.tbMicVolume.Hide(); };
+            this.tbSpeakerVolume.LostFocus += (obj, args) => { this.tbSpeakerVolume.Hide(); };
+
+            SetToolsStatus();
+        }
+        #region BtnStatus
+        private void OnDevicePropertyChangedHandle(object sender,PropertyChangedEventArgs args)
+        {
+            switch(args.PropertyName)
+            {
+                case "CurrentAudioInputDevice": //音频输入设备
+                    {
+                        SetToolsStatus();
+                    }
+                    break;
+                case "CurrentAudioOutputDevice": //音频输出设备
+                    {
+                        SetToolsStatus();
+                    }
+                    break;
+                case "CurrentVideoInputDevice": //视频输入设备
+                    {
+                        SetToolsStatus();
+                    }
+                    break;
+            }
         }
         private void OnCallPropertyChangedHandle(object sender, PropertyChangedEventArgs args)
         {
@@ -87,81 +105,148 @@ namespace QLSDK.Tool
                 case "CallMode":
                 case "IsContentSupported":
                     {
-                        //bindDeviceStatus();
+                        SetToolsStatus();
                     }
                     break;
             }
         }
 
-        private void bindDeviceStatus()
+        private void SetToolsStatus()
         {
-            #region Device Init
-            if (null != deviceManager.CurrentAudioInputDevice)
-            {
-                this.btnMic.Enabled = true;
-                this.btnMic.Image = Properties.Resources.mic;
-                var volume = QLManager.GetInstance().GetMicVolume();
-                this.tbMicVolume.Value = volume;
-                this.tbMicVolume.LostFocus += (obj, args) => { this.tbMicVolume.Hide(); };
+            if (null == callManager.CurrentCall)
+            { //当前呼叫为空时,按钮不可用
+                btnSignal.Enabled = false;
+                btnSignal.Image = Properties.Resources.signal0;
+
+                btnMic.Enabled = false;
+                btnMic.Image = Properties.Resources.mic_mute;
+
+                btnSpeaker.Enabled = false;
+                btnSpeaker.Image = Properties.Resources.speaker_mute;
+
+                btnCamera.Enabled = false;
+                btnCamera.Image = Properties.Resources.camera_mute;
+
+                btnShare.Enabled = false;
+                btnShare.Image = Properties.Resources.share_mute;
+
+                btnCall.Image = Properties.Resources.call24;
+                btnCall.Text = "呼叫";
             }
             else
             {
-                this.btnMic.Enabled = false;
-                this.btnMic.Image = Properties.Resources.mic_mute;
-                this.tbMicVolume.Value = 0;
-            }
-            if (null != deviceManager.CurrentAudioOutputDevice)
-            {
-                this.btnSpeaker.Enabled = true;
-                this.btnSpeaker.Image = Properties.Resources.speaker;
-                var volume = QLManager.GetInstance().GetSpeakerVolume();
-                this.tbSpeakerVolume.Value = volume;
-                this.tbSpeakerVolume.LostFocus += (obj, args) => { this.tbSpeakerVolume.Hide(); };
-            }
-            else
-            {
-                this.btnSpeaker.Enabled = false;
-                this.btnSpeaker.Image = Properties.Resources.speaker_mute;
-                this.tbSpeakerVolume.Value = 0;
-            }
-            if (null != deviceManager.CurrentVideoInputDevice && null != callManager.CurrentCall)
-            {
-                this.btnCamera.Enabled = true;
-                switch (callManager.CurrentCall.CallMode)
+                switch (callManager.CurrentCall.CallState)
                 {
-                    case CallMode.VIDEO:
-                        {
-                            this.btnCamera.Image = Properties.Resources.camera;
-                            if (callManager.CurrentCall.IsContentSupported)
+                    case CallState.SIP_UNKNOWN:
+                    case CallState.SIP_OUTGOING_FAILURE:
+                    case CallState.SIP_CALL_CLOSED:
+                    case CallState.NULL_CALL:
+                        { //非活动状态,不可用
+                            btnSignal.Enabled = false;
+                            btnSignal.Image = Properties.Resources.signal0;
+
+                            btnMic.Enabled = false;
+                            btnMic.Image = Properties.Resources.mic_mute;
+
+                            btnSpeaker.Enabled = false;
+                            btnSpeaker.Image = Properties.Resources.speaker_mute;
+
+                            btnCamera.Enabled = false;
+                            btnCamera.Image = Properties.Resources.camera_mute;
+
+                            btnShare.Enabled = false;
+                            btnShare.Image = Properties.Resources.share_mute;
+
+                            btnCall.Image = Properties.Resources.call24;
+                            btnCall.Text = "呼叫";
+                        }
+                        break;
+                    case CallState.SIP_INCOMING_INVITE:
+                    case CallState.SIP_OUTGOING_TRYING:
+                    case CallState.SIP_CALL_HOLD:
+                    case CallState.SIP_CALL_HELD:
+                    case CallState.SIP_CALL_DOUBLE_HOLD:
+                    case CallState.SIP_OUTGOING_RINGING:
+                    case CallState.SIP_INCOMING_CONNECTED:
+                    case CallState.SIP_OUTGOING_CONNECTED:
+                        { //活动呼叫
+                            btnSignal.Enabled = true;
+                            btnSignal.Image = Properties.Resources.signal6;
+
+                            btnCall.Image = Properties.Resources.hangup24;
+                            btnCall.Text = "挂断";
+
+                            if (null != deviceManager.CurrentAudioInputDevice)
                             {
-                                this.btnShare.Enabled = true;
-                                this.btnShare.Image = Properties.Resources.share;
+                                this.btnMic.Enabled = true;
+                                this.btnMic.Image = Properties.Resources.mic;
+                                var volume = qlManager.GetMicVolume();
+                                this.tbMicVolume.Value = volume;
                             }
                             else
                             {
+                                this.btnMic.Enabled = false;
+                                this.btnMic.Image = Properties.Resources.mic_mute;
+                                this.tbMicVolume.Value = 0;
+                            }
+                            if (null != deviceManager.CurrentAudioOutputDevice)
+                            {
+                                this.btnSpeaker.Enabled = true;
+                                this.btnSpeaker.Image = Properties.Resources.speaker;
+                                var volume = qlManager.GetSpeakerVolume();
+                                this.tbSpeakerVolume.Value = volume;
+                            }
+                            else
+                            {
+                                this.btnSpeaker.Enabled = false;
+                                this.btnSpeaker.Image = Properties.Resources.speaker_mute;
+                                this.tbSpeakerVolume.Value = 0;
+                            }
+                            if (null != deviceManager.CurrentVideoInputDevice)
+                            {
+                                this.btnCamera.Enabled = true;
+                                switch (callManager.CurrentCall.CallMode)
+                                {
+                                    case CallMode.VIDEO:
+                                        {
+                                            this.btnCamera.Image = Properties.Resources.camera;
+                                            if (callManager.CurrentCall.IsContentSupported)
+                                            {
+                                                this.btnShare.Enabled = true;
+                                                this.btnShare.Image = Properties.Resources.share;
+                                            }
+                                            else
+                                            {
+                                                this.btnShare.Enabled = false;
+                                                this.btnShare.Image = Properties.Resources.share_mute;
+                                            }
+                                        }
+                                        break;
+                                    case CallMode.AUDIO:
+                                        {
+                                            this.btnCamera.Image = Properties.Resources.camera_mute;
+                                            this.btnShare.Enabled = false;
+                                            this.btnShare.Image = Properties.Resources.share_mute;
+                                        }
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                this.btnCamera.Enabled = false;
+                                this.btnCamera.Image = Properties.Resources.camera_mute;
                                 this.btnShare.Enabled = false;
                                 this.btnShare.Image = Properties.Resources.share_mute;
                             }
                         }
                         break;
-                    case CallMode.AUDIO:
-                        {
-                            this.btnCamera.Image = Properties.Resources.camera_mute;
-                            this.btnShare.Enabled = false;
-                            this.btnShare.Image = Properties.Resources.share_mute;
-                        }
-                        break;
                 }
             }
-            else
-            {
-                this.btnCamera.Enabled = false;
-                this.btnCamera.Image = Properties.Resources.camera_mute;
-                this.btnShare.Enabled = false;
-                this.btnShare.Image = Properties.Resources.share_mute;
-            }
-            #endregion
         }
+        #endregion
+        /// <summary>
+        /// 查看信号信息
+        /// </summary>
         private void btnSignal_Click(object sender, EventArgs e)
         {
             if (null == _currentCall)
@@ -177,6 +262,9 @@ namespace QLSDK.Tool
             }
         }
 
+        /// <summary>
+        /// 麦克风
+        /// </summary>
         private void btnMic_Click(object sender, EventArgs e)
         {
             tbMicVolume.Show();
@@ -186,6 +274,9 @@ namespace QLSDK.Tool
             tbMicVolume.Top = this.Top - 118;
         }
 
+        /// <summary>
+        /// 扬声器
+        /// </summary>
         private void btnSpeaker_Click(object sender, EventArgs e)
         {
             tbSpeakerVolume.Show();
@@ -207,13 +298,17 @@ namespace QLSDK.Tool
                 }
             }
         }
+
+        /// <summary>
+        /// 摄像头
+        /// </summary>
         private void btnCamera_Click(object sender, EventArgs e)
         {
             if (true == MuteCamera)
             {
                 try
                 {
-                    QLManager.GetInstance().StartCamera();
+                    qlManager.StartCamera();
                     MuteCamera = false;
                 }
                 catch (Exception ex)
@@ -225,7 +320,7 @@ namespace QLSDK.Tool
             {
                 try
                 {
-                    QLManager.GetInstance().StopCamera();
+                    qlManager.StopCamera();
                     MuteCamera = true;
                 }
                 catch (Exception ex)
@@ -235,6 +330,9 @@ namespace QLSDK.Tool
             }
         }
 
+        /// <summary>
+        /// 内容共享
+        /// </summary>
         private void btnShare_Click(object sender, EventArgs e)
         {
             if (null == _currentCall)
@@ -250,15 +348,15 @@ namespace QLSDK.Tool
                         {
                             case "Monitor":
                                 {
-                                    QLManager.GetInstance().StartShareContent(monitor, app);
+                                    qlManager.StartSendContent(qlManager.GetCurrentCall(), monitor, app);
                                 }
                                 break;
                             case "BFCP":
                                 {
                                     var width = Screen.PrimaryScreen.Bounds.Width;
                                     var height = Screen.PrimaryScreen.Bounds.Height;
-                                    QLManager.GetInstance().SetContentBuffer(format, width, height);
-                                    QLManager.GetInstance().StartBFCPContent();
+                                    //qlManager.SetContentBuffer(format, width, height);
+                                    //qlManager.StartBFCPContent();
                                 }
                                 break;
                         }
@@ -275,18 +373,34 @@ namespace QLSDK.Tool
             UXMessageMask.ShowForm(ownerContainer, contentSelectWin);
         }
 
+        /// <summary>
+        /// 联系人
+        /// </summary>
         private void btnAttender_Click(object sender, EventArgs e)
         {
             MessageBox.Show(this, "实现中", "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// 呼叫/挂断
+        /// </summary>
+        private void btnCall_Click(object sender, EventArgs e)
+        {
+            if(btnCall.Text=="呼叫")
+            {
+
+            }
+            else{
+
+            }
+        }
+
+        /// <summary>
+        /// 更多
+        /// </summary>
         private void btnMore_Click(object sender, EventArgs e)
         {
-            moreMenu.Show(btnMore, new Point(0, 0), ToolStripDropDownDirection.AboveRight);
-        }
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            this.FindForm().Close();
+            moreMenu.Show(btnCall, new Point(0, 0), ToolStripDropDownDirection.AboveRight);
         }
         #endregion
         #region Menu
@@ -301,17 +415,17 @@ namespace QLSDK.Tool
         }
         private void menuItemP_Click(object sender, EventArgs e)
         {
-            QLManager.GetInstance().SetLayout(LayoutType.Presentation);
+            qlManager.SetLayout(LayoutType.Presentation);
         }
 
         private void menuItemVAS_Click(object sender, EventArgs e)
         {
-            QLManager.GetInstance().SetLayout(LayoutType.VAS);
+            qlManager.SetLayout(LayoutType.VAS);
         }
 
         private void menuItemCP_Click(object sender, EventArgs e)
         {
-            QLManager.GetInstance().SetLayout(LayoutType.ContinuousPresence);
+            qlManager.SetLayout(LayoutType.ContinuousPresence);
         }
         #endregion
 
@@ -323,15 +437,15 @@ namespace QLSDK.Tool
 
             try
             {
-                QLManager.GetInstance().SetMicVolume(volume);
+                qlManager.SetMicVolume(volume);
                 if (0 == volume)
                 {
-                    QLManager.GetInstance().MuteMic(true);
+                    qlManager.MuteMic(true);
                     this.btnMic.Image = Properties.Resources.mic_mute;
                 }
                 else
                 {
-                    QLManager.GetInstance().MuteMic(false);
+                    qlManager.MuteMic(false);
                     this.btnMic.Image = Properties.Resources.mic;
                 }
 
@@ -340,7 +454,7 @@ namespace QLSDK.Tool
             {
                 Action okAction = () =>
                 {
-                    volume = QLManager.GetInstance().GetMicVolume();
+                    volume = qlManager.GetMicVolume();
                     this.tbMicVolume.Value = volume;
                 };
                 UXMessageMask.ShowMessage(ownerContainer, false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error
@@ -353,16 +467,16 @@ namespace QLSDK.Tool
             var volume = tbSpeakerVolume.Value;
             try
             {
-                QLManager.GetInstance().SetSpeakerVolume(volume);
+                qlManager.SetSpeakerVolume(volume);
                 if (0 == volume)
                 {
-                    QLManager.GetInstance().MuteSpeaker(true);
+                    qlManager.MuteSpeaker(true);
                     this.btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                 }
                 else
                 {
-                    QLManager.GetInstance().MuteSpeaker(false);
+                    qlManager.MuteSpeaker(false);
                     this.btnSpeaker.Image = Properties.Resources.speaker;
                 }
             }
@@ -370,10 +484,12 @@ namespace QLSDK.Tool
             {
                 if (MessageBox.Show(this, ex.Message, "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
                 {
-                    volume = QLManager.GetInstance().GetSpeakerVolume();
+                    volume = qlManager.GetSpeakerVolume();
                     this.tbSpeakerVolume.Value = volume;
                 }
             }
         }
+
+
     }
 }

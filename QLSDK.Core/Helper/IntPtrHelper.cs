@@ -5,6 +5,9 @@ using System.Text;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 指针处理类
+    /// </summary>
     internal class IntPtrHelper
     {
         public static byte[] IntPtrToBytes(IntPtr ptr, int length)

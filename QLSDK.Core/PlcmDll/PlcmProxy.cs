@@ -63,6 +63,14 @@ namespace QLSDK.Core
         {
             return (ErrorNumber)PlcmHelper.answerCall(callHandle, (int)callMode, authToken, cryptoSuiteType, srtpKey, sutLiteEnable);
         }
+        public static ErrorNumber AnswerCall(QLCall call,CallMode callMode)
+        {
+            string cryptoSuiteType = "AES_CM_128_HMAC_SHA1_80";
+            string srtpKey = "HfVGG79oW5XStt9DewUYrdngYlV/QqDBGIDNFB7m";
+            var authToken = "AApzdG1lZXRpbmcxAAdzdHVzZXIxAAABPcJe1o4CsXgvirq1RQys3JCU0U8RvJ4uoA==";
+
+            return AnswerCall(call.CallHandle, callMode, authToken, cryptoSuiteType, srtpKey, true);
+        }
 
         public static ErrorNumber RejectCall(int callHandle)
         {

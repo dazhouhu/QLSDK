@@ -11,13 +11,15 @@ using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
-
+    /// <summary>
+    /// 呼叫管理器
+    /// </summary>
     public class QLCallManager : BaseModel
     {
         #region Fields
         private ILog log = LogUtil.GetLogger("QLSDK.QLCallManager");
         private static QLDeviceManager deviceManager = QLDeviceManager.GetInstance();
-        private static QlConfig qlConfig = QlConfig.GetInstance();
+        private static QLConfig qlConfig = QLConfig.GetInstance();
         private static QLCallView callView = QLCallView.GetInstance();
         #endregion
         #region Constructors
@@ -29,7 +31,6 @@ namespace QLSDK.Core
             {
                 CallsChanged?.Invoke(sender, args);
             };
-            QLManager.GetInstance().InternalQLEvent += QLEventHandle;
         }
         public static QLCallManager GetInstance()
         {
@@ -40,6 +41,8 @@ namespace QLSDK.Core
                     if (instance == null)
                     {
                         instance = new QLCallManager();
+
+                        QLManager.GetInstance().InternalQLEvent +=instance.QLEventHandle;
                     }
                 }
             }
@@ -47,6 +50,9 @@ namespace QLSDK.Core
         }
         #endregion
 
+        #region Events
+        public event Action CurrentCallChanged;
+        #endregion
 
         #region Properties
         private QLCall _currentCall;
@@ -59,6 +65,7 @@ namespace QLSDK.Core
                 {
                     _currentCall = value;
                     NotifyPropertyChanged("CurrentCall");
+                    CurrentCallChanged?.Invoke();
                 }
             }
         }
@@ -92,6 +99,14 @@ namespace QLSDK.Core
                 #region QLCall
                 case EventType.SIP_CALL_INCOMING:
                     {
+                        //播放呼入响铃
+                        deviceManager.StopSound();
+                        var incomingSound=qlConfig.GetProperty(PropertyKey.SOUND_INCOMING);
+                        if (!string.IsNullOrWhiteSpace(incomingSound))
+                        {
+                            deviceManager.PlaySound(incomingSound, true, 2000);
+                        }
+
                         var call = GetCall(evt.CallHandle, true, evt);
                         call.CallType = CallType.INCOMING;
                         call.CallState = CallState.SIP_INCOMING_INVITE;
@@ -120,6 +135,13 @@ namespace QLSDK.Core
                                 ChannelName = "本地视频"
                             };
                             call.AddChannel(localChannel);
+
+                            var errno = PlcmProxy.AnswerCall(call, call.CallMode);
+                            if (ErrorNumber.OK != errno)
+                            {
+                                throw new Exception("接听应答呼叫失败，ErrorNo=" + errno);
+                            }
+                            deviceManager.StopSound();
                         };
                         Action hangupAction = () =>
                         {
@@ -168,6 +190,14 @@ namespace QLSDK.Core
                     break;
                 case EventType.SIP_CALL_RINGING:
                     {
+                        //播放呼叫响铃
+                        deviceManager.StopSound();
+                        var ringingSound = qlConfig.GetProperty(PropertyKey.SOUND_RINGING);
+                        if (!string.IsNullOrWhiteSpace(ringingSound))
+                        {
+                            deviceManager.PlaySound(ringingSound, true, 2000);
+                        }
+
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
                         call.CallType = CallType.OUTGOING;
@@ -194,6 +224,8 @@ namespace QLSDK.Core
                     break;
                 case EventType.SIP_CALL_FAILURE:
                     {
+                        deviceManager.StopSound();
+
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
                         call.StopTime = DateTime.Now;
@@ -210,6 +242,12 @@ namespace QLSDK.Core
                     break;
                 case EventType.SIP_CALL_CLOSED:
                     {
+                        deviceManager.StopSound();
+                        var closedSound = qlConfig.GetProperty(PropertyKey.SOUND_CLOSED);
+                        if (!string.IsNullOrWhiteSpace(closedSound))
+                        {
+                            deviceManager.PlaySound(closedSound, false, 0);
+                        }
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
                         call.Reason = string.IsNullOrEmpty(evt.Reason) ? "unknown reason" : evt.Reason;
@@ -298,6 +336,8 @@ namespace QLSDK.Core
                     break;
                 case EventType.SIP_CALL_UAS_CONNECTED:
                     {
+                        deviceManager.StopSound();
+
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
                         log.Info(string.Format("呼入{0}接听通话中", call.CallName));
@@ -312,6 +352,8 @@ namespace QLSDK.Core
                     break;
                 case EventType.SIP_CALL_UAC_CONNECTED:
                     {
+                        deviceManager.StopSound();
+
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
                         log.Info(string.Format("呼出{0}接听通话中", call.CallName));
@@ -587,7 +629,7 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region Get QLCall
+        #region Get Call
         public QLCall GetCall(int callHandle, bool isCreate = false, QLEvent evt = null)
         {
             var call = _callList.FirstOrDefault(c => c.CallHandle == callHandle);
@@ -723,23 +765,6 @@ namespace QLSDK.Core
             return msg;
         }
 
-        #region QLCall Methods
-        public void Hangup(QLCall call = null)
-        {
-            if (null == call)
-            {
-                call = CurrentCall;
-            }
-            if (null != call)
-            {
-                var errno = PlcmProxy.TerminateCall(call.CallHandle);
-                if (ErrorNumber.OK != errno)
-                {
-                    log.Error("Hangup Failed,errno=" + errno);
-                }
-            }
-        }
-        #endregion
     }
 }
 

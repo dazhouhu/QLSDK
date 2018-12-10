@@ -39,8 +39,8 @@
             this.menuItemVAS = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCP = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSignal = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
             this.btnMore = new System.Windows.Forms.Button();
+            this.btnCall = new System.Windows.Forms.Button();
             this.btnAttender = new System.Windows.Forms.Button();
             this.btnShare = new System.Windows.Forms.Button();
             this.btnCamera = new System.Windows.Forms.Button();
@@ -133,13 +133,13 @@
             // 
             // btnSignal
             // 
-            this.btnSignal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.btnSignal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.btnSignal.FlatAppearance.BorderSize = 0;
             this.btnSignal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSignal.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnSignal.ForeColor = System.Drawing.Color.White;
-            this.btnSignal.Image = Properties.Resources.signal0;
+            this.btnSignal.Image = global::QLSDK.Tool.Properties.Resources.signal0;
             this.btnSignal.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSignal.Location = new System.Drawing.Point(20, 10);
             this.btnSignal.Name = "btnSignal";
@@ -150,42 +150,42 @@
             this.btnSignal.UseVisualStyleBackColor = true;
             this.btnSignal.Click += new System.EventHandler(this.btnSignal_Click);
             // 
-            // btnExit
-            // 
-            this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExit.FlatAppearance.BorderSize = 0;
-            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExit.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnExit.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnExit.Image = Properties.Resources.exit;
-            this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnExit.Location = new System.Drawing.Point(710, 10);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(70, 60);
-            this.btnExit.TabIndex = 1;
-            this.btnExit.Text = "退出";
-            this.btnExit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
             // btnMore
             // 
-            this.btnMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.btnMore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMore.FlatAppearance.BorderSize = 0;
             this.btnMore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMore.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnMore.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnMore.Image = Properties.Resources.more;
+            this.btnMore.Image = global::QLSDK.Tool.Properties.Resources.more;
             this.btnMore.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnMore.Location = new System.Drawing.Point(578, 10);
+            this.btnMore.Location = new System.Drawing.Point(710, 10);
             this.btnMore.Name = "btnMore";
             this.btnMore.Size = new System.Drawing.Size(70, 60);
-            this.btnMore.TabIndex = 2;
+            this.btnMore.TabIndex = 1;
             this.btnMore.Text = "更多";
             this.btnMore.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnMore.UseVisualStyleBackColor = true;
             this.btnMore.Click += new System.EventHandler(this.btnMore_Click);
+            // 
+            // btnCall
+            // 
+            this.btnCall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.btnCall.FlatAppearance.BorderSize = 0;
+            this.btnCall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCall.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCall.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnCall.Image = global::QLSDK.Tool.Properties.Resources.call24;
+            this.btnCall.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnCall.Location = new System.Drawing.Point(578, 10);
+            this.btnCall.Name = "btnCall";
+            this.btnCall.Size = new System.Drawing.Size(70, 60);
+            this.btnCall.TabIndex = 2;
+            this.btnCall.Text = "呼叫";
+            this.btnCall.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnCall.UseVisualStyleBackColor = true;
+            this.btnCall.Click += new System.EventHandler(this.btnCall_Click);
             // 
             // btnAttender
             // 
@@ -194,7 +194,7 @@
             this.btnAttender.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAttender.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnAttender.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnAttender.Image = Properties.Resources.attender;
+            this.btnAttender.Image = global::QLSDK.Tool.Properties.Resources.attender;
             this.btnAttender.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnAttender.Location = new System.Drawing.Point(498, 10);
             this.btnAttender.Name = "btnAttender";
@@ -213,7 +213,7 @@
             this.btnShare.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnShare.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnShare.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnShare.Image = Properties.Resources.share_mute;
+            this.btnShare.Image = global::QLSDK.Tool.Properties.Resources.share_mute;
             this.btnShare.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnShare.Location = new System.Drawing.Point(408, 10);
             this.btnShare.Name = "btnShare";
@@ -232,7 +232,7 @@
             this.btnCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCamera.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnCamera.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnCamera.Image = Properties.Resources.camera_mute;
+            this.btnCamera.Image = global::QLSDK.Tool.Properties.Resources.camera_mute;
             this.btnCamera.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnCamera.Location = new System.Drawing.Point(328, 10);
             this.btnCamera.Name = "btnCamera";
@@ -252,7 +252,7 @@
             this.btnSpeaker.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSpeaker.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnSpeaker.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnSpeaker.Image = Properties.Resources.speaker_mute;
+            this.btnSpeaker.Image = global::QLSDK.Tool.Properties.Resources.speaker_mute;
             this.btnSpeaker.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSpeaker.Location = new System.Drawing.Point(248, 10);
             this.btnSpeaker.Name = "btnSpeaker";
@@ -271,7 +271,7 @@
             this.btnMic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMic.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnMic.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnMic.Image = Properties.Resources.mic_mute;
+            this.btnMic.Image = global::QLSDK.Tool.Properties.Resources.mic_mute;
             this.btnMic.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnMic.Location = new System.Drawing.Point(168, 10);
             this.btnMic.Name = "btnMic";
@@ -282,14 +282,14 @@
             this.btnMic.UseVisualStyleBackColor = true;
             this.btnMic.Click += new System.EventHandler(this.btnMic_Click);
             // 
-            // MFWToolBar
+            // QLToolBar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Controls.Add(this.btnSignal);
-            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnMore);
+            this.Controls.Add(this.btnCall);
             this.Controls.Add(this.btnAttender);
             this.Controls.Add(this.btnShare);
             this.Controls.Add(this.btnCamera);
@@ -300,7 +300,7 @@
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Name = "QLToolBar";
             this.Size = new System.Drawing.Size(800, 80);
-            this.Load += new System.EventHandler(this.MFWToolBar_Load);
+            this.Load += new System.EventHandler(this.QLToolBar_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbSpeakerVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMicVolume)).EndInit();
             this.moreMenu.ResumeLayout(false);
@@ -311,8 +311,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnMore;
+        private System.Windows.Forms.Button btnCall;
         private System.Windows.Forms.Button btnAttender;
         private System.Windows.Forms.Button btnShare;
         private System.Windows.Forms.Button btnCamera;

@@ -16,11 +16,11 @@ namespace QLSDK.Core
     {
         #region Field
         private ILog log = LogUtil.GetLogger("QLSDK.QLCallView");
-        private QlConfig qlConfig = null;
+        private QLConfig qlConfig = null;
         private QLCallManager callManager = null;
         private QLCall _currentCall = null;
         private Dictionary<QLChannel, ChannelView> channelViews = new Dictionary<QLChannel, ChannelView>();
-        private Panel ownerPnl;
+        private Control ownerContainer;
         private QLChannel localChannel;
         private QLChannel contentChannel;
         #endregion
@@ -149,23 +149,23 @@ namespace QLSDK.Core
         #endregion
 
         #region BindPanel
-        public void BindPanel(Panel pnl)
+        public void AttachViewContainer(Control container)
         {
-            if (null == pnl)
+            if (null == container)
             {
                 throw new Exception("父控件必须");
             }
-            pnl.Controls.Add(this);
-            ownerPnl = pnl;
+            container.Controls.Add(this);
+            ownerContainer = container;
 
             this.Dock = DockStyle.Fill;
             //this.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-            this.Width = ownerPnl.Width;
-            this.Height = ownerPnl.Height - 80;
-            ownerPnl.SizeChanged += (sender, args) =>
+            //this.Width = ownerContainer.Width;
+            //this.Height = ownerContainer.Height - 80;
+            ownerContainer.SizeChanged += (sender, args) =>
             {
-                this.Width = ownerPnl.Width;
-                this.Height = ownerPnl.Height - 80;
+                //this.Width = ownerContainer.Width;
+                //this.Height = ownerContainer.Height - 80;
                 ViewRender();
             };
         }
@@ -175,16 +175,16 @@ namespace QLSDK.Core
         public void ShowMessage(bool isModal, string msg, MessageBoxButtonsType btnType, MessageBoxIcon boxIcon
             , Action okAction = null, Action cancelAction = null, Action noAction = null)
         {
-            if (null != ownerPnl)
+            if (null != ownerContainer)
             {
                 // UXMessageMask.ShowMessage(ownerPnl, isModal, msg, btnType, boxIcon, okAction, cancelAction, noAction);
             }
         }
         public void HideMessage()
         {
-            if (null == ownerPnl)
+            if (null == ownerContainer)
             {
-                UXMessageMask.HideMessage(ownerPnl);
+                UXMessageMask.HideMessage(ownerContainer);
             }
         }
         #endregion
@@ -464,7 +464,7 @@ namespace QLSDK.Core
 
         private void QLCallView_Load(object sender, EventArgs e)
         {
-            qlConfig = QlConfig.GetInstance();
+            qlConfig = QLConfig.GetInstance();
             callManager = QLCallManager.GetInstance();
             callManager.PropertyChanged += (obj, args) =>
             {
