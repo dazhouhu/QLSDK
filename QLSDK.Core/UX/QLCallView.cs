@@ -199,7 +199,7 @@ namespace QLSDK.Core
             var layoutType = qlConfig.GetProperty(PropertyKey.LayoutType);
 
             var viewWidth = this.Width;
-            var viewHeight = this.Height - 80;
+            var viewHeight = this.Height;
             var ratioWidth = 320;
             var ratioHeight = 240;
             var cellWidth = ratioWidth;

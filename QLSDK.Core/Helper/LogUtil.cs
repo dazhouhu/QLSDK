@@ -14,7 +14,7 @@ namespace QLSDK.Core
         {
             RollingFileAppender rfa = new RollingFileAppender();
             rfa.Name = "QLSDKFileAppender";
-            rfa.File = System.IO.Path.Combine(Application.StartupPath, "Log");
+            rfa.File = System.IO.Path.Combine(Application.StartupPath, "Log\\");
             rfa.AppendToFile = true;
             rfa.RollingStyle = RollingFileAppender.RollingMode.Date;
             rfa.LockingModel = new FileAppender.MinimalLock();

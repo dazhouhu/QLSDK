@@ -55,11 +55,35 @@
     <Compile Include="QLToolBar.Designer.cs">
       <DependentUpon>QLToolBar.cs</DependentUpon>
     </Compile>
+    <Compile Include="UX\CallPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\CallPanel.Designer.cs">
+      <DependentUpon>CallPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UX\ContentSelectPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UX\ContentSelectPanel.designer.cs">
       <DependentUpon>ContentSelectPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UX\DeviceManagerPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\DeviceManagerPanel.Designer.cs">
+      <DependentUpon>DeviceManagerPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UX\DTMFPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\DTMFPanel.Designer.cs">
+      <DependentUpon>DTMFPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UX\FECCPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\FECCPanel.Designer.cs">
+      <DependentUpon>FECCPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UX\SignalPanel.cs">
       <SubType>UserControl</SubType>
@@ -76,8 +100,17 @@
     <EmbeddedResource Include="QLToolBar.resx">
       <DependentUpon>QLToolBar.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UX\CallPanel.resx">
+      <DependentUpon>CallPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UX\ContentSelectPanel.resx">
       <DependentUpon>ContentSelectPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\DeviceManagerPanel.resx">
+      <DependentUpon>DeviceManagerPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\DTMFPanel.resx">
+      <DependentUpon>DTMFPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UX\SignalPanel.resx">
       <DependentUpon>SignalPanel.cs</DependentUpon>

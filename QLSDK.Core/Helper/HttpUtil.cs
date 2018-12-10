@@ -87,7 +87,7 @@ namespace QLSDK.Core
                 logger.Debug(string.Format("HttpsPost({0},{1})", uri, SerializerUtil.SerializeJson(data)));
                 //HTTPSQ请求  
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var req = WebRequest.Create(uri) as HttpWebRequest;
                 req.Method = "POST";
                 req.ContentType = "application/x-www-form-urlencoded";
@@ -134,7 +134,7 @@ namespace QLSDK.Core
         /// <summary>
         /// 结果消息 成功：success
         /// </summary>
-        public string msg;
+        public string message;
         /// <summary>
         /// 附加对象
         /// </summary>

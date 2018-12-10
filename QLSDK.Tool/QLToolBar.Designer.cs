@@ -46,6 +46,7 @@
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnSpeaker = new System.Windows.Forms.Button();
             this.btnMic = new System.Windows.Forms.Button();
+            this.menuItemDeviceManager = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tbSpeakerVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMicVolume)).BeginInit();
             this.moreMenu.SuspendLayout();
@@ -82,21 +83,22 @@
             this.moreMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemDTMF,
             this.menuItemFECC,
+            this.menuItemDeviceManager,
             this.menuItemLayout});
             this.moreMenu.Name = "moreMenu";
-            this.moreMenu.Size = new System.Drawing.Size(154, 70);
+            this.moreMenu.Size = new System.Drawing.Size(181, 114);
             // 
             // menuItemDTMF
             // 
             this.menuItemDTMF.Name = "menuItemDTMF";
-            this.menuItemDTMF.Size = new System.Drawing.Size(153, 22);
+            this.menuItemDTMF.Size = new System.Drawing.Size(180, 22);
             this.menuItemDTMF.Text = "DTMF报号盘";
             this.menuItemDTMF.Click += new System.EventHandler(this.menuItemDTMF_Click);
             // 
             // menuItemFECC
             // 
             this.menuItemFECC.Name = "menuItemFECC";
-            this.menuItemFECC.Size = new System.Drawing.Size(153, 22);
+            this.menuItemFECC.Size = new System.Drawing.Size(180, 22);
             this.menuItemFECC.Text = "FECC远程控制";
             this.menuItemFECC.Click += new System.EventHandler(this.menuItemFECC_Click);
             // 
@@ -107,7 +109,7 @@
             this.menuItemVAS,
             this.menuItemCP});
             this.menuItemLayout.Name = "menuItemLayout";
-            this.menuItemLayout.Size = new System.Drawing.Size(153, 22);
+            this.menuItemLayout.Size = new System.Drawing.Size(180, 22);
             this.menuItemLayout.Text = "布局";
             // 
             // menuItemP
@@ -282,6 +284,13 @@
             this.btnMic.UseVisualStyleBackColor = true;
             this.btnMic.Click += new System.EventHandler(this.btnMic_Click);
             // 
+            // menuItemDeviceManager
+            // 
+            this.menuItemDeviceManager.Name = "menuItemDeviceManager";
+            this.menuItemDeviceManager.Size = new System.Drawing.Size(180, 22);
+            this.menuItemDeviceManager.Text = "设备管理";
+            this.menuItemDeviceManager.Click += new System.EventHandler(this.menuItemDeviceManager_Click);
+            // 
             // QLToolBar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -328,6 +337,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemP;
         private System.Windows.Forms.ToolStripMenuItem menuItemVAS;
         private System.Windows.Forms.ToolStripMenuItem menuItemCP;
+        private System.Windows.Forms.ToolStripMenuItem menuItemDeviceManager;
     }
 }
 

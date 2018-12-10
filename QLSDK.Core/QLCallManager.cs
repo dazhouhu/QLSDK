@@ -31,6 +31,8 @@ namespace QLSDK.Core
             {
                 CallsChanged?.Invoke(sender, args);
             };
+
+            QLManager.InternalQLEvent += QLEventHandle;
         }
         public static QLCallManager GetInstance()
         {
@@ -42,7 +44,6 @@ namespace QLSDK.Core
                     {
                         instance = new QLCallManager();
 
-                        QLManager.GetInstance().InternalQLEvent +=instance.QLEventHandle;
                     }
                 }
             }

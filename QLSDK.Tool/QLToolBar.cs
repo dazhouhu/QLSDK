@@ -204,11 +204,11 @@ namespace QLSDK.Tool
                             }
                             if (null != deviceManager.CurrentVideoInputDevice)
                             {
-                                this.btnCamera.Enabled = true;
                                 switch (callManager.CurrentCall.CallMode)
                                 {
                                     case CallMode.VIDEO:
                                         {
+                                            this.btnCamera.Enabled = true;
                                             this.btnCamera.Image = Properties.Resources.camera;
                                             if (callManager.CurrentCall.IsContentSupported)
                                             {
@@ -224,6 +224,7 @@ namespace QLSDK.Tool
                                         break;
                                     case CallMode.AUDIO:
                                         {
+                                            this.btnCamera.Enabled = false;
                                             this.btnCamera.Image = Properties.Resources.camera_mute;
                                             this.btnShare.Enabled = false;
                                             this.btnShare.Image = Properties.Resources.share_mute;
@@ -388,10 +389,20 @@ namespace QLSDK.Tool
         {
             if(btnCall.Text=="呼叫")
             {
-
+                var callWin = new CallPanel()
+                {                    
+                    OKAction = () => {},
+                    OnCancel = () => { }
+                };
+                UXMessageMask.ShowForm(ownerContainer, callWin);
             }
             else{
-
+                Action hangupAction = () =>
+                {
+                    qlManager.EndCall();
+                };
+                UXMessageMask.ShowMessage(ownerContainer,false, "确认要挂断当前通话吗？", MessageBoxButtonsType.OKCancel, MessageBoxIcon.Question
+                                            , hangupAction);
             }
         }
 
@@ -400,19 +411,36 @@ namespace QLSDK.Tool
         /// </summary>
         private void btnMore_Click(object sender, EventArgs e)
         {
-            moreMenu.Show(btnCall, new Point(0, 0), ToolStripDropDownDirection.AboveRight);
+            moreMenu.Show(btnMore, new Point(0, 0), ToolStripDropDownDirection.AboveRight);
         }
         #endregion
         #region Menu
         private void menuItemDTMF_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "暂时不实现", "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            var win = new DTMFPanel()
+            {
+                OnCancel = () => { }
+            };
+            UXMessageMask.ShowForm(ownerContainer, win);
         }
 
         private void menuItemFECC_Click(object sender, EventArgs e)
         {
             MessageBox.Show(this, "暂时不实现", "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private void menuItemDeviceManager_Click(object sender, EventArgs e)
+        {
+            var deviceWin = new DeviceManagerPanel()
+            {
+                OKAction = () => {
+
+                },
+                OnCancel = () => { }
+            };
+            UXMessageMask.ShowForm(ownerContainer, deviceWin);
+        }
+
         private void menuItemP_Click(object sender, EventArgs e)
         {
             qlManager.SetLayout(LayoutType.Presentation);
@@ -489,7 +517,6 @@ namespace QLSDK.Tool
                 }
             }
         }
-
 
     }
 }
