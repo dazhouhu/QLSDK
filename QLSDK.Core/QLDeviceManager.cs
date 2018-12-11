@@ -182,22 +182,38 @@ namespace QLSDK.Core
         #endregion
 
         #region Sound
-
+        /// <summary>
+        /// 播放声音
+        /// </summary>
+        /// <param name="filePath">声音文件路径</param>
+        /// <param name="isLoop">是否循环播放</param>
+        /// <param name="interval">播放间隔</param>
         public void PlaySound(string filePath, bool isLoop, int interval)
         {
-            log.Info("startPlayingAlert filePath:" + filePath);
-            var errno = PlcmProxy.StartPlayAlert(filePath, isLoop, interval);
-            if (ErrorNumber.OK != errno)
+            if (null != CurrentAudioOutputDevice)
             {
-                throw new Exception("开启铃声播放失败，ErrorNo=" + errno);
+                log.Info("startPlayingAlert filePath:" + filePath);
+                var errno = PlcmProxy.StartPlayAlert(filePath, isLoop, interval);
+                if (ErrorNumber.OK != errno)
+                {
+                    log.Error("开启铃声播放失败，ErrorNo=" + errno);
+                    //throw new Exception("开启铃声播放失败，ErrorNo=" + errno);
+                }
             }
         }
+        /// <summary>
+        /// 停止播放声音
+        /// </summary>
         public void StopSound()
         {
-            var errno = PlcmProxy.StopPlayAlert();
-            if (ErrorNumber.OK != errno)
+            if (null != CurrentAudioOutputDevice)
             {
-                throw new Exception("关闭铃声播放失败，ErrorNo=" + errno);
+                var errno = PlcmProxy.StopPlayAlert();
+                if (ErrorNumber.OK != errno)
+                {
+                    log.Error("关闭铃声播放失败，ErrorNo=" + errno);
+                    //throw new Exception("关闭铃声播放失败，ErrorNo=" + errno);
+                }
             }
         }
         #endregion

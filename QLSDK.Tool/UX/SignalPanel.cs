@@ -20,10 +20,14 @@ namespace QLSDK.Tool.UX
         public SignalPanel()
         {
             InitializeComponent();
+            grdMediaStatistics.AutoGenerateColumns = false;
+
+            this.txtCallRate.Text = "SIP";
+            this.txtCallRate.Text = QLConfig.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
         }
-        private  static SignalPanel GetInstamce()
+        private static SignalPanel GetInstamce()
         {
-            if(null == instance)
+            if (null == instance)
             {
                 instance = new SignalPanel();
             }
@@ -37,22 +41,13 @@ namespace QLSDK.Tool.UX
             OnClose?.Invoke();
             this.Dispose();
         }
-        public void BindSignals(IEnumerable<QLMediaStatistics> statistics)
+        public void BindData(IEnumerable<QLMediaStatistics> statistics)
         {
-            var ds = statistics.ToList();
-           
-            this.grdMediaStatistics.DataSource = ds;
-            this.grdMediaStatistics.Refresh();
+            this.grdMediaStatistics.DataSource = statistics;
         }
 
         private void SignalPanel_Load(object sender, EventArgs e)
         {
-            grdMediaStatistics.AutoGenerateColumns = false;
-
-            QLManager.GetInstance().GetMediaStatistics(BindSignals);
-            
-            this.txtCallRate.Text = "SIP";
-            this.txtCallRate.Text = QLConfig.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
-        }        
+        }
     }
 }

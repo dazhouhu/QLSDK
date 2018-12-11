@@ -144,6 +144,12 @@
     <EmbeddedResource Include="UX\UXMessageMask.resx">
       <DependentUpon>UXMessageMask.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UX\UXMessagePanel.resx">
+      <DependentUpon>UXMessagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\UXMessageWindow.resx">
+      <DependentUpon>UXMessageWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\alert.png" />

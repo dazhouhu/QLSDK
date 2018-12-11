@@ -42,13 +42,14 @@
             this.lblMsg.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblMsg.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMsg.Location = new System.Drawing.Point(84, 48);
+            this.lblMsg.MaximumSize = new System.Drawing.Size(220, 0);
             this.lblMsg.Name = "lblMsg";
             this.lblMsg.Size = new System.Drawing.Size(0, 16);
             this.lblMsg.TabIndex = 2;
             // 
             // msgIcon
             // 
-            this.msgIcon.Image = Properties.Resources.info;
+            this.msgIcon.Image = global::QLSDK.Core.Properties.Resources.info;
             this.msgIcon.Location = new System.Drawing.Point(21, 35);
             this.msgIcon.Name = "msgIcon";
             this.msgIcon.Size = new System.Drawing.Size(48, 48);
@@ -62,7 +63,7 @@
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnCancel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCancel.Image = Properties.Resources.cancel24;
+            this.btnCancel.Image = global::QLSDK.Core.Properties.Resources.cancel24;
             this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCancel.Location = new System.Drawing.Point(122, 141);
             this.btnCancel.Name = "btnCancel";
@@ -80,7 +81,7 @@
             this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOK.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnOK.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnOK.Image = Properties.Resources.ok24;
+            this.btnOK.Image = global::QLSDK.Core.Properties.Resources.ok24;
             this.btnOK.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnOK.Location = new System.Drawing.Point(12, 141);
             this.btnOK.Name = "btnOK";
@@ -98,7 +99,7 @@
             this.btnNo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNo.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnNo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnNo.Image = Properties.Resources.cancel;
+            this.btnNo.Image = global::QLSDK.Core.Properties.Resources.cancel;
             this.btnNo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnNo.Location = new System.Drawing.Point(223, 141);
             this.btnNo.Name = "btnNo";
@@ -114,6 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(320, 204);
             this.Controls.Add(this.lblMsg);
             this.Controls.Add(this.msgIcon);

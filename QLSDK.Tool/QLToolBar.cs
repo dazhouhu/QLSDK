@@ -125,6 +125,7 @@ namespace QLSDK.Tool
                 btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                 btnCamera.Enabled = false;
+                this.MuteCamera = true;
                 btnCamera.Image = Properties.Resources.camera_mute;
 
                 btnShare.Enabled = false;
@@ -152,6 +153,7 @@ namespace QLSDK.Tool
                             btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                             btnCamera.Enabled = false;
+                            this.MuteCamera = true;
                             btnCamera.Image = Properties.Resources.camera_mute;
 
                             btnShare.Enabled = false;
@@ -209,6 +211,7 @@ namespace QLSDK.Tool
                                     case CallMode.VIDEO:
                                         {
                                             this.btnCamera.Enabled = true;
+                                            this.MuteCamera = false;
                                             this.btnCamera.Image = Properties.Resources.camera;
                                             if (callManager.CurrentCall.IsContentSupported)
                                             {
@@ -225,6 +228,7 @@ namespace QLSDK.Tool
                                     case CallMode.AUDIO:
                                         {
                                             this.btnCamera.Enabled = false;
+                                            this.MuteCamera = true;
                                             this.btnCamera.Image = Properties.Resources.camera_mute;
                                             this.btnShare.Enabled = false;
                                             this.btnShare.Image = Properties.Resources.share_mute;
@@ -235,6 +239,7 @@ namespace QLSDK.Tool
                             else
                             {
                                 this.btnCamera.Enabled = false;
+                                this.MuteCamera = true;
                                 this.btnCamera.Image = Properties.Resources.camera_mute;
                                 this.btnShare.Enabled = false;
                                 this.btnShare.Image = Properties.Resources.share_mute;
@@ -256,6 +261,9 @@ namespace QLSDK.Tool
             {
                 var signalWin = new SignalPanel();
                 UXMessageMask.ShowForm(ownerContainer, signalWin);
+                qlManager.GetMediaStatistics((mediaStatistics)=> {
+                    signalWin.BindData(mediaStatistics);
+                });
             }
             catch (Exception ex)
             {
@@ -340,8 +348,6 @@ namespace QLSDK.Tool
                 return;
             var contentSelectWin = new ContentSelectPanel()
             {
-                Monitors = deviceManager.GetDevicesByType(DeviceType.MONITOR),
-                Apps = deviceManager.GetDevicesByType(DeviceType.APPLICATIONS),
                 OKAction = (type, format, monitor, app) => {
                     try
                     {
@@ -371,6 +377,11 @@ namespace QLSDK.Tool
                 },
                 OnCancel = () => { }
             };
+            /*
+            qlManager.GetApps((apps) => {
+                contentSelectWin.BindAppData(apps);
+            });
+            */
             UXMessageMask.ShowForm(ownerContainer, contentSelectWin);
         }
 

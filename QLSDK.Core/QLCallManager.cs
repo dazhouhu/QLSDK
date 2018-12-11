@@ -237,7 +237,7 @@ namespace QLSDK.Core
                         {
                             var msg = string.Format("呼出【{0}】失败,原因:{1}", call.CallName, call.Reason);
                             log.Info(msg);
-                            callView.ShowMessage(false, msg, MessageBoxButtonsType.None, MessageBoxIcon.Error);
+                            callView.ShowMessage(false, msg, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                         }
                     }
                     break;
@@ -260,7 +260,7 @@ namespace QLSDK.Core
                         {
                             var msg = string.Format("呼出【{0}】关闭,原因:{1}", call.CallName, call.Reason);
                             log.Info(msg);
-                            callView.ShowMessage(false, msg, MessageBoxButtonsType.None, MessageBoxIcon.Information);
+                            callView.ShowMessage(false, msg, MessageBoxButtonsType.OK, MessageBoxIcon.Information);
                         }
                     }
                     break;

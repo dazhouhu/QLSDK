@@ -177,12 +177,12 @@ namespace QLSDK.Core
         {
             if (null != ownerContainer)
             {
-                // UXMessageMask.ShowMessage(ownerPnl, isModal, msg, btnType, boxIcon, okAction, cancelAction, noAction);
+                 UXMessageMask.ShowMessage(ownerContainer, isModal, msg, btnType, boxIcon, okAction, cancelAction, noAction);
             }
         }
         public void HideMessage()
         {
-            if (null == ownerContainer)
+            if (null != ownerContainer)
             {
                 UXMessageMask.HideMessage(ownerContainer);
             }

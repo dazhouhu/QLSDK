@@ -70,6 +70,57 @@
             ((System.ComponentModel.ISupportInitialize)(grdMediaStatistics)).BeginInit();
             this.SuspendLayout();
             // 
+            // txtCallRate
+            // 
+            this.txtCallRate.AutoSize = true;
+            this.txtCallRate.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtCallRate.Location = new System.Drawing.Point(320, 13);
+            this.txtCallRate.Name = "txtCallRate";
+            this.txtCallRate.Size = new System.Drawing.Size(85, 19);
+            this.txtCallRate.TabIndex = 9;
+            this.txtCallRate.Text = "呼叫类型";
+            // 
+            // lblCallRate
+            // 
+            this.lblCallRate.AutoSize = true;
+            this.lblCallRate.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblCallRate.Location = new System.Drawing.Point(224, 13);
+            this.lblCallRate.Name = "lblCallRate";
+            this.lblCallRate.Size = new System.Drawing.Size(104, 19);
+            this.lblCallRate.TabIndex = 10;
+            this.lblCallRate.Text = "呼叫速率：";
+            // 
+            // callCallType
+            // 
+            this.callCallType.AutoSize = true;
+            this.callCallType.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.callCallType.Location = new System.Drawing.Point(114, 13);
+            this.callCallType.Name = "callCallType";
+            this.callCallType.Size = new System.Drawing.Size(85, 19);
+            this.callCallType.TabIndex = 11;
+            this.callCallType.Text = "呼叫类型";
+            // 
+            // lblCallType
+            // 
+            this.lblCallType.AutoSize = true;
+            this.lblCallType.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblCallType.Location = new System.Drawing.Point(13, 13);
+            this.lblCallType.Name = "lblCallType";
+            this.lblCallType.Size = new System.Drawing.Size(104, 19);
+            this.lblCallType.TabIndex = 12;
+            this.lblCallType.Text = "呼叫类型：";
+            // 
+            // btnClose
+            // 
+            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClose.Image = global::QLSDK.Tool.Properties.Resources.close;
+            this.btnClose.Location = new System.Drawing.Point(661, 13);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(25, 23);
+            this.btnClose.TabIndex = 14;
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
             // grdMediaStatistics
             // 
             grdMediaStatistics.AllowUserToAddRows = false;
@@ -143,57 +194,6 @@
             grdMediaStatistics.RowTemplate.Height = 23;
             grdMediaStatistics.Size = new System.Drawing.Size(700, 452);
             grdMediaStatistics.TabIndex = 13;
-            // 
-            // txtCallRate
-            // 
-            this.txtCallRate.AutoSize = true;
-            this.txtCallRate.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtCallRate.Location = new System.Drawing.Point(320, 13);
-            this.txtCallRate.Name = "txtCallRate";
-            this.txtCallRate.Size = new System.Drawing.Size(85, 19);
-            this.txtCallRate.TabIndex = 9;
-            this.txtCallRate.Text = "呼叫类型";
-            // 
-            // lblCallRate
-            // 
-            this.lblCallRate.AutoSize = true;
-            this.lblCallRate.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblCallRate.Location = new System.Drawing.Point(224, 13);
-            this.lblCallRate.Name = "lblCallRate";
-            this.lblCallRate.Size = new System.Drawing.Size(104, 19);
-            this.lblCallRate.TabIndex = 10;
-            this.lblCallRate.Text = "呼叫速率：";
-            // 
-            // callCallType
-            // 
-            this.callCallType.AutoSize = true;
-            this.callCallType.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.callCallType.Location = new System.Drawing.Point(114, 13);
-            this.callCallType.Name = "callCallType";
-            this.callCallType.Size = new System.Drawing.Size(85, 19);
-            this.callCallType.TabIndex = 11;
-            this.callCallType.Text = "呼叫类型";
-            // 
-            // lblCallType
-            // 
-            this.lblCallType.AutoSize = true;
-            this.lblCallType.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblCallType.Location = new System.Drawing.Point(13, 13);
-            this.lblCallType.Name = "lblCallType";
-            this.lblCallType.Size = new System.Drawing.Size(104, 19);
-            this.lblCallType.TabIndex = 12;
-            this.lblCallType.Text = "呼叫类型：";
-            // 
-            // btnClose
-            // 
-            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Image = Properties.Resources.close;
-            this.btnClose.Location = new System.Drawing.Point(661, 13);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(25, 23);
-            this.btnClose.TabIndex = 14;
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // ParticipantName
             // 
@@ -415,7 +415,7 @@
         }
 
         #endregion
-        System.Windows.Forms.DataGridView grdMediaStatistics;
+        private System.Windows.Forms.DataGridView grdMediaStatistics;
         private System.Windows.Forms.Label txtCallRate;
         private System.Windows.Forms.Label lblCallRate;
         private System.Windows.Forms.Label callCallType;

@@ -90,7 +90,7 @@ namespace QLSDK.Core
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var req = WebRequest.Create(uri) as HttpWebRequest;
                 req.Method = "POST";
-                req.ContentType = "application/x-www-form-urlencoded";
+                req.ContentType = "application/json";
 
                 var message = string.Empty;
                 if (null != data)

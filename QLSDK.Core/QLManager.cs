@@ -19,7 +19,8 @@ namespace QLSDK.Core
     {
         #region Fields
         private static ILog log = LogUtil.GetLogger("QLSDK.QLManager");
-        private  ObservableCollection<QLMediaStatistics> mediaStatistics = new ObservableCollection<QLMediaStatistics>();
+        private static Action<ObservableCollection<QLMediaStatistics>> mediaStatisticsCallBack;
+        private ObservableCollection<QLMediaStatistics> mediaStatistics = new ObservableCollection<QLMediaStatistics>();
         private static QLConfig qlConfig = QLConfig.GetInstance();
         private static QLCallView callView = QLCallView.GetInstance();
         private static QLDeviceManager deviceManager = QLDeviceManager.GetInstance();
@@ -32,6 +33,10 @@ namespace QLSDK.Core
         private QLManager()
         {
             StartEventMonitor();
+            mediaStatistics.CollectionChanged += (sender, args) =>
+            {
+                mediaStatisticsCallBack?.Invoke(mediaStatistics);
+            };
         }
         public static QLManager GetInstance()
         {
@@ -1203,12 +1208,12 @@ namespace QLSDK.Core
             mediaStatistics.Clear();
             if (null !=callManager.CurrentCall)
             {
+                mediaStatisticsCallBack = callBack;
                 var errno = PlcmProxy.GetMediaStatistics(callManager.CurrentCall.CallHandle);
                 if (ErrorNumber.OK != errno)
                 {
                     throw new Exception("获取信号流信息失败,errno=" + errno);
                 }
-                //mediaStatisticsCallBack = callBack;
             }
             else
             {
