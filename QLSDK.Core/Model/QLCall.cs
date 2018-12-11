@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace QLSDK.Core
 {
     public class QLCall : BaseModel
     {
+        private ILog log = LogUtil.GetLogger("QLSDK.QLCall");
+
         #region CallHandle
         private int _callHandle = -1;
         public int CallHandle
@@ -286,14 +289,21 @@ namespace QLSDK.Core
         #endregion
 
         //拒绝
-        public void RejectCall(int usercode, string reason)
+        public void RejectCall()
         {
-
+            log.Info("RejectCall" + this.CallHandle);
+           var errno= PlcmProxy.RejectCall(this.CallHandle);
+           if(ErrorNumber.OK!= errno)
+            {
+                var errMsg = "拒绝接听失败，errNo=" + errno;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
         }
         //接听呼叫
         public void AnswerCall()
         {
-
+            PlcmProxy.AnswerCall(this, this.CallMode);
         }
         //终止呼叫
         public void TerminateCall()

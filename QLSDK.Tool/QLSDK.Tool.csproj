@@ -85,6 +85,12 @@
     <Compile Include="UX\FECCPanel.Designer.cs">
       <DependentUpon>FECCPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UX\HistoryPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UX\HistoryPanel.Designer.cs">
+      <DependentUpon>HistoryPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UX\SignalPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UX\FECCPanel.resx">
       <DependentUpon>FECCPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UX\HistoryPanel.resx">
+      <DependentUpon>HistoryPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UX\SignalPanel.resx">
       <DependentUpon>SignalPanel.cs</DependentUpon>
