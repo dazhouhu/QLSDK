@@ -110,14 +110,10 @@ namespace QLSDK.Core
                             if (null == CurrentAudioInputDevice && null != audioInput)
                             {
                                 CurrentAudioInputDevice = audioInput;
-                                PlcmProxy.SetAudioDevice(inputHandle, outputHandle);
-                                PlcmProxy.SetAudioDeviceForRingtone(outputHandle);
                             }
                             if (null == CurrentAudioOutputDevice && null != outputHandle)
                             {
                                 CurrentAudioOutputDevice = audioOutput;
-                                PlcmProxy.SetAudioDevice(inputHandle, outputHandle);
-                                PlcmProxy.SetAudioDeviceForRingtone(outputHandle);
                             }
                         }
                         break;
@@ -130,7 +126,6 @@ namespace QLSDK.Core
                                 if (null != videoHandle)
                                 {
                                     CurrentVideoInputDevice = video;
-                                    PlcmProxy.SetVideoDevice(videoHandle);
                                 }
                             }
                         }

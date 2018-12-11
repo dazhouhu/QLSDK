@@ -336,6 +336,24 @@ namespace QLSDK.Core
                         #endregion
                     }
                     break;
+                case "Single":
+                    {
+                        #region Single
+                        var activeView = channelViews.Where(cv => cv.Key == activeChannel).Select(cv => cv.Value).FirstOrDefault();
+                        if (null != activeView)
+                        {
+                            activeView.Location = new Point(0, 0);
+                            activeView.Size = new Size(viewWidth, viewHeight);
+                            activeView.IsShowBar = false;
+                            activeView.SendToBack();
+                        }
+                        foreach(var view in  channelViews.Where(cv => cv.Key != activeChannel))
+                        {
+                            view.Value.Size = new Size(0, 0);
+                        }
+                        #endregion
+                    }
+                    break;
             }
         }
         private Point LocateChannel(int rows, int cols, int x, int y, int cellWidth, int cellHeight, IList<ChannelView> channelViews)

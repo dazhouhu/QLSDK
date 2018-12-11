@@ -73,7 +73,6 @@
             this.txtCallee.Name = "txtCallee";
             this.txtCallee.Size = new System.Drawing.Size(178, 21);
             this.txtCallee.TabIndex = 24;
-            this.txtCallee.Text = "2164334";
             // 
             // btn9
             // 

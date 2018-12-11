@@ -69,12 +69,23 @@ namespace QLSDK.Core
                     case PropertyKey.CalleeAddr: break;
                     case PropertyKey.AUDIO_INPUT_DEVICE:
                         {
-
+                            string audioOutput = null;
+                            if(properties.ContainsKey(PropertyKey.AUDIO_OUTPUT_DEVICE))
+                            {
+                                audioOutput = properties[PropertyKey.AUDIO_OUTPUT_DEVICE];
+                            }
+                            PlcmProxy.SetAudioDevice(value, audioOutput);
                         }
                         break;
                     case PropertyKey.AUDIO_OUTPUT_DEVICE:
                         {
-
+                            string audioInput = null;
+                            if (properties.ContainsKey(PropertyKey.AUDIO_INPUT_DEVICE))
+                            {
+                                audioInput = properties[PropertyKey.AUDIO_INPUT_DEVICE];
+                            }
+                            PlcmProxy.SetAudioDevice(audioInput, value);
+                            PlcmProxy.SetAudioDeviceForRingtone(value);
                         }
                         break;
                     case PropertyKey.AUDIO_OUTPUT_DEVICE_FOR_RINGTONE:
@@ -84,7 +95,7 @@ namespace QLSDK.Core
                         break;
                     case PropertyKey.VIDEO_INPUT_DEVICE:
                         {
-
+                            PlcmProxy.SetVideoDevice(value);
                         }
                         break;
                     case PropertyKey.MONITOR_DEVICE: break;
@@ -246,7 +257,7 @@ namespace QLSDK.Core
                 {PropertyKey.SOUND_HOLD,"hold.wav"},
                 {PropertyKey.ICE_AUTH_TOKEN,""},
                 {PropertyKey.LayoutType,"Presentation" }
-            }; 
+            };
         }
         #endregion
     }

@@ -133,6 +133,10 @@ namespace QLSDK.Tool
 
                 btnCall.Image = Properties.Resources.call24;
                 btnCall.Text = "呼叫";
+
+                menuItemDTMF.Enabled = false;
+                menuItemFECC.Enabled = false;
+                menuItemLayout.Enabled = false;
             }
             else
             {
@@ -161,6 +165,10 @@ namespace QLSDK.Tool
 
                             btnCall.Image = Properties.Resources.call24;
                             btnCall.Text = "呼叫";
+
+                            menuItemDTMF.Enabled = false;
+                            menuItemFECC.Enabled = false;
+                            menuItemLayout.Enabled = false;
                         }
                         break;
                     case CallState.SIP_INCOMING_INVITE:
@@ -177,6 +185,10 @@ namespace QLSDK.Tool
 
                             btnCall.Image = Properties.Resources.hangup24;
                             btnCall.Text = "挂断";
+
+                            menuItemDTMF.Enabled = true;
+                            menuItemFECC.Enabled = true;
+                            menuItemLayout.Enabled = true;
 
                             if (null != deviceManager.CurrentAudioInputDevice)
                             {
@@ -377,11 +389,9 @@ namespace QLSDK.Tool
                 },
                 OnCancel = () => { }
             };
-            /*
             qlManager.GetApps((apps) => {
                 contentSelectWin.BindAppData(apps);
             });
-            */
             UXMessageMask.ShowForm(ownerContainer, contentSelectWin);
         }
 
@@ -425,6 +435,7 @@ namespace QLSDK.Tool
             moreMenu.Show(btnMore, new Point(0, 0), ToolStripDropDownDirection.AboveRight);
         }
         #endregion
+
         #region Menu
         private void menuItemDTMF_Click(object sender, EventArgs e)
         {
@@ -437,7 +448,11 @@ namespace QLSDK.Tool
 
         private void menuItemFECC_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "暂时不实现", "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            var win = new FECCPanel()
+            {
+                OnCancel = () => { }
+            };
+            UXMessageMask.ShowForm(ownerContainer, win);
         }
 
         private void menuItemDeviceManager_Click(object sender, EventArgs e)
@@ -465,6 +480,11 @@ namespace QLSDK.Tool
         private void menuItemCP_Click(object sender, EventArgs e)
         {
             qlManager.SetLayout(LayoutType.ContinuousPresence);
+        }
+
+        private void menuItemSingle_Click(object sender, EventArgs e)
+        {
+            qlManager.SetLayout(LayoutType.Single);
         }
         #endregion
 

@@ -34,6 +34,7 @@
             this.moreMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemDTMF = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemFECC = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemDeviceManager = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemLayout = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemP = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemVAS = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +47,7 @@
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnSpeaker = new System.Windows.Forms.Button();
             this.btnMic = new System.Windows.Forms.Button();
-            this.menuItemDeviceManager = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemSingle = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tbSpeakerVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMicVolume)).BeginInit();
             this.moreMenu.SuspendLayout();
@@ -86,7 +87,7 @@
             this.menuItemDeviceManager,
             this.menuItemLayout});
             this.moreMenu.Name = "moreMenu";
-            this.moreMenu.Size = new System.Drawing.Size(181, 114);
+            this.moreMenu.Size = new System.Drawing.Size(154, 92);
             // 
             // menuItemDTMF
             // 
@@ -102,12 +103,20 @@
             this.menuItemFECC.Text = "FECC远程控制";
             this.menuItemFECC.Click += new System.EventHandler(this.menuItemFECC_Click);
             // 
+            // menuItemDeviceManager
+            // 
+            this.menuItemDeviceManager.Name = "menuItemDeviceManager";
+            this.menuItemDeviceManager.Size = new System.Drawing.Size(180, 22);
+            this.menuItemDeviceManager.Text = "设备管理";
+            this.menuItemDeviceManager.Click += new System.EventHandler(this.menuItemDeviceManager_Click);
+            // 
             // menuItemLayout
             // 
             this.menuItemLayout.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemP,
             this.menuItemVAS,
-            this.menuItemCP});
+            this.menuItemCP,
+            this.menuItemSingle});
             this.menuItemLayout.Name = "menuItemLayout";
             this.menuItemLayout.Size = new System.Drawing.Size(180, 22);
             this.menuItemLayout.Text = "布局";
@@ -202,7 +211,7 @@
             this.btnAttender.Name = "btnAttender";
             this.btnAttender.Size = new System.Drawing.Size(70, 60);
             this.btnAttender.TabIndex = 3;
-            this.btnAttender.Text = "参会人";
+            this.btnAttender.Text = "联系人";
             this.btnAttender.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnAttender.UseVisualStyleBackColor = true;
             this.btnAttender.Click += new System.EventHandler(this.btnAttender_Click);
@@ -284,12 +293,12 @@
             this.btnMic.UseVisualStyleBackColor = true;
             this.btnMic.Click += new System.EventHandler(this.btnMic_Click);
             // 
-            // menuItemDeviceManager
+            // menuItemSingle
             // 
-            this.menuItemDeviceManager.Name = "menuItemDeviceManager";
-            this.menuItemDeviceManager.Size = new System.Drawing.Size(180, 22);
-            this.menuItemDeviceManager.Text = "设备管理";
-            this.menuItemDeviceManager.Click += new System.EventHandler(this.menuItemDeviceManager_Click);
+            this.menuItemSingle.Name = "menuItemSingle";
+            this.menuItemSingle.Size = new System.Drawing.Size(225, 22);
+            this.menuItemSingle.Text = "单图布局";
+            this.menuItemSingle.Click += new System.EventHandler(this.menuItemSingle_Click);
             // 
             // QLToolBar
             // 
@@ -338,6 +347,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemVAS;
         private System.Windows.Forms.ToolStripMenuItem menuItemCP;
         private System.Windows.Forms.ToolStripMenuItem menuItemDeviceManager;
+        private System.Windows.Forms.ToolStripMenuItem menuItemSingle;
     }
 }
 

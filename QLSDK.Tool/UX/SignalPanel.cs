@@ -43,6 +43,7 @@ namespace QLSDK.Tool.UX
         }
         public void BindData(IEnumerable<QLMediaStatistics> statistics)
         {
+            this.grdMediaStatistics.DataSource = null;
             this.grdMediaStatistics.DataSource = statistics;
         }
 

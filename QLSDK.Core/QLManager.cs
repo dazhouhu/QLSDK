@@ -20,7 +20,9 @@ namespace QLSDK.Core
         #region Fields
         private static ILog log = LogUtil.GetLogger("QLSDK.QLManager");
         private static Action<ObservableCollection<QLMediaStatistics>> mediaStatisticsCallBack;
+        private static Action<ObservableCollection<QLDevice>> appCallBack;
         private ObservableCollection<QLMediaStatistics> mediaStatistics = new ObservableCollection<QLMediaStatistics>();
+        private ObservableCollection<QLDevice> apps = new ObservableCollection<QLDevice>();
         private static QLConfig qlConfig = QLConfig.GetInstance();
         private static QLCallView callView = QLCallView.GetInstance();
         private static QLDeviceManager deviceManager = QLDeviceManager.GetInstance();
@@ -36,6 +38,10 @@ namespace QLSDK.Core
             mediaStatistics.CollectionChanged += (sender, args) =>
             {
                 mediaStatisticsCallBack?.Invoke(mediaStatistics);
+            };
+            apps.CollectionChanged += (sender, args) =>
+            {
+                appCallBack?.Invoke(apps);
             };
         }
         public static QLManager GetInstance()
@@ -522,8 +528,11 @@ namespace QLSDK.Core
         {
             var appName = IntPtrHelper.IntPtrTostring(appNamePtr);
             log.Info("AddAppCallbackF: appHandle:" + appHandle + "  appName:" + appName);
-            var device = new QLDevice(DeviceType.APPLICATIONS, appHandle.ToString(), appName);
-            deviceManager.AddDevice(device);
+            var app = new QLDevice(DeviceType.APPLICATIONS, appHandle.ToString(), appName);
+            callView.Invoke(new Action(() =>
+            {
+                QLManager.GetInstance().apps.Add(app);
+            }));
         }
 
 
@@ -667,103 +676,8 @@ namespace QLSDK.Core
                 throw new Exception(msg);
             }
             #region Default Properties
-            var defaultProperties = new Dictionary<PropertyKey, string>()
-            {
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_MINSYS,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Transport,"TCP"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ServerType,"standard"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Register_Expires_Interval,"300"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Domain,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_AuthorizationName,"soaktestuser"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Password,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_CookieHead,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Base_Cred,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_AnonymousToken_Cred,"YWxpY2U6c2FtZXRpbWU="},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Anonymous_Cred,"anonymous"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_MaxCallNum,"6"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate,"384"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_AesEcription,"off"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultAudioStartPort,"3230"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultAudioEndPort,"3550"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultVideoStartPort,"3230"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_DefaultVideoEndPort,"3550"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_SIPClientListeningPort,"5060"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_SIPClientListeningTLSPort,"5061"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_EnableSVC,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel,"DEBUG"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_User_Agent,"MFW_SDK"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_UserName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_Password,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_TCPServer,"0.0.0.0:3478"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_UDPServer,"0.0.0.0:3478"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_TLSServer,"0.0.0.0:3478"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_AUTHTOKEN_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_INIT_AUTHTOKEN,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_RTO,"100"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_RC,"7"},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_RM,"16"},
-                {PropertyKey.PLCM_MFW_KVLIST_QOS_ServiceType,""},
-                {PropertyKey.PLCM_MFW_KVLIST_QOS_Audio,""},
-                {PropertyKey.PLCM_MFW_KVLIST_QOS_Video,""},
-                {PropertyKey.PLCM_MFW_KVLIST_QOS_Fecc,""},
-                {PropertyKey.PLCM_MFW_KVLIST_QOS_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_DBM_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID,""},
-                {PropertyKey.PLCM_MFW_KVLIST_LPR_Enable,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_CERT_PATH,"./TLS Certificate/instance0/"},
-                {PropertyKey.PLCM_MFW_KVLIST_CERT_CHECKFQDN,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_HttpConnect_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpProxyPort,""},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpProxyUserName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpPassword,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_HttpProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_HttpProxyPort,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_HttpProxyUserName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_ICE_HttpPassword,""},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpProxyPort,"80"},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpProxyUserName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpPassword,""},
-                {PropertyKey.PLCM_MFW_KVLIST_PRODUCT,"PLCM_MFW_IBM"},
-                {PropertyKey.PLCM_MFW_KVLIST_AutoZoom_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_TLSOffLoad_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_TLSOffLoad_Host,""},
-                {PropertyKey.PLCM_MFW_KVLIST_TLSOffLoad_Port,"0"},
-                {PropertyKey.PLCM_MFW_KVLIST_HttpTunnel_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpTunnelProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpTunnelProxyPort,"443"},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpTunnelProxyServer,""},
-                {PropertyKey.PLCM_MFW_KVLIST_MEDIA_HttpTunnelProxyPort,"443"},
-                {PropertyKey.PLCM_MFW_KVLIST_RTPMode,"RTP/AVP"},
-                {PropertyKey.PLCM_MFW_KVLIST_TCPBFCPForced,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_G729B_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_SAML_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_iLBCFrame,"30"},
-                {PropertyKey.PLCM_MFW_KVLIST_BFCP_CONTENT_Enable,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_SUPPORT_PORTRAIT_MODE,""},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName,""},
-                {PropertyKey.PLCM_MFW_KVLIST_FECC_Enable,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_Comfortable_Noise_Enable,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_SIP_Header_Compact_Enable,"false"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_MAXSYS,""},
-                {PropertyKey.LocalAddr,""},
-                {PropertyKey.CalleeAddr,""},
-                {PropertyKey.AUDIO_INPUT_DEVICE,""},
-                {PropertyKey.AUDIO_OUTPUT_DEVICE,""},
-                {PropertyKey.AUDIO_OUTPUT_DEVICE_FOR_RINGTONE,""},
-                {PropertyKey.VIDEO_INPUT_DEVICE,""},
-                {PropertyKey.MONITOR_DEVICE,""},
-                {PropertyKey.SOUND_INCOMING,"incoming.wav"},
-                {PropertyKey.SOUND_CLOSED,"closed.wav"},
-                {PropertyKey.SOUND_RINGING,"ringing.wav"},
-                {PropertyKey.SOUND_HOLD,"hold.wav"},
-                {PropertyKey.ICE_AUTH_TOKEN,""},
-                {PropertyKey.LayoutType,"Presentation" }
-            };
+            var defaultProperties = qlConfig.GetDefaultConfig();
+            
             #endregion
 
             qlConfig.SetProperties(defaultProperties);
@@ -1221,7 +1135,23 @@ namespace QLSDK.Core
                 throw new Exception("当前呼叫为空，获取信号流信息");
             }
         }
-
+        public void GetApps(Action<ObservableCollection<QLDevice>> callback)
+        {
+            apps.Clear();
+            if (null != callManager.CurrentCall)
+            {
+                appCallBack = callback;
+                var errno = PlcmProxy.GetApplicationInfo();
+                if (ErrorNumber.OK != errno)
+                {
+                    throw new Exception("获取信号流信息失败,errno=" + errno);
+                }
+            }
+            else
+            {
+                throw new Exception("当前呼叫为空，获取信号流信息");
+            }
+        }
         #endregion
 
         #region ViewLayout
@@ -1233,9 +1163,54 @@ namespace QLSDK.Core
         #endregion
 
         #region Call
+        /// <summary>
+        /// 获取当前呼叫
+        /// </summary>
+        /// <returns></returns>
         public QLCall GetCurrentCall()
         {
             return callManager.CurrentCall;
+        }
+
+        /// <summary>
+        /// 发送DTMF key
+        /// </summary>
+        /// <param name="call">呼叫，为空时默认为当前呼叫</param>
+        /// <param name="key">DTMFkey</param>
+        public void SendDTMFKey(QLCall call,DTMFKey key)
+        {
+            if (null == call) call = GetCurrentCall();
+            if (null == call) throw new Exception("呼叫不存在，不能发送DTMF Key");
+
+            var errno = PlcmProxy.SendDTMFKey(call.CallHandle, key);
+            if (errno != ErrorNumber.OK)
+            {
+                var errMsg = "发送DTMF Key失败，errno=" + errno;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
+            log.Info(string.Format("发送DTMF Key({0})成功.",key));
+        }
+
+        /// <summary>
+        /// 发送FECC
+        /// </summary>
+        /// <param name="call">呼叫，为空时默认为当前呼叫<</param>
+        /// <param name="key">FECC Key</param>
+        /// <param name="action">FECC Action</param>
+        public void SendFECC(QLCall call,FECCKey key,FECCAction action)
+        {
+            if (null == call) call = GetCurrentCall();
+            if (null == call) throw new Exception("呼叫不存在，不能发送FECC");
+
+            var errno = PlcmProxy.SendFECCKey(call.CallHandle, key,action);
+            if (errno != ErrorNumber.OK)
+            {
+                var errMsg = "发送FECC失败，errno=" + errno;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
+            log.Info(string.Format("发送FECC({0})成功.", key));
         }
         #endregion
     }

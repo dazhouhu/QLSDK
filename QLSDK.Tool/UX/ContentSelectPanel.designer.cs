@@ -80,9 +80,6 @@
             // 
             this.cbxMonitor.DisplayMember = "DeviceName";
             this.cbxMonitor.FormattingEnabled = true;
-            this.cbxMonitor.Items.AddRange(new object[] {
-            "YUV",
-            "RGBA"});
             this.cbxMonitor.Location = new System.Drawing.Point(138, 78);
             this.cbxMonitor.Name = "cbxMonitor";
             this.cbxMonitor.Size = new System.Drawing.Size(163, 20);
@@ -93,14 +90,11 @@
             // 
             this.cbxApp.DisplayMember = "DeviceName";
             this.cbxApp.FormattingEnabled = true;
-            this.cbxApp.Items.AddRange(new object[] {
-            "YUV",
-            "RGBA"});
             this.cbxApp.Location = new System.Drawing.Point(138, 104);
             this.cbxApp.Name = "cbxApp";
             this.cbxApp.Size = new System.Drawing.Size(163, 20);
             this.cbxApp.TabIndex = 9;
-            this.cbxApp.ValueMember = "AppDeviceHandle";
+            this.cbxApp.ValueMember = "DeviceHandle";
             // 
             // label1
             // 
@@ -170,6 +164,7 @@
             this.Controls.Add(this.btnOK);
             this.Name = "ContentSelectPanel";
             this.Size = new System.Drawing.Size(320, 204);
+            this.Load += new System.EventHandler(this.ContentSelectPanel_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

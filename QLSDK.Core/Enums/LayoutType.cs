@@ -5,5 +5,6 @@
         ContinuousPresence = 0,
         VAS,
         Presentation,
+        Single
     }
 }

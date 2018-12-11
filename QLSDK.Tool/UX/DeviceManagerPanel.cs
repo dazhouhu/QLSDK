@@ -23,18 +23,15 @@ namespace QLSDK.Tool.UX
         {
             var audioInputDevices = deviceManager.GetDevicesByType(DeviceType.AUDIOINPUT);
             cbxAudioInput.DataSource = audioInputDevices;
-            if (audioInputDevices.Count > 0)
-            {
-                cbxAudioInput.SelectedIndex = 0;
-            }
+            cbxAudioInput.SelectedItem = deviceManager.CurrentAudioInputDevice;
+
             var audioOutputDevices = deviceManager.GetDevicesByType(DeviceType.AUDIOOUTPUT);
             cbxAudioOutput.DataSource = audioOutputDevices;
-            if (audioOutputDevices.Count > 0)
-            {
-                cbxAudioOutput.SelectedIndex = 0;
-            }
+            cbxAudioOutput.SelectedItem = deviceManager.CurrentAudioOutputDevice;
+
             var deviceInputDevices = deviceManager.GetDevicesByType(DeviceType.VIDEOINPUT);
             cbxVideoInput.DataSource = deviceInputDevices;
+            cbxVideoInput.SelectedItem = deviceManager.CurrentVideoInputDevice;
         }
         public Action OnCancel { get; set; }
         private void btnCancel_Click(object sender, EventArgs e)
@@ -45,6 +42,10 @@ namespace QLSDK.Tool.UX
         public Action OKAction { get; set; }
         private void btnOK_Click(object sender, EventArgs e)
         {
+            deviceManager.CurrentAudioInputDevice = (QLDevice)cbxAudioInput.SelectedItem;
+            deviceManager.CurrentAudioOutputDevice = (QLDevice)cbxAudioOutput.SelectedItem;
+            deviceManager.CurrentVideoInputDevice = (QLDevice)cbxVideoInput.SelectedItem;
+
             OKAction?.Invoke();
             this.Dispose();
         }

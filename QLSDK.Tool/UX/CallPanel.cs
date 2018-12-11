@@ -129,5 +129,17 @@ namespace QLSDK.Tool.UX
             OnCancel?.Invoke();
             this.Dispose();
         }
+
+        private void CallPanel_Load(object sender, EventArgs e)
+        {
+            if(null ==QLDeviceManager.GetInstance().CurrentVideoInputDevice)
+            {
+                btnVideoCall.Enabled = false;
+            }
+            else
+            {
+                btnVideoCall.Enabled = true;
+            }
+        }
     }
 }

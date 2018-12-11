@@ -112,6 +112,9 @@
     <EmbeddedResource Include="UX\DTMFPanel.resx">
       <DependentUpon>DTMFPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UX\FECCPanel.resx">
+      <DependentUpon>FECCPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UX\SignalPanel.resx">
       <DependentUpon>SignalPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -193,6 +196,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\signal6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zoomout.png" />
+    <None Include="Resources\zoomin.png" />
+    <None Include="Resources\down.png" />
+    <None Include="Resources\right.png" />
+    <None Include="Resources\left.png" />
+    <None Include="Resources\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\conf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

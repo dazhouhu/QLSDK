@@ -253,6 +253,7 @@
             this.Controls.Add(this.btn4);
             this.Name = "CallPanel";
             this.Size = new System.Drawing.Size(274, 284);
+            this.Load += new System.EventHandler(this.CallPanel_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

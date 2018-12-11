@@ -16,30 +16,11 @@ namespace QLSDK.Tool.UX
         public ContentSelectPanel()
         {
             InitializeComponent();
-            cbxFormat.SelectedIndex = 0;
         }
 
-        public IList<QLDevice> Monitors
+        public void BindAppData(IEnumerable<QLDevice> apps)
         {
-            set
-            {
-                cbxMonitor.DataSource = value;
-                if (value.Count > 0)
-                {
-                    cbxMonitor.SelectedIndex = 0;
-                }
-            }
-        }
-        public IList<QLDevice> Apps
-        {
-            set
-            {
-                cbxApp.DataSource = value;
-                if (value.Count > 0)
-                {
-                    cbxApp.SelectedIndex = 0;
-                }
-            }
+            cbxApp.DataSource = apps.ToList();
         }
 
         private void rdoBFCP_CheckedChanged(object sender, EventArgs e)
@@ -47,11 +28,14 @@ namespace QLSDK.Tool.UX
             if (rdoBFCP.Checked)
             {
                 cbxFormat.Enabled = true;
+                cbxMonitor.Enabled = false;
+                cbxApp.Enabled = false;
             }
             else
             {
-                cbxMonitor.Enabled = false;
-                cbxApp.Enabled = false;
+                cbxFormat.Enabled = false;
+                cbxMonitor.Enabled = true;
+                cbxApp.Enabled = true;
             }
         }
 
@@ -61,9 +45,12 @@ namespace QLSDK.Tool.UX
             {
                 cbxMonitor.Enabled = true;
                 cbxApp.Enabled = true;
+                cbxFormat.Enabled = false;
             }
             else
             {
+                cbxMonitor.Enabled = false;
+                cbxApp.Enabled = false;
                 cbxFormat.Enabled = false;
             }
         }
@@ -103,6 +90,14 @@ namespace QLSDK.Tool.UX
         {
             OnCancel?.Invoke();
             this.Dispose();
+        }
+
+        private void ContentSelectPanel_Load(object sender, EventArgs e)
+        {
+            cbxFormat.SelectedIndex = 0;
+
+            cbxMonitor.DataSource = QLDeviceManager.GetInstance().GetDevicesByType(DeviceType.MONITOR);
+            cbxMonitor.SelectedIndex = 0;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace QLSDK.WFSample
     {
         #region Fields
         private static QLManager qlManager = QLManager.GetInstance();
+        private static QLCallManager callManager = QLCallManager.GetInstance();
         #endregion
         #region Constructors
         public MainWindow()
@@ -32,6 +33,92 @@ namespace QLSDK.WFSample
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            qlManager.QLEvent += (evt) =>
+            {
+                switch (evt.EventType)
+                {          
+                    #region Register
+                    case EventType.UNKNOWN: break;
+                    case EventType.SIP_REGISTER_SUCCESS:
+                        {
+                        }
+                        break;
+                    case EventType.SIP_REGISTER_FAILURE:
+                        {
+                            var loginWin = new LoginWindow();
+                            loginWin.ShowDialog(this);
+                        }
+                        break;
+                    case EventType.SIP_REGISTER_UNREGISTERED: break;
+                    #endregion
+                    #region 不处理
+                        /*
+                        #region QLDevice
+                        case EventType.DEVICE_VIDEOINPUTCHANGED:
+                        case EventType.DEVICE_AUDIOINPUTCHANGED:
+                        case EventType.DEVICE_AUDIOOUTPUTCHANGED:
+                        case EventType.DEVICE_VOLUMECHANGED: 
+                        case EventType.DEVICE_MONITORINPUTSCHANGED:
+                        #endregion
+                        #region Call
+                        case EventType.SIP_CALL_INCOMING: break;
+                        case EventType.SIP_CALL_TRYING:break;
+                        case EventType.SIP_CALL_RINGING:break;
+                        case EventType.SIP_CALL_FAILURE:break;
+                        case EventType.SIP_CALL_CLOSED:break;
+                        case EventType.SIP_CALL_HOLD:break;
+                        case EventType.SIP_CALL_HELD:break;
+                        case EventType.SIP_CALL_DOUBLE_HOLD:break;
+                        case EventType.SIP_CALL_UAS_CONNECTED:break;
+                        case EventType.SIP_CALL_UAC_CONNECTED:break;
+                        #endregion
+                        #region Content
+                        case EventType.SIP_CONTENT_INCOMING:break;
+                        case EventType.SIP_CONTENT_CLOSED:break;
+                        case EventType.SIP_CONTENT_SENDING:break;
+                        case EventType.SIP_CONTENT_IDLE:break;
+                        case EventType.SIP_CONTENT_UNSUPPORTED:break;
+                        #endregion
+
+
+
+                        #region Stream
+                        case EventType.STREAM_VIDEO_LOCAL_RESOLUTIONCHANGED:break;
+                        case EventType.STREAM_VIDEO_REMOTE_RESOLUTIONCHANGED:break;
+                        #endregion
+
+                        case EventType.NETWORK_CHANGED: break;
+                        case EventType.MFW_INTERNAL_TIME_OUT: break;
+
+                        case EventType.REFRESH_ACTIVE_SPEAKER:break;
+                        case EventType.REMOTE_VIDEO_REFRESH:break;
+                        case EventType.REMOTE_VIDEO_CHANNELSTATUS_CHANGED:break;
+                        case EventType.REMOTE_VIDEO_DISPLAYNAME_UPDATE:break;
+                        case EventType.SIP_CALL_MODE_CHANGED:break;
+
+                        case EventType.SIP_CALL_MODE_UPGRADE_REQ:break;
+                        case EventType.IS_TALKING_STATUS_CHANGED:break;
+                        case EventType.CERTIFICATE_VERIFY:break;
+                        case EventType.TRANSCODER_FINISH:break;
+                        case EventType.ICE_STATUS_CHANGED:break;
+                        case EventType.SUTLITE_INCOMING_CALL:break;
+                        case EventType.SUTLITE_TERMINATE_CALL:break;
+                        case EventType.NOT_SUPPORT_VIDEOCODEC:break;
+
+                        case EventType.BANDWIDTH_LIMITATION:break;
+                        case EventType.MEDIA_ADDRESS_UPDATED:break;
+                        case EventType.AUTODISCOVERY_STATUS_CHANGED:break;
+                        */
+                        #endregion
+                }
+            };
+            callManager.CurrentCallChanged += () =>
+            {
+                if(null != callManager.CurrentCall)
+                {
+                    this.Text = callManager.CurrentCall.CallName;
+                }
+            };
         }
 
 
