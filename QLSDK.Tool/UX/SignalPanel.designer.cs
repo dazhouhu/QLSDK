@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtCallRate = new System.Windows.Forms.Label();
             this.lblCallRate = new System.Windows.Forms.Label();
             this.callCallType = new System.Windows.Forms.Label();
@@ -121,85 +121,11 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // grdMediaStatistics
-            // 
-            grdMediaStatistics.AllowUserToAddRows = false;
-            grdMediaStatistics.AllowUserToDeleteRows = false;
-            grdMediaStatistics.BackgroundColor = System.Drawing.Color.Azure;
-            grdMediaStatistics.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            grdMediaStatistics.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            grdMediaStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            grdMediaStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ParticipantName,
-            this.ChannelName,
-            this.VideoProtocol,
-            this.ChannelNum,
-            this.RemoteSystemId,
-            this.CallRate,
-            this.PacketsLost,
-            this.PacketLoss,
-            this.VideoRate,
-            this.VideoRateUsed,
-            this.VideoFrameRate,
-            this.VideoPacketsLost,
-            this.VideoJitter,
-            this.VideoFormat,
-            this.ErrorConcealment,
-            this.AudioProtocol,
-            this.AudioRate,
-            this.AudioPacketsLost,
-            this.AudioJitter,
-            this.AudioEncrypt,
-            this.VideoEncrypt,
-            this.FeccEncrypt,
-            this.AudioReceivedPacket,
-            this.oundTripTime,
-            this.FullIntraFrameRequest,
-            this.IntraFrameSent,
-            this.PacketsCount,
-            this.overallCPULoad});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            grdMediaStatistics.DefaultCellStyle = dataGridViewCellStyle3;
-            grdMediaStatistics.GridColor = System.Drawing.SystemColors.ControlLight;
-            grdMediaStatistics.Location = new System.Drawing.Point(0, 48);
-            grdMediaStatistics.Margin = new System.Windows.Forms.Padding(0);
-            grdMediaStatistics.Name = "grdMediaStatistics";
-            grdMediaStatistics.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            grdMediaStatistics.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            grdMediaStatistics.RowHeadersVisible = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.DeepSkyBlue;
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            grdMediaStatistics.RowsDefaultCellStyle = dataGridViewCellStyle5;
-            grdMediaStatistics.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.SkyBlue;
-            grdMediaStatistics.RowTemplate.Height = 23;
-            grdMediaStatistics.Size = new System.Drawing.Size(700, 452);
-            grdMediaStatistics.TabIndex = 13;
-            // 
             // ParticipantName
             // 
             this.ParticipantName.DataPropertyName = "ParticipantName";
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.ParticipantName.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.ParticipantName.DefaultCellStyle = dataGridViewCellStyle1;
             this.ParticipantName.HeaderText = "与会者";
             this.ParticipantName.Name = "ParticipantName";
             this.ParticipantName.ReadOnly = true;
@@ -392,6 +318,80 @@
             this.overallCPULoad.HeaderText = "CPU负载";
             this.overallCPULoad.Name = "overallCPULoad";
             this.overallCPULoad.ReadOnly = true;
+            // 
+            // grdMediaStatistics
+            // 
+            grdMediaStatistics.AllowUserToAddRows = false;
+            grdMediaStatistics.AllowUserToDeleteRows = false;
+            grdMediaStatistics.BackgroundColor = System.Drawing.Color.Azure;
+            grdMediaStatistics.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            grdMediaStatistics.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            grdMediaStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grdMediaStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ParticipantName,
+            this.ChannelName,
+            this.VideoProtocol,
+            this.ChannelNum,
+            this.RemoteSystemId,
+            this.CallRate,
+            this.PacketsLost,
+            this.PacketLoss,
+            this.VideoRate,
+            this.VideoRateUsed,
+            this.VideoFrameRate,
+            this.VideoPacketsLost,
+            this.VideoJitter,
+            this.VideoFormat,
+            this.ErrorConcealment,
+            this.AudioProtocol,
+            this.AudioRate,
+            this.AudioPacketsLost,
+            this.AudioJitter,
+            this.AudioEncrypt,
+            this.VideoEncrypt,
+            this.FeccEncrypt,
+            this.AudioReceivedPacket,
+            this.oundTripTime,
+            this.FullIntraFrameRequest,
+            this.IntraFrameSent,
+            this.PacketsCount,
+            this.overallCPULoad});
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            grdMediaStatistics.DefaultCellStyle = dataGridViewCellStyle3;
+            grdMediaStatistics.GridColor = System.Drawing.SystemColors.ControlLight;
+            grdMediaStatistics.Location = new System.Drawing.Point(0, 48);
+            grdMediaStatistics.Margin = new System.Windows.Forms.Padding(0);
+            grdMediaStatistics.Name = "grdMediaStatistics";
+            grdMediaStatistics.ReadOnly = true;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            grdMediaStatistics.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            grdMediaStatistics.RowHeadersVisible = false;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.DeepSkyBlue;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            grdMediaStatistics.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            grdMediaStatistics.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.DeepSkyBlue;
+            grdMediaStatistics.RowTemplate.Height = 23;
+            grdMediaStatistics.Size = new System.Drawing.Size(700, 452);
+            grdMediaStatistics.TabIndex = 13;
             // 
             // SignalPanel
             // 

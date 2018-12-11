@@ -104,7 +104,8 @@ namespace QLSDK.Core
                 { "secret_key",username },
                 { "package_name",password}
             };
-            //var postResult= HttpUtil<AuthorizeData>.Post(server+ @"/api/authorization", postData);  //发送验证数据
+            var postResult= HttpUtil<AuthorizeData>.Post(server+ @"/api/authorization", postData);  //发送验证数据
+            /*
             var postResult = new HttpResullt<AuthorizeData>()
             {
                 code = "200",
@@ -116,7 +117,7 @@ namespace QLSDK.Core
                     log_level = "Debug"
                 }
             };
-
+            */
             if (postResult.success)
             {
                 #region 设置配置信息
@@ -581,34 +582,34 @@ namespace QLSDK.Core
             {
                 var statistics = new QLMediaStatistics()
                 {
-                    ChannelName = channelName,
-                    ParticipantName = participantName,
-                    RemoteSystemId = remoteSystemId,
-                    CallRate = callRate,
-                    PacketsLost = packetsLost,
-                    PacketLoss = packetLoss,
-                    VideoProtocol = videoProtocol,
-                    VideoRate = videoRate,
-                    VideoRateUsed = videoRateUsed,
-                    VideoFrameRate = videoFrameRate,
-                    VideoPacketsLost = videoPacketsLost,
-                    VideoJitter = videoJitter,
-                    VideoFormat = videoFormat,
-                    ErrorConcealment = errorConcealment,
-                    AudioProtocol = audioProtocol,
-                    AudioRate = audioRate,
-                    AudioPacketsLost = audioPacketsLost,
-                    AudioJitter = audioJitter,
-                    AudioEncrypt = audioEncrypt,
-                    VideoEncrypt = videoEncrypt,
-                    FeccEncrypt = feccEncrypt,
-                    AudioReceivedPacket = audioReceivedPacket,
-                    RoundTripTime = roundTripTime,
-                    FullIntraFrameRequest = fullIntraFrameRequest,
-                    IntraFrameSent = intraFrameSent,
-                    PacketsCount = packetsCount,
-                    OverallCPULoad = overallCPULoad,
-                    ChannelNum = channelNo
+                    ChannelName = channelName== "(null)"?string.Empty:channelName,
+                    ParticipantName = participantName == "(null)" ? string.Empty : participantName,
+                    RemoteSystemId = remoteSystemId == "(null)" ? string.Empty : remoteSystemId,
+                    CallRate = callRate == "(null)" ? string.Empty : callRate,
+                    PacketsLost = packetsLost == "(null)" ? string.Empty : packetsLost,
+                    PacketLoss = packetLoss == "(null)" ? string.Empty : packetLoss,
+                    VideoProtocol = videoProtocol == "(null)" ? string.Empty : videoProtocol,
+                    VideoRate = videoRate == "(null)" ? string.Empty : videoRate,
+                    VideoRateUsed = videoRateUsed == "(null)" ? string.Empty : videoRateUsed,
+                    VideoFrameRate = videoFrameRate == "(null)" ? string.Empty : videoFrameRate,
+                    VideoPacketsLost = videoPacketsLost == "(null)" ? string.Empty : videoPacketsLost,
+                    VideoJitter = videoJitter == "(null)" ? string.Empty : videoJitter,
+                    VideoFormat = videoFormat == "(null)" ? string.Empty : videoFormat,
+                    ErrorConcealment = errorConcealment == "(null)" ? string.Empty : errorConcealment,
+                    AudioProtocol = audioProtocol == "(null)" ? string.Empty : audioProtocol,
+                    AudioRate = audioRate == "(null)" ? string.Empty : audioRate,
+                    AudioPacketsLost = audioPacketsLost == "(null)" ? string.Empty : audioPacketsLost,
+                    AudioJitter = audioJitter == "(null)" ? string.Empty : audioJitter,
+                    AudioEncrypt = audioEncrypt == "(null)" ? string.Empty : audioEncrypt,
+                    VideoEncrypt = videoEncrypt == "(null)" ? string.Empty : videoEncrypt,
+                    FeccEncrypt = feccEncrypt == "(null)" ? string.Empty : feccEncrypt,
+                    AudioReceivedPacket = audioReceivedPacket == "(null)" ? string.Empty : audioReceivedPacket,
+                    RoundTripTime = roundTripTime == "(null)" ? string.Empty : roundTripTime,
+                    FullIntraFrameRequest = fullIntraFrameRequest == "(null)" ? string.Empty : fullIntraFrameRequest,
+                    IntraFrameSent = intraFrameSent == "(null)" ? string.Empty : intraFrameSent,
+                    PacketsCount = packetsCount == "(null)" ? string.Empty : packetsCount,
+                    OverallCPULoad = overallCPULoad == "(null)" ? string.Empty : overallCPULoad,
+                    ChannelNum = channelNo 
                 };
                 callView.Invoke(new Action(() =>
                 {
