@@ -116,7 +116,7 @@ namespace QLSDK.Core
                             /*
                             if (!string.IsNullOrWhiteSpace(value))
                             {
-                                var filePath = Application.StartupPath + "\\"+value;
+                                var filePath = Application.StartupPath +value;
                                 if (File.Exists(filePath))
                                 {
                                     var img = new Bitmap(filePath);

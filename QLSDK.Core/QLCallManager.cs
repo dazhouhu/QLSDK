@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,55 @@ namespace QLSDK.Core
                 }
             }
             return instance;
+        }
+        
+        ~QLCallManager()
+        {
+            if(_callList.Count>0)
+            {
+                #region 结束呼叫
+                //保存通话记录
+                foreach(var call in _callList)
+                {
+                    switch(call.CallState)
+                    {
+                        case CallState.SIP_UNKNOWN:
+                        case CallState.NULL_CALL:
+                        case CallState.SIP_CALL_CLOSED:
+                        case CallState.SIP_OUTGOING_FAILURE:
+                            break;
+                        case CallState.SIP_INCOMING_INVITE:
+                        case CallState.SIP_INCOMING_CONNECTED:
+                        case CallState.SIP_CALL_HOLD:
+                        case CallState.SIP_CALL_HELD:
+                        case CallState.SIP_CALL_DOUBLE_HOLD:
+                        case CallState.SIP_OUTGOING_TRYING:
+                        case CallState.SIP_OUTGOING_RINGING:
+                        case CallState.SIP_OUTGOING_CONNECTED:
+                            {
+                                PlcmProxy.TerminateCall(call.CallHandle);
+                                call.StopTime = DateTime.Now;
+                                call.CallState = CallState.SIP_CALL_CLOSED;
+                                call.Reason = "关闭程序，结束通话";
+                            } break;
+                    }
+                }
+                #endregion
+                #region 保存呼叫
+                GetHistoryCalls((calls) =>
+                {
+                    var filePath = Application.StartupPath + "history.log";
+                    using (var fs = new FileStream(filePath, FileMode.CreateNew,FileAccess.Write))
+                    {
+                        using (var sw = new StreamWriter(fs))
+                        {
+                            var str = SerializerUtil.SerializeJson(calls);
+                            sw.Write(str);
+                        }
+                    }
+                });
+                #endregion
+            }
         }
         #endregion
 
@@ -557,7 +607,6 @@ namespace QLSDK.Core
                     {
                         var call = GetCall(evt.CallHandle, true, evt);
                         evt.Call = call;
-                        call.CallName = evt.CallerName;
                         call.ClearRemoteChannels();
                         call.ChannelNumber = evt.RemoteVideoChannelNum;
                         call.ActiveSpeakerId = evt.ActiveSpeakerStreamId;
@@ -641,7 +690,6 @@ namespace QLSDK.Core
                     call = new QLCall(callHandle)
                     {
                         CallHandle = callHandle,
-                        CallName = evt.CalleeName,
                         CallMode = evt.CallMode,
                         ActiveSpeakerId = evt.ActiveSpeakerStreamId,
                         NetworkIP = evt.IPAddress,
@@ -768,7 +816,27 @@ namespace QLSDK.Core
 
         public void GetHistoryCalls(Action<IEnumerable<QLCall>> callback)
         {
-            callback?.Invoke(this.CallList);
+            if (null != callback)
+            {
+                var calls = new List<QLCall>();
+                var filePath = Application.StartupPath + "history.log";
+                if (File.Exists(filePath))
+                {
+                    using(var fs =new FileStream(filePath, FileMode.Open))
+                    {
+                        using (var sr = new StreamReader(fs))
+                        {
+                            var str = sr.ReadToEnd();
+                            if(!string.IsNullOrWhiteSpace(str))
+                            {
+                                calls = SerializerUtil.DeSerializeJson<List<QLCall>>(str);
+                            }
+                        }
+                    }
+                }
+                calls.AddRange(this.CallList);
+                callback.Invoke(calls);
+            }
         }
     }
 }

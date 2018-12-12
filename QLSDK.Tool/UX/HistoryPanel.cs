@@ -28,10 +28,10 @@ namespace QLSDK.Tool.UX
         public void BindData(IEnumerable<QLCall> calls)
         {
             this.grdCalls.DataSource = null;
-            this.grdCalls.DataSource = calls;
+            this.grdCalls.DataSource = calls.OrderByDescending(c=>c.StartTime).ToList();
         }
 
-
+        #region gvCall
         private void grdCalls_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             var dgv = (DataGridView)sender;
@@ -190,6 +190,9 @@ namespace QLSDK.Tool.UX
                             case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                 status = "通话关闭";
                                 break;
+                            case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                status = "呼出失败";
+                                break;
                             case QLSDK.Core.CallState.NULL_CALL: break;
                         }
                         e.Value = status;
@@ -211,7 +214,7 @@ namespace QLSDK.Tool.UX
             {
                 return;
             }
-            var isHandled = false;
+            var isHandled =true;
             
             var calls = dgv.DataSource as IEnumerable<QLSDK.Core.QLCall>;
             if (null != calls)
@@ -220,22 +223,33 @@ namespace QLSDK.Tool.UX
                 if (null != call)
                 {
                     var columnName = dgv.Columns[e.ColumnIndex].Name;
+                    switch(columnName)
+                    {
+                        case "btnAnswer":
+                        case "btnHold":
+                        case "btnResume":
+                        case "btnHangup":
+                        case "btnAudioCall":
+                        case "btnVideoCall":break;
+                        default:isHandled = false;break;
+                    }
                     switch (call.CallState)
                     {
                         case QLSDK.Core.CallState.SIP_UNKNOWN:
                         case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                         case QLSDK.Core.CallState.NULL_CALL:
+                        case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                             {
                                 switch(columnName)
                                 {
                                     case "btnAudioCall":
-                                        isHandled = true;
+                                        isHandled = false;
                                         break;
                                     case "btnVideoCall":
                                         {
                                             if(null != QLDeviceManager.GetInstance().CurrentVideoInputDevice)
                                             {
-                                                isHandled = true;
+                                                isHandled = false;
                                             }
                                         }break;
                                 }
@@ -318,23 +332,184 @@ namespace QLSDK.Tool.UX
             {
                 return;
             }
-            var callState = (CallState)(dgv.Rows[e.RowIndex].Cells[1].Value);
-            var columnName = dgv.Columns[e.ColumnIndex].Name;
-            switch (columnName)
-            {
-                case "CallName":
-                case "CallState":
-                    return;
-            }
             var calls = dgv.DataSource as IEnumerable<QLSDK.Core.QLCall>;
             if (null != calls)
             {
                 var call = calls.Skip(e.RowIndex).FirstOrDefault();
                 if (null != call)
                 {
+                    var columnName = dgv.Columns[e.ColumnIndex].Name;
+                    switch (columnName)
+                    {
+                        #region Answer
+                        case "btnAnswer":
+                            {
+                                switch(call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
+                                        {
+                                            if(null == QLDeviceManager.GetInstance().CurrentVideoInputDevice)
+                                            {
+                                                QLManager.GetInstance().AnswerCall(call, QLSDK.Core.CallMode.AUDIO);
+                                            }
+                                            else
+                                            {
+                                                QLManager.GetInstance().AnswerCall(call, call.CallMode);
+                                            }                                            
+                                        }break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:break;
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region Hold
+                        case "btnHold":
+                            {
+                                switch (call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:                                        
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
+                                        {
+                                            QLManager.GetInstance().HoldCall(call);
+                                        }
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                        break;
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region Resume
+                        case "btnResume":
+                            {
+                                switch (call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                        {
+                                            QLManager.GetInstance().ResumeCall(call);
+                                        }
+                                        break;
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region Hangup
+                        case "btnHangup":
+                            {
+                                switch (call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                        {
+                                            QLManager.GetInstance().EndCall(call);
+                                        }
+                                        break;
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region AudioCall
+                        case "btnAudioCall":
+                            {
+                                switch (call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        {
+                                            QLManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.AUDIO);
+                                        }
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                        break;
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region Video Call
+                        case "btnVideoCall":
+                            {
+                                switch (call.CallState)
+                                {
+                                    case QLSDK.Core.CallState.SIP_UNKNOWN:
+                                    case QLSDK.Core.CallState.NULL_CALL:
+                                    case QLSDK.Core.CallState.SIP_CALL_CLOSED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
+                                        {
+                                            QLManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.VIDEO);
+                                        }
+                                        break;
+                                    case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
+                                    case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
+                                    case QLSDK.Core.CallState.SIP_CALL_HELD:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_TRYING:
+                                    case QLSDK.Core.CallState.SIP_OUTGOING_RINGING:
+                                    case QLSDK.Core.CallState.SIP_CALL_HOLD:
+                                    case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
+                                        break;
+                                }
+                            }
+                            break;
+                        #endregion
+                    }
                 }
             }
         }
-
+        #endregion
     }
 }
