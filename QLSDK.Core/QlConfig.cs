@@ -1,9 +1,12 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
@@ -108,6 +111,53 @@ namespace QLSDK.Core
 
                     //ICE token
                     case PropertyKey.ICE_AUTH_TOKEN: break;
+                    case PropertyKey.StaticImage: {
+                            #region StaticImage
+                            /*
+                            if (!string.IsNullOrWhiteSpace(value))
+                            {
+                                var filePath = Application.StartupPath + "\\"+value;
+                                if (File.Exists(filePath))
+                                {
+                                    var img = new Bitmap(filePath);
+                                    if (null != img)
+                                    {
+                                        int w = img.Width;
+                                        int h = img.Height;
+                                        var buffer = new byte[w*h*4];
+                                        var idx = 0;
+
+                                        for(var i=0;i<h;i++)
+                                        {
+                                            for(var j=0;j<w;j++)
+                                            {
+                                                var color= img.GetPixel(j, i);
+                                                //转换为RGBA模式
+                                                buffer[idx] = color.R;
+                                                idx++;
+                                                buffer[idx] = color.G;
+                                                idx++;
+                                                buffer[idx] = color.B;
+                                                idx++;
+                                                buffer[idx] = color.A;
+                                                idx++;
+                                            }
+                                        }
+                                        int length = buffer.Length;
+
+                                        var errno = PlcmProxy.SetStaticImage( buffer, length, w, h);
+                                        if (ErrorNumber.OK != errno)
+                                        {
+                                            var errMsg = "setStaticImage failed,errno=" + errno;
+                                            log.Error(errMsg);
+                                            throw new Exception(errMsg);
+                                        }
+                                    }
+                                }
+                            }*/
+                            #endregion
+                        } break;
+                    case PropertyKey.LayoutType:break;
                 }
             }
         }
@@ -115,24 +165,9 @@ namespace QLSDK.Core
         {
             if (null != properties && properties.Count > 0)
             {
-                var errno = ErrorNumber.OK;
                 foreach (var propertyKV in properties)
                 {
-                    log.Info(string.Format(string.Format("SetProperty:{0}={1}", propertyKV.Key, propertyKV.Value)));
-                    if(properties != this.properties)
-                    {
-                        this.properties[propertyKV.Key] = propertyKV.Value;
-                    }
-                    if (propertyKV.Key <= PropertyKey.PLCM_MFW_KVLIST_KEY_MAXSYS)
-                    {
-                        errno = PlcmProxy.SetProperty(propertyKV.Key, propertyKV.Value);
-                        if (errno != ErrorNumber.OK)
-                        {
-                            var errMsg = string.Format("{0}设定失败,err={1}", propertyKV.Key, errno);
-                            log.Error(errMsg);
-                            throw new Exception(errMsg);
-                        }
-                    }
+                    SetProperty(propertyKV.Key, propertyKV.Value);                    
                 }
                 /*
                 errno = PlcmProxy.UpdateConfig();
@@ -256,6 +291,7 @@ namespace QLSDK.Core
                 {PropertyKey.SOUND_RINGING,"ringing.wav"},
                 {PropertyKey.SOUND_HOLD,"hold.wav"},
                 {PropertyKey.ICE_AUTH_TOKEN,""},
+                {PropertyKey.StaticImage,"static_img_640_480.png" },
                 {PropertyKey.LayoutType,"Presentation" }
             };
         }

@@ -297,7 +297,13 @@ namespace QLSDK.Core
             return (ErrorNumber)PlcmHelper.setRemoteOneSVCVideoStream(callhandle, selectMode, streamId, isActiveSpeaker);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="callhandle"></param>
+        /// <param name="selectMode">0:自动,1:手动</param>
+        /// <param name="streamNumber"></param>
+        /// <returns></returns>
         public static ErrorNumber SetRemoteVideoStreamNumber(int callhandle, int selectMode, int streamNumber)
         {
             return (ErrorNumber)PlcmHelper.setRemoteVideoStreamNumber(callhandle, selectMode, streamNumber);
@@ -371,7 +377,7 @@ namespace QLSDK.Core
             return (ErrorNumber)PlcmHelper.disableRecordAudioStreamCallback(callHandle);
         }
 
-        public static ErrorNumber SetStaticImage(IntPtr buffer, int length, int width, int height)
+        public static ErrorNumber SetStaticImage(byte[] buffer, int length, int width, int height)
         {
             return (ErrorNumber)PlcmHelper.setStaticImage(buffer, length, width, height);
         }

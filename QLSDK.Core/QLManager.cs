@@ -655,7 +655,7 @@ namespace QLSDK.Core
         /// SDK初始化
         /// </summary>
         /// <param name="config">配置信息</param>
-        private void SDKInit(IDictionary<PropertyKey,string> config)
+        private void SDKInit(IDictionary<PropertyKey, string> config)
         {
             var errno = ErrorNumber.OK;
             //注册回调函数
@@ -677,7 +677,7 @@ namespace QLSDK.Core
             }
             #region Default Properties
             var defaultProperties = qlConfig.GetDefaultConfig();
-            
+
             #endregion
 
             qlConfig.SetProperties(defaultProperties);
@@ -742,6 +742,13 @@ namespace QLSDK.Core
             if (ErrorNumber.OK != errNo)
             {
                 var errMsg = "Get monitor device failed. Error number = " + errNo;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
+            errNo = PlcmProxy.SetRemoteVideoStreamNumber(-1, 0, 0);
+            if (ErrorNumber.OK != errNo)
+            {
+                var errMsg = "SetRemoteVideoStreamNumber failed. Error number = " + errNo;
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }

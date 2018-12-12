@@ -113,6 +113,7 @@
         //ICE token
         ICE_AUTH_TOKEN,
 
-        LayoutType
+        StaticImage,  //静态图片
+        LayoutType    //布局
     }
 }

@@ -400,7 +400,18 @@ namespace QLSDK.Tool
         /// </summary>
         private void btnAttender_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "实现中", "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            try
+            {
+                var pnl = new HistoryPanel();
+                UXMessageMask.ShowForm(ownerContainer, pnl);
+                callManager.GetHistoryCalls((calls) => {
+                    pnl.BindData(calls);
+                });
+            }
+            catch (Exception ex)
+            {
+                UXMessageMask.ShowMessage(ownerContainer, false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>

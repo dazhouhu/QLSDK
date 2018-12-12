@@ -88,12 +88,12 @@ namespace QLSDK.Core
                 case EventType.SIP_REGISTER_SUCCESS: break;
                 case EventType.SIP_REGISTER_FAILURE:
                     {
-                        callView.ShowMessage(false, "注册失败", MessageBoxButtonsType.None, MessageBoxIcon.Error);
+                        callView.ShowMessage(false, "注册失败", MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                     }
                     break;
                 case EventType.SIP_REGISTER_UNREGISTERED:
                     {
-                        callView.ShowMessage(false, "未注册", MessageBoxButtonsType.None, MessageBoxIcon.Error);
+                        callView.ShowMessage(false, "未注册", MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                     }
                     break;
                 #endregion
@@ -766,6 +766,10 @@ namespace QLSDK.Core
             return msg;
         }
 
+        public void GetHistoryCalls(Action<IEnumerable<QLCall>> callback)
+        {
+            callback?.Invoke(this.CallList);
+        }
     }
 }
 
