@@ -113,10 +113,9 @@ namespace QLSDK.Core
                     case PropertyKey.ICE_AUTH_TOKEN: break;
                     case PropertyKey.StaticImage: {
                             #region StaticImage
-                            /*
-                            if (!string.IsNullOrWhiteSpace(value))
+                             if (!string.IsNullOrWhiteSpace(value))
                             {
-                                var filePath = Application.StartupPath +value;
+                                var filePath = Path.Combine(Application.StartupPath,value);
                                 if (File.Exists(filePath))
                                 {
                                     var img = new Bitmap(filePath);
@@ -150,11 +149,11 @@ namespace QLSDK.Core
                                         {
                                             var errMsg = "setStaticImage failed,errno=" + errno;
                                             log.Error(errMsg);
-                                            throw new Exception(errMsg);
+                                            //throw new Exception(errMsg);
                                         }
                                     }
                                 }
-                            }*/
+                            }
                             #endregion
                         } break;
                     case PropertyKey.LayoutType:break;

@@ -608,7 +608,7 @@ namespace QLSDK.Core
     /* Callback function implementation for C++ wrapper to add log message.*/
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal delegate void AddLogCallback(ulong timestamp, bool expired, int funclevel, ulong pid, ulong tid, IntPtr level, IntPtr component, IntPtr message, int len);
+    internal delegate void AddLogCallback(long timestamp, bool expired, int funclevel, int pid, int tid, IntPtr level, IntPtr component, IntPtr message, int len);
     #endregion
     #region addDeviceCallbackFPType
     /**

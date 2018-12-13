@@ -15,7 +15,7 @@ namespace QLSDK.Core
     /// <summary>
     /// 核心管理器
     /// </summary>
-    public class QLManager
+    public class QLManager:IDisposable
     {
         #region Fields
         private static ILog log = LogUtil.GetLogger("QLSDK.QLManager");
@@ -60,9 +60,9 @@ namespace QLSDK.Core
         }
 
         /// <summary>
-        /// 析构释放资源
+        /// 释放资源
         /// </summary>
-        ~QLManager()
+        public void Dispose()
         {
             Release();
         }
@@ -483,7 +483,7 @@ namespace QLSDK.Core
         }
         #endregion
         
-        private static void AddLogCallbackF(ulong timestamp, bool expired, int funclevel, ulong pid, ulong tid, IntPtr lev, IntPtr comp, IntPtr msg, int len)
+        private static void AddLogCallbackF(long timestamp, bool expired, int funclevel, int pid, int tid, IntPtr lev, IntPtr comp, IntPtr msg, int len)
         {
             var output = string.Empty;
             var level = IntPtrHelper.IntPtrToUTF8string(lev);
@@ -493,8 +493,9 @@ namespace QLSDK.Core
             {
                 component = "wrapper";
             }
+            output += component;
 
-            output += string.Format("[PID:{0}][TID:{1}] ", pid, tid); ;
+            output += string.Format(" [PID:{0}][TID:{1}] ", pid, tid); ;
 
             for (int i = 0; i < funclevel; i++)
             {
@@ -1034,6 +1035,8 @@ namespace QLSDK.Core
         public void Release()
         {
             PlcmProxy.UnregisterClient();
+            callManager.Dispose();
+            log.Info("关闭释放资源");
         }
 
         /// <summary>

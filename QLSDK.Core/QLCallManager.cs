@@ -15,7 +15,7 @@ namespace QLSDK.Core
     /// <summary>
     /// 呼叫管理器
     /// </summary>
-    public class QLCallManager : BaseModel
+    public class QLCallManager : BaseModel,IDisposable
     {
         #region Fields
         private ILog log = LogUtil.GetLogger("QLSDK.QLCallManager");
@@ -51,15 +51,15 @@ namespace QLSDK.Core
             return instance;
         }
         
-        ~QLCallManager()
+        public void Dispose()
         {
-            if(_callList.Count>0)
+            if (_callList.Count > 0)
             {
                 #region 结束呼叫
                 //保存通话记录
-                foreach(var call in _callList)
+                foreach (var call in _callList)
                 {
-                    switch(call.CallState)
+                    switch (call.CallState)
                     {
                         case CallState.SIP_UNKNOWN:
                         case CallState.NULL_CALL:
@@ -79,15 +79,16 @@ namespace QLSDK.Core
                                 call.StopTime = DateTime.Now;
                                 call.CallState = CallState.SIP_CALL_CLOSED;
                                 call.Reason = "关闭程序，结束通话";
-                            } break;
+                            }
+                            break;
                     }
                 }
                 #endregion
                 #region 保存呼叫
                 GetHistoryCalls((calls) =>
                 {
-                    var filePath = Application.StartupPath + "history.log";
-                    using (var fs = new FileStream(filePath, FileMode.CreateNew,FileAccess.Write))
+                    var filePath = Path.Combine(Application.StartupPath + "history.log");
+                    using (var fs = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write))
                     {
                         using (var sw = new StreamWriter(fs))
                         {
@@ -819,7 +820,7 @@ namespace QLSDK.Core
             if (null != callback)
             {
                 var calls = new List<QLCall>();
-                var filePath = Application.StartupPath + "history.log";
+                var filePath = Path.Combine(Application.StartupPath + "history.log");
                 if (File.Exists(filePath))
                 {
                     using(var fs =new FileStream(filePath, FileMode.Open))
