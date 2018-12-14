@@ -533,7 +533,7 @@ namespace QLSDK.Core
          * <ref>PLCM_Wrapper_Errno setStaticImage(void *buffer, int length, int width, int height);</ref>
          * */
         [DllImport("wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int setStaticImage(byte[] buffer, int length, int width, int height);
+        internal static extern int setStaticImage(IntPtr buffer, int length, int width, int height);
 
         /**
          * <ref>PLCM_Wrapper_Errno enableMediaQoE(	videoDataCapturedFPType videoDataCaptured, 

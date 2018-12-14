@@ -377,7 +377,7 @@ namespace QLSDK.Core
             return (ErrorNumber)PlcmHelper.disableRecordAudioStreamCallback(callHandle);
         }
 
-        public static ErrorNumber SetStaticImage(byte[] buffer, int length, int width, int height)
+        public static ErrorNumber SetStaticImage(IntPtr buffer, int length, int width, int height)
         {
             return (ErrorNumber)PlcmHelper.setStaticImage(buffer, length, width, height);
         }

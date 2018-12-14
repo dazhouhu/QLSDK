@@ -88,21 +88,25 @@ namespace QLSDK.Tool.UX
                         var startTime = (DateTime)e.Value;
                         var now = DateTime.Now;
                         TimeSpan timeSpan = now - startTime;
-                        if(timeSpan.TotalHours<=1)
+                        if(timeSpan.TotalMinutes<=5)
                         {
                             start = "刚刚";
                         }
-                        else if(timeSpan.TotalDays <= 1)
+                        else if(timeSpan.TotalHours<1)
+                        {
+                            start = timeSpan.Minutes + "分前";
+                        }
+                        else if(timeSpan.TotalDays <1)
                         {
                             start = timeSpan.Hours + "小时前";
                         }
-                        else if(timeSpan.TotalDays<=7)
+                        else if(timeSpan.TotalDays<7)
                         {
                             start = timeSpan.Days + "天前";
                         }
                         else
                         {
-                            start = startTime.ToString("yyyy-MM-dd HH:mm:ss");
+                            start = startTime.ToString("MM-dd HH:mm");
                         }
                         e.Value = start;
                         e.FormattingApplied = true;

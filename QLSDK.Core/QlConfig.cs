@@ -125,12 +125,11 @@ namespace QLSDK.Core
                                         int h = img.Height;
                                         var buffer = new byte[w*h*4];
                                         var idx = 0;
-
-                                        for(var i=0;i<h;i++)
+                                        for (var row = 0; row < h; row++)
                                         {
-                                            for(var j=0;j<w;j++)
+                                            for (var col = 0; col < w; col++)
                                             {
-                                                var color= img.GetPixel(j, i);
+                                                var color = img.GetPixel(col,row);
                                                 //转换为RGBA模式
                                                 buffer[idx] = color.R;
                                                 idx++;
@@ -144,7 +143,8 @@ namespace QLSDK.Core
                                         }
                                         int length = buffer.Length;
 
-                                        var errno = PlcmProxy.SetStaticImage( buffer, length, w, h);
+                                        var intPtrBuffer = IntPtrHelper.IntPtrFromBytes(buffer);
+                                        var errno = PlcmProxy.SetStaticImage(intPtrBuffer, length, w, h);
                                         if (ErrorNumber.OK != errno)
                                         {
                                             var errMsg = "setStaticImage failed,errno=" + errno;
@@ -241,7 +241,7 @@ namespace QLSDK.Core
                 {PropertyKey.PLCM_MFW_KVLIST_DBM_Enable,"false"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID,""},
                 {PropertyKey.PLCM_MFW_KVLIST_LPR_Enable,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_CERT_PATH,"./TLS Certificate/instance0/"},
+                {PropertyKey.PLCM_MFW_KVLIST_CERT_PATH,"./TLS Certificate/"},
                 {PropertyKey.PLCM_MFW_KVLIST_CERT_CHECKFQDN,"false"},
                 {PropertyKey.PLCM_MFW_KVLIST_HttpConnect_Enable,"false"},
                 {PropertyKey.PLCM_MFW_KVLIST_SIP_HttpProxyServer,""},

@@ -111,19 +111,6 @@ namespace QLSDK.Core
                 { "package_name",password}
             };
             var postResult= HttpUtil<AuthorizeData>.Post(server+ @"/api/authorization", postData);  //发送验证数据
-            /*
-            var postResult = new HttpResullt<AuthorizeData>()
-            {
-                code = "200",
-                data = new AuthorizeData()
-                {
-                    sip_addr = "58.218.201.171",
-                    account = "polycomtest4@ch",
-                    pass = "123456789",
-                    log_level = "Debug"
-                }
-            };
-            */
             if (postResult.success)
             {
                 #region 设置配置信息
@@ -140,9 +127,9 @@ namespace QLSDK.Core
                 ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Password] = postResult.data.pass;
                 if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID]))
                 {
-                    ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = postResult.data.account + "@" + postResult.data.sip_addr;
+                   // ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = postResult.data.account + "@" + postResult.data.sip_addr;
                 }
-                if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID]))
+                if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName]))
                 {
                     ps[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName] = postResult.data.account;
                 }
@@ -676,12 +663,12 @@ namespace QLSDK.Core
                 log.Error(msg);
                 throw new Exception(msg);
             }
-            #region Default Properties
-            var defaultProperties = qlConfig.GetDefaultConfig();
-
-            #endregion
-
-            qlConfig.SetProperties(defaultProperties);
+            var dispName = config[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName];
+            if (!string.IsNullOrWhiteSpace(dispName))
+            {
+                config[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName] = string.Empty;
+            }
+            qlConfig.SetProperties(config);
             //初始化
             errno = PlcmProxy.Initialize();
             if (ErrorNumber.OK != errno)
@@ -694,11 +681,7 @@ namespace QLSDK.Core
             log.Info("**********************************************************************");
             log.Info("        PLCM QLSDK  App Initialized Successful ( version: " + version + " )");
             log.Info("**********************************************************************");
-
-            PlcmProxy.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ProxyServer, "58.218.201.171");
-            PlcmProxy.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName, "polycomtest4@ch");
-            PlcmProxy.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName, "123456789");
-
+            
             errno = PlcmProxy.UpdateConfig();
             if (errno != ErrorNumber.OK)
             {
@@ -713,7 +696,10 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
-
+            if(!string.IsNullOrWhiteSpace(dispName))
+            {
+                qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName, dispName);
+            }
             //获取音频输入设备信息
             var errNo = PlcmProxy.GetDevice(DeviceType.AUDIOINPUT);
             if (ErrorNumber.OK != errNo)
@@ -1034,7 +1020,10 @@ namespace QLSDK.Core
         /// </summary>
         public void Release()
         {
-            PlcmProxy.UnregisterClient();
+            if (IsRegisted)
+            {
+                PlcmProxy.UnregisterClient();
+            }
             callManager.Dispose();
             log.Info("关闭释放资源");
         }

@@ -17,6 +17,7 @@ namespace QLSDK.WFSample
         #region Fields
         private static QLManager qlManager = QLManager.GetInstance();
         private static QLCallManager callManager = QLCallManager.GetInstance();
+        private bool isRegiested = false;
         #endregion
         #region Constructors
         public MainWindow()
@@ -28,11 +29,23 @@ namespace QLSDK.WFSample
             qlManager.AttachViewContainer(pnlContainer);
             var qlToolBar = new QLToolBar();
             qlToolBar.AttachViewContainer(pnlContainer);
+
+            
         }
         #endregion
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            this.Visible = false;
+            var loginWin = new LoginWindow();
+            if (loginWin.ShowDialog() == DialogResult.Cancel)
+            {
+                if (!this.isRegiested)
+                {
+                    Application.Exit();
+                }
+            }
+
             qlManager.QLEvent += (evt) =>
             {
                 switch (evt.EventType)
@@ -41,15 +54,38 @@ namespace QLSDK.WFSample
                     case EventType.UNKNOWN: break;
                     case EventType.SIP_REGISTER_SUCCESS:
                         {
+                            isRegiested = true;
+                            this.Visible = true;
                         }
                         break;
                     case EventType.SIP_REGISTER_FAILURE:
                         {
-                            var loginWin = new LoginWindow();
-                            loginWin.ShowDialog(this);
+                            this.Visible = false;
+                            isRegiested = false;
+                            var loginWindow = new LoginWindow();
+                            if (loginWindow.ShowDialog() == DialogResult.Cancel)
+                            {
+                                if (!this.isRegiested)
+                                {
+                                    Application.Exit();
+                                }
+                            }
                         }
                         break;
-                    case EventType.SIP_REGISTER_UNREGISTERED: break;
+                    case EventType.SIP_REGISTER_UNREGISTERED:
+                        {
+                            this.Visible = false;
+                            isRegiested = false;
+                            var loginWindow = new LoginWindow();
+                            if (loginWindow.ShowDialog() == DialogResult.Cancel)
+                            {
+                                if (!this.isRegiested)
+                                {
+                                    Application.Exit();
+                                }
+                            }
+                        }
+                        break;
                     #endregion
                     #region 不处理
                         /*
@@ -124,6 +160,11 @@ namespace QLSDK.WFSample
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if(!isRegiested)
+            {
+                e.Cancel = false;
+                return;
+            }
             var msg = string.Empty;
             var currentCall = qlManager.GetCurrentCall();
             if (null != currentCall)
@@ -132,9 +173,7 @@ namespace QLSDK.WFSample
                 {
                     case CallState.SIP_UNKNOWN:
                     case CallState.NULL_CALL:
-                        break;
                     case CallState.SIP_OUTGOING_FAILURE:
-                        break;
                     case CallState.SIP_CALL_CLOSED:
                         break;
                     case CallState.SIP_INCOMING_INVITE:
@@ -167,16 +206,21 @@ namespace QLSDK.WFSample
             {
                 msg += '\n' + "确定要挂断当前通话。";
                 var okAction = new Action(() => {
-                    qlManager.EndCall();
-                    this.Hide();
-                    e.Cancel = true;
+                    
                 });
-               // callView.ShowMessage(true, msg, MessageBoxButtonsType.OKCancel, MessageBoxIcon.Question, okAction);
+                if( MessageBox.Show(this,msg,"确认信息", MessageBoxButtons.OKCancel,MessageBoxIcon.Question)== DialogResult.OK)
+                {
+                    qlManager.EndCall();
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
             else
             {
-                this.Hide();
-                e.Cancel = true;
+                e.Cancel = false;
             }
 
         }

@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -76,6 +77,8 @@ namespace QLSDK.Core
         #endregion
         #region IsAudioOnly
         private bool _isAudioOnly = false;
+
+        [JsonIgnore]
         public bool IsAudioOnly
         {
             get { return _isAudioOnly; }
@@ -88,6 +91,8 @@ namespace QLSDK.Core
         #endregion
         #region IsMute
         private bool _isMute;
+
+        [JsonIgnore]
         public bool IsMute
         {
             get { return _isMute; }
@@ -100,6 +105,8 @@ namespace QLSDK.Core
         #endregion    
         #region IsContentSupported
         private bool _isContentSupported = false;
+
+        [JsonIgnore]
         public bool IsContentSupported
         {
             get { return _isContentSupported; }
@@ -112,7 +119,8 @@ namespace QLSDK.Core
         #endregion
 
         #region CurrentChannel
-        public QLChannel _currentChannel;
+        private QLChannel _currentChannel;
+        [JsonIgnore]
         public QLChannel CurrentChannel
         {
             get { return _currentChannel; }
@@ -133,6 +141,8 @@ namespace QLSDK.Core
         #endregion
         #region Channels
         private ObservableCollection<QLChannel> _channels = new ObservableCollection<QLChannel>();
+
+        [JsonIgnore]
         public ObservableCollection<QLChannel> Channels { get { return _channels; } }
 
         public QLChannel GetChannel(int channelID)
@@ -205,6 +215,8 @@ namespace QLSDK.Core
         #endregion
         #region ChannelNumber
         private int _channelNumber;
+
+        [JsonIgnore]
         public int ChannelNumber
         {
             get { return _channelNumber; }
@@ -217,6 +229,8 @@ namespace QLSDK.Core
         #endregion
         #region ActiveSpeakerId
         private int _activeSpeakerId = 0;
+
+        [JsonIgnore]
         public int ActiveSpeakerId
         {
             get { return _activeSpeakerId; }
@@ -249,6 +263,8 @@ namespace QLSDK.Core
 
         #region IsCurrent
         private bool _isCurrent;
+
+        [JsonIgnore]
         public bool IsCurrent
         {
             get { return _isCurrent; }

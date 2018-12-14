@@ -40,12 +40,17 @@ namespace QLSDK.Core
 
         public static IntPtr IntPtrFromBytes(byte[] bytes)
         {
-            GCHandle hwnd = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            IntPtr ptr = hwnd.AddrOfPinnedObject();
-
-            if (hwnd.IsAllocated)
-                hwnd.Free();
-            return ptr;
+            int size = bytes.Length;
+            IntPtr buffer = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.Copy(bytes, 0, buffer, size);
+                return buffer;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
         }
 
         public static IntPtr IntPtrFromObject(object obj)

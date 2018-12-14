@@ -28,19 +28,7 @@ namespace QLSDK.WFSample
                 AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
                 //应用程序退出
                 Application.ApplicationExit += OnApplicationExit;
-
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.ShowDialog();
-                if (loginWindow.DialogResult == DialogResult.OK)
-                {
-                    Application.Run(mainWindow);
-                }
-                else
-                {
-                    return;
-                }
+                Application.Run(new MainWindow());                
             }
             catch (Exception ex)
             {
@@ -62,7 +50,15 @@ namespace QLSDK.WFSample
         //应用程序退出
         private static void OnApplicationExit(object sender,EventArgs e)
         {
-            QLSDK.Core.QLManager.GetInstance().Release();
+            try
+            {
+                QLSDK.Core.QLManager.GetInstance().Release();
+                Environment.Exit(0);
+            }
+            catch(Exception ex)
+            {
+                Environment.Exit(1);
+            }
         }
     }
 }

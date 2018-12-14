@@ -87,8 +87,13 @@ namespace QLSDK.Core
                 #region 保存呼叫
                 GetHistoryCalls((calls) =>
                 {
-                    var filePath = Path.Combine(Application.StartupPath + "history.log");
-                    using (var fs = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write))
+                    var dicPath = Path.Combine(Application.StartupPath, "History");
+                    if(!Directory.Exists(dicPath))
+                    {
+                        Directory.CreateDirectory(dicPath);
+                    }
+                    var filePath= Path.Combine(dicPath, string.Format("history_{0}.log", qlConfig.GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName)));
+                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                     {
                         using (var sw = new StreamWriter(fs))
                         {
@@ -235,7 +240,7 @@ namespace QLSDK.Core
                             log.Info(string.Format("挂断呼叫{0}", calleeName));
                             PlcmProxy.TerminateCall(evt.CallHandle);
                         };
-                        callView.ShowMessage(false, msg, MessageBoxButtonsType.Hangup, MessageBoxIcon.Question
+                        callView.ShowMessage(false, msg, MessageBoxButtonsType.Hangup, MessageBoxIcon.Information
                                                     , hangupAction);
 
                     }
@@ -820,7 +825,12 @@ namespace QLSDK.Core
             if (null != callback)
             {
                 var calls = new List<QLCall>();
-                var filePath = Path.Combine(Application.StartupPath + "history.log");
+                var dicPath = Path.Combine(Application.StartupPath, "History");
+                if (!Directory.Exists(dicPath))
+                {
+                    Directory.CreateDirectory(dicPath);
+                }
+                var filePath = Path.Combine(dicPath, string.Format("history_{0}.log", qlConfig.GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName)));
                 if (File.Exists(filePath))
                 {
                     using(var fs =new FileStream(filePath, FileMode.Open))
