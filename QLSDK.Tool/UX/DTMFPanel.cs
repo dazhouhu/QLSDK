@@ -25,7 +25,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "*";
             }
             catch(Exception ex)
@@ -38,7 +38,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "#";
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "0";
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "1";
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "2";
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "3";
             }
             catch (Exception ex)
@@ -103,7 +103,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "4";
             }
             catch (Exception ex)
@@ -116,7 +116,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "5";
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "6";
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "7";
             }
             catch (Exception ex)
@@ -155,7 +155,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "8";
             }
             catch (Exception ex)
@@ -168,7 +168,7 @@ namespace QLSDK.Tool.UX
         {
             try
             {
-                qlManager.SendDTMFKey(null, DTMFKey.STAR);
+                QLCallManager.GetInstance().CurrentCall?.SendDTMFKey(DTMFKey.STAR);
                 txtCallee.Text = txtCallee.Text + "9";
             }
             catch (Exception ex)

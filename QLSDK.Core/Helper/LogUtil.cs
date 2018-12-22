@@ -25,14 +25,22 @@ namespace QLSDK.Core
             rfa.ImmediateFlush = true;
             rfa.MaxSizeRollBackups = 100;
             rfa.ActivateOptions();
-            rfa.Threshold = Level.Error;
+            rfa.Threshold = Level.Debug;
             log4net.Config.BasicConfigurator.Configure(rfa);
         }
+        /// <summary>
+        /// 获取日志
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static ILog GetLogger(string name)
         {
             return LogManager.GetLogger(name);
         }
-
+        /// <summary>
+        /// 设备日志等级
+        /// </summary>
+        /// <param name="level">日志等级：all,debug,info,warn,error,fatal,off</param>
         internal static void SetLogLevel(string level)
         {
             if(string.IsNullOrWhiteSpace(level))
@@ -43,12 +51,12 @@ namespace QLSDK.Core
             switch (level.ToLower())
             {
                 case "all": logLevel = Level.All; break;
-                case "debug": logLevel = Level.All; break;
-                case "info": logLevel = Level.All; break;
-                case "warn": logLevel = Level.All; break;
-                case "error": logLevel = Level.All; break;
-                case "fatal": logLevel = Level.All; break;
-                case "off": logLevel = Level.All; break;
+                case "debug": logLevel = Level.Debug; break;
+                case "info": logLevel = Level.Info; break;
+                case "warn": logLevel = Level.Warn; break;
+                case "error": logLevel = Level.Error; break;
+                case "fatal": logLevel = Level.Fatal; break;
+                case "off": logLevel = Level.Off; break;
             }
             LogManager.GetLogger("QLSDKFileAppender").Logger.Repository.Threshold = logLevel;
         }

@@ -93,7 +93,7 @@ namespace QLSDK.Tool.UX
             }
             try
             {
-                QLManager.GetInstance().DialCall(callAddr, CallMode.AUDIO);
+                QLCallManager.GetInstance().DialCall(callAddr, CallMode.AUDIO);
                 OKAction?.Invoke();
                 this.Dispose();
             }
@@ -113,7 +113,7 @@ namespace QLSDK.Tool.UX
             }
             try
             {
-                QLManager.GetInstance().DialCall(callAddr, CallMode.VIDEO);
+                QLCallManager.GetInstance().DialCall(callAddr, CallMode.VIDEO);
                 OKAction?.Invoke();
                 this.Dispose();
             }
@@ -132,6 +132,7 @@ namespace QLSDK.Tool.UX
 
         private void CallPanel_Load(object sender, EventArgs e)
         {
+            //当视频输出设备存在时，可以进行视频通话
             if(null ==QLDeviceManager.GetInstance().CurrentVideoInputDevice)
             {
                 btnVideoCall.Enabled = false;

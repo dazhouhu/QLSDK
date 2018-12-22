@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using QLSDK.Core;
 using QLSDK.Tool.UX;
+using log4net;
 
 namespace QLSDK.Tool
 {
     public partial class QLToolBar : UserControl
     {
         #region Fields
+        private ILog log = LogUtil.GetLogger("QLToolbar");
         private Control ownerContainer;
         private QLCall _currentCall;
         private QLManager qlManager = QLManager.GetInstance();
@@ -30,6 +32,10 @@ namespace QLSDK.Tool
         #endregion
 
         #region AttachViewContainer
+        /// <summary>
+        /// 附加到父容器
+        /// </summary>
+        /// <param name="container">父容器</param>
         public void AttachViewContainer(Control container)
         {
             if (null == container)
@@ -102,8 +108,10 @@ namespace QLSDK.Tool
             {
                 case "CallState":
                 case "IsAudioOnly":
+                case "MuteVideo":
                 case "CallMode":
                 case "IsContentSupported":
+                case "IsContentIdle":
                     {
                         SetToolsStatus();
                     }
@@ -113,7 +121,7 @@ namespace QLSDK.Tool
 
         private void SetToolsStatus()
         {
-            if (null == callManager.CurrentCall)
+            if (null == _currentCall)
             { //当前呼叫为空时,按钮不可用
                 btnSignal.Enabled = false;
                 btnSignal.Image = Properties.Resources.signal0;
@@ -125,7 +133,6 @@ namespace QLSDK.Tool
                 btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                 btnCamera.Enabled = false;
-                this.MuteCamera = true;
                 btnCamera.Image = Properties.Resources.camera_mute;
 
                 btnShare.Enabled = false;
@@ -140,12 +147,11 @@ namespace QLSDK.Tool
             }
             else
             {
-                switch (callManager.CurrentCall.CallState)
+                switch (_currentCall.CallState)
                 {
                     case CallState.SIP_UNKNOWN:
                     case CallState.SIP_OUTGOING_FAILURE:
                     case CallState.SIP_CALL_CLOSED:
-                    case CallState.NULL_CALL:
                         { //非活动状态,不可用
                             btnSignal.Enabled = false;
                             btnSignal.Image = Properties.Resources.signal0;
@@ -157,7 +163,6 @@ namespace QLSDK.Tool
                             btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                             btnCamera.Enabled = false;
-                            this.MuteCamera = true;
                             btnCamera.Image = Properties.Resources.camera_mute;
 
                             btnShare.Enabled = false;
@@ -194,7 +199,7 @@ namespace QLSDK.Tool
                             {
                                 this.btnMic.Enabled = true;
                                 this.btnMic.Image = Properties.Resources.mic;
-                                var volume = qlManager.GetMicVolume();
+                                var volume = deviceManager.GetMicVolume();
                                 this.tbMicVolume.Value = volume;
                             }
                             else
@@ -207,7 +212,7 @@ namespace QLSDK.Tool
                             {
                                 this.btnSpeaker.Enabled = true;
                                 this.btnSpeaker.Image = Properties.Resources.speaker;
-                                var volume = qlManager.GetSpeakerVolume();
+                                var volume = deviceManager.GetSpeakerVolume();
                                 this.tbSpeakerVolume.Value = volume;
                             }
                             else
@@ -218,14 +223,14 @@ namespace QLSDK.Tool
                             }
                             if (null != deviceManager.CurrentVideoInputDevice)
                             {
-                                switch (callManager.CurrentCall.CallMode)
+                                switch (_currentCall.CallMode)
                                 {
                                     case CallMode.VIDEO:
                                         {
                                             this.btnCamera.Enabled = true;
-                                            this.MuteCamera = false;
-                                            this.btnCamera.Image = Properties.Resources.camera;
-                                            if (callManager.CurrentCall.IsContentSupported)
+                                            this.btnCamera.Image = _currentCall.MuteVideo? Properties.Resources.camera_mute:Properties.Resources.camera;
+                                            if (_currentCall.IsContentSupported 
+                                                && _currentCall.IsContentIdle)
                                             {
                                                 this.btnShare.Enabled = true;
                                                 this.btnShare.Image = Properties.Resources.share;
@@ -240,7 +245,6 @@ namespace QLSDK.Tool
                                     case CallMode.AUDIO:
                                         {
                                             this.btnCamera.Enabled = false;
-                                            this.MuteCamera = true;
                                             this.btnCamera.Image = Properties.Resources.camera_mute;
                                             this.btnShare.Enabled = false;
                                             this.btnShare.Image = Properties.Resources.share_mute;
@@ -251,7 +255,6 @@ namespace QLSDK.Tool
                             else
                             {
                                 this.btnCamera.Enabled = false;
-                                this.MuteCamera = true;
                                 this.btnCamera.Image = Properties.Resources.camera_mute;
                                 this.btnShare.Enabled = false;
                                 this.btnShare.Image = Properties.Resources.share_mute;
@@ -306,49 +309,24 @@ namespace QLSDK.Tool
             tbSpeakerVolume.Left = btnSpeaker.Left + 10;
             tbSpeakerVolume.Top = this.Top - 118;
         }
-        private bool _muteCamera = true;
-        public bool MuteCamera
-        {
-            get { return _muteCamera; }
-            set
-            {
-                if (_muteCamera != value)
-                {
-                    _muteCamera = value;
-                    btnCamera.Image = _muteCamera ? Properties.Resources.camera_mute : Properties.Resources.camera;
-                }
-            }
-        }
 
         /// <summary>
         /// 摄像头
         /// </summary>
         private void btnCamera_Click(object sender, EventArgs e)
         {
-            if (true == MuteCamera)
+            if(null != _currentCall)
             {
                 try
                 {
-                    qlManager.StartCamera();
-                    MuteCamera = false;
+                    _currentCall.MuteLocalVideo(!_currentCall.MuteVideo);
+
                 }
                 catch (Exception ex)
                 {
                     UXMessageMask.ShowMessage(ownerContainer, false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                 }
-            }
-            else
-            {
-                try
-                {
-                    qlManager.StopCamera();
-                    MuteCamera = true;
-                }
-                catch (Exception ex)
-                {
-                    UXMessageMask.ShowMessage(ownerContainer, false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
-                }
-            }
+            }          
         }
 
         /// <summary>
@@ -367,19 +345,16 @@ namespace QLSDK.Tool
                         {
                             case "Monitor":
                                 {
-                                    qlManager.StartSendContent(qlManager.GetCurrentCall(), monitor, app);
+                                    _currentCall?.StartSendContent(monitor, app);
                                 }
                                 break;
                             case "BFCP":
                                 {
-                                    var width = Screen.PrimaryScreen.Bounds.Width;
-                                    var height = Screen.PrimaryScreen.Bounds.Height;
-                                    //qlManager.SetContentBuffer(format, width, height);
-                                    //qlManager.StartBFCPContent();
+                                    _currentCall?.StartBFCPContent(format);                                    
                                 }
                                 break;
                         }
-                        return true;
+                        return false;
                     }
                     catch (Exception ex)
                     {
@@ -431,7 +406,7 @@ namespace QLSDK.Tool
             else{
                 Action hangupAction = () =>
                 {
-                    qlManager.EndCall();
+                    _currentCall?.HangUpCall();
                 };
                 UXMessageMask.ShowMessage(ownerContainer,false, "确认要挂断当前通话吗？", MessageBoxButtonsType.OKCancel, MessageBoxIcon.Question
                                             , hangupAction);
@@ -507,15 +482,15 @@ namespace QLSDK.Tool
 
             try
             {
-                qlManager.SetMicVolume(volume);
+                deviceManager.SetMicVolume(volume);
                 if (0 == volume)
                 {
-                    qlManager.MuteMic(true);
+                    _currentCall?.MuteMic(true);
                     this.btnMic.Image = Properties.Resources.mic_mute;
                 }
                 else
                 {
-                    qlManager.MuteMic(false);
+                    _currentCall?.MuteMic(false);
                     this.btnMic.Image = Properties.Resources.mic;
                 }
 
@@ -524,7 +499,7 @@ namespace QLSDK.Tool
             {
                 Action okAction = () =>
                 {
-                    volume = qlManager.GetMicVolume();
+                    volume = deviceManager.GetMicVolume();
                     this.tbMicVolume.Value = volume;
                 };
                 UXMessageMask.ShowMessage(ownerContainer, false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error
@@ -537,16 +512,16 @@ namespace QLSDK.Tool
             var volume = tbSpeakerVolume.Value;
             try
             {
-                qlManager.SetSpeakerVolume(volume);
+                deviceManager.SetSpeakerVolume(volume);
                 if (0 == volume)
                 {
-                    qlManager.MuteSpeaker(true);
+                    deviceManager.MuteSpeaker(true);
                     this.btnSpeaker.Image = Properties.Resources.speaker_mute;
 
                 }
                 else
                 {
-                    qlManager.MuteSpeaker(false);
+                    deviceManager.MuteSpeaker(false);
                     this.btnSpeaker.Image = Properties.Resources.speaker;
                 }
             }
@@ -554,7 +529,7 @@ namespace QLSDK.Tool
             {
                 if (MessageBox.Show(this, ex.Message, "消息框", MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
                 {
-                    volume = qlManager.GetSpeakerVolume();
+                    volume = deviceManager.GetSpeakerVolume();
                     this.tbSpeakerVolume.Value = volume;
                 }
             }

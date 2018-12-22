@@ -287,7 +287,7 @@
             // oundTripTime
             // 
             this.oundTripTime.DataPropertyName = "RoundTripTime";
-            this.oundTripTime.HeaderText = "往返时间R";
+            this.oundTripTime.HeaderText = "往返时间";
             this.oundTripTime.Name = "oundTripTime";
             this.oundTripTime.ReadOnly = true;
             // 

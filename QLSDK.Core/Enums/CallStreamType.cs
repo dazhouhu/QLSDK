@@ -1,8 +1,17 @@
 ﻿namespace QLSDK.Core
 {
+    /// <summary>
+    /// 呼叫流类型
+    /// </summary>
     public enum CallStreamType
     {
-        AUDIO = 0 /**< Initiates the simulation call stream is audio. */
-        ,VIDEO     /**< Initiates the simulation call stream is video. */
+        /// <summary>
+        /// 音频
+        /// </summary>
+        AUDIO = 0, 
+        /// <summary>
+        /// 视频
+        /// </summary>
+        VIDEO
     }
 }

@@ -65,9 +65,9 @@ namespace QLSDK.Core
         }
         public static ErrorNumber AnswerCall(QLCall call,CallMode callMode)
         {
-            string cryptoSuiteType = "AES_CM_128_HMAC_SHA1_80";
-            string srtpKey = "HfVGG79oW5XStt9DewUYrdngYlV/QqDBGIDNFB7m";
-            var authToken = "AApzdG1lZXRpbmcxAAdzdHVzZXIxAAABPcJe1o4CsXgvirq1RQys3JCU0U8RvJ4uoA==";
+            string cryptoSuiteType = QLConfigManager.GetInstance().GetProperty(PropertyKey.CryptoSuiteType);
+            string srtpKey = QLConfigManager.GetInstance().GetProperty(PropertyKey.SRTPKey);
+            var authToken = QLConfigManager.GetInstance().GetProperty(PropertyKey.AuthToken);
 
             return AnswerCall(call.CallHandle, callMode, authToken, cryptoSuiteType, srtpKey, true);
         }
@@ -157,7 +157,7 @@ namespace QLSDK.Core
 
         public static ErrorNumber SetContentBuffer(ImageFormat format, int width, int height)
         {
-            return (ErrorNumber)PlcmHelper.setContentBuffer((int)format, width, height);
+            return (ErrorNumber)PlcmHelper.SetContentBuffer((int)format, width, height);
         }
 
         public static ErrorNumber DestroyExit()

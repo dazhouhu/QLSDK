@@ -1,8 +1,17 @@
 ﻿namespace QLSDK.Core
 {
+    /// <summary>
+    /// 呼叫模式
+    /// </summary>
     public enum CallMode
     {
-        VIDEO,     //视频通信
-        AUDIO      //音频通信
+        /// <summary>
+        /// 视频呼叫
+        /// </summary>
+        VIDEO,
+        /// <summary>
+        /// 音频呼叫
+        /// </summary>
+        AUDIO
     }
 }

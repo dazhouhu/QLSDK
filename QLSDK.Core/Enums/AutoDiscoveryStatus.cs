@@ -1,10 +1,25 @@
 ﻿namespace QLSDK.Core
 {
+    /// <summary>
+    /// 自动发现状态
+    /// </summary>
     public enum AutoDiscoveryStatus
     {
-        UNKNOWN = 0
-        ,SUCCESS                     /**< Initiates auto discovery successful. */
-        ,FAILURE                      /**< Initiates auto discovery failed. */
-        ,ERROR                         /**< Initiates auto discovery got an error. */
+        /// <summary>
+        /// 未知状态
+        /// </summary>
+        UNKNOWN = 0,
+        /// <summary>
+        /// 发现成功
+        /// </summary>
+        SUCCESS,
+        /// <summary>
+        /// 发现失败
+        /// </summary>
+        FAILURE,
+        /// <summary>
+        /// 发现错误
+        /// </summary>
+        ERROR
     }
 }

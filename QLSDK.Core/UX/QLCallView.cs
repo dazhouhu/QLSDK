@@ -12,11 +12,11 @@ using System.Collections.Specialized;
 
 namespace QLSDK.Core
 {
-    partial class QLCallView : UserControl
+    internal partial class QLCallView : UserControl
     {
         #region Field
         private ILog log = LogUtil.GetLogger("QLSDK.QLCallView");
-        private QLConfig qlConfig = null;
+        private QLConfigManager qlConfig = null;
         private QLCallManager callManager = null;
         private QLCall _currentCall = null;
         private Dictionary<QLChannel, ChannelView> channelViews = new Dictionary<QLChannel, ChannelView>();
@@ -31,7 +31,7 @@ namespace QLSDK.Core
         {
             InitializeComponent();
         }
-        public static QLCallView GetInstance()
+        internal static QLCallView GetInstance()
         {
             if (instance == null)
             {
@@ -47,12 +47,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region Properties
-        #endregion
-
-
-
-        #region SetCall
+        #region 设置显示的呼叫
+        /// <summary>
+        /// 设置显示的呼叫
+        /// </summary>
+        /// <param name="call">呼叫</param>
         private void SetCurrentCall(QLCall call)
         {
             if (null != _currentCall)
@@ -66,6 +65,8 @@ namespace QLSDK.Core
                 //  channelView.Value.Dispose();
             }
             channelViews.Clear();
+            this.Controls.Clear();
+
             _currentCall = call;
             if (null != _currentCall)
             {
@@ -149,7 +150,7 @@ namespace QLSDK.Core
         #endregion
 
         #region BindPanel
-        public void AttachViewContainer(Control container)
+        internal void AttachViewContainer(Control container)
         {
             if (null == container)
             {
@@ -189,8 +190,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region View Render
-        public void ViewRender()
+        #region 渲染视图
+        /// <summary>
+        /// 渲染视图
+        /// </summary>
+        internal void ViewRender()
         {
             if (null == _currentCall || channelViews.Count <= 0)
             {
@@ -214,7 +218,7 @@ namespace QLSDK.Core
             {
                 activeChannel = contentChannel;
             }
-            if (null != _currentCall.CurrentChannel)
+            if (null == activeChannel && null != _currentCall.CurrentChannel)
             {
                 activeChannel = _currentCall.CurrentChannel;
             }
@@ -311,7 +315,7 @@ namespace QLSDK.Core
                             view.BringToFront();
                             x = x + cWidth;
                             i++;
-                            if (i % 4 == 0)
+                            if (i % cCols == 0)
                             {
                                 x = 0;
                                 y = y + cHeight;
@@ -354,6 +358,15 @@ namespace QLSDK.Core
                         #endregion
                     }
                     break;
+            }
+            var maskPnl = ownerContainer.Controls.Find("msgPnl", true).FirstOrDefault();
+            if(null != maskPnl)
+            {
+                maskPnl.BringToFront();
+                if(maskPnl.Controls.Count>0)
+                {
+                    maskPnl.Controls[0].BringToFront();
+                }
             }
         }
         private Point LocateChannel(int rows, int cols, int x, int y, int cellWidth, int cellHeight, IList<ChannelView> channelViews)
@@ -480,20 +493,18 @@ namespace QLSDK.Core
         }
         #endregion
 
+        /// <summary>
+        /// 加载成功处理器
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void QLCallView_Load(object sender, EventArgs e)
         {
-            qlConfig = QLConfig.GetInstance();
+            qlConfig = QLConfigManager.GetInstance();
             callManager = QLCallManager.GetInstance();
-            callManager.PropertyChanged += (obj, args) =>
+            callManager.CurrentCallChanged+=() =>
             {
-                switch (args.PropertyName)
-                {
-                    case "CurrentCall":
-                        {
-                            SetCurrentCall(callManager.CurrentCall);
-                        }
-                        break;
-                }
+                SetCurrentCall(callManager.CurrentCall);
             };
         }
 

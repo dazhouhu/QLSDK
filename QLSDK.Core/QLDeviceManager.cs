@@ -4,23 +4,29 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 设备管理器
+    /// </summary>
     public class QLDeviceManager : BaseModel
     {
         #region Fields
         private ILog log = LogUtil.GetLogger("QLSDK.QLDeviceManager");
-        private QLConfig qlConfig = QLConfig.GetInstance();
+        private QLConfigManager qlConfig = QLConfigManager.GetInstance();
         private ObservableCollection<QLDevice> devices = new ObservableCollection<QLDevice>();
         #endregion
 
         #region Constructors
         private static readonly object lockObj = new object();
         private static QLDeviceManager _instance = null;
-        private QLDeviceManager() { }
+        private QLDeviceManager() {
+            devices.CollectionChanged += (obj, args) =>
+            {
+                DevicesChanged?.Invoke(_instance, args);
+            };
+        }
 
         public static QLDeviceManager GetInstance()
         {
@@ -39,11 +45,17 @@ namespace QLSDK.Core
         #endregion
 
         #region Events
+        /// <summary>
+        /// 设备集合改变事件
+        /// </summary>
         public event NotifyCollectionChangedEventHandler DevicesChanged;
         #endregion
 
-        #region CurrentDevice
+        #region 当前设备
         private QLDevice _currentAudioInputDevice;
+        /// <summary>
+        /// 当前音频输入设备
+        /// </summary>
         public QLDevice CurrentAudioInputDevice
         {
             get { return _currentAudioInputDevice; }
@@ -58,6 +70,9 @@ namespace QLSDK.Core
             }
         }
         private QLDevice _currentAudioOutputDevice;
+        /// <summary>
+        /// 当前音频输出设备
+        /// </summary>
         public QLDevice CurrentAudioOutputDevice
         {
             get { return _currentAudioOutputDevice; }
@@ -72,6 +87,9 @@ namespace QLSDK.Core
             }
         }
         private QLDevice _currentVideoInputDevice;
+        /// <summary>
+        /// 当前视频输入设备
+        /// </summary>
         public QLDevice CurrentVideoInputDevice
         {
             get { return _currentVideoInputDevice; }
@@ -89,7 +107,11 @@ namespace QLSDK.Core
         #endregion
 
         #region Methods
-        public void AddDevice(QLDevice device)
+        /// <summary>
+        /// 添加设备
+        /// </summary>
+        /// <param name="device">设备</param>
+        internal void AddDevice(QLDevice device)
         {
             if (device.DeviceName.Contains("none"))
             {
@@ -133,7 +155,11 @@ namespace QLSDK.Core
                 }
             }
         }
-        public void RemoveDevice(string deviceHandle)
+        /// <summary>
+        /// 移除设备
+        /// </summary>
+        /// <param name="deviceHandle">设备ID</param>
+        internal void RemoveDevice(string deviceHandle)
         {
             var device = GetDevice(deviceHandle);
             if (null != device)
@@ -141,7 +167,11 @@ namespace QLSDK.Core
                 RemoveDevice(device);
             }
         }
-        public void RemoveDevice(QLDevice device)
+        /// <summary>
+        /// 移除设备
+        /// </summary>
+        /// <param name="device">设备</param>
+        internal void RemoveDevice(QLDevice device)
         {
             if (null != device)
             {
@@ -161,22 +191,39 @@ namespace QLSDK.Core
             }
         }
 
+
+        /// <summary>
+        /// 获取设备
+        /// </summary>
+        /// <param name="deviceHandle">设备ID</param>
+        /// <returns>设备</returns>
         public QLDevice GetDevice(string deviceHandle)
         {
             return devices.FirstOrDefault(d => d.DeviceHandle == deviceHandle);
         }
+
+        /// <summary>
+        /// 是否包含设备
+        /// </summary>
+        /// <param name="deviceHandle">设备ID</param>
+        /// <returns>包含:true ,不包含：false</returns>
         public bool ContainDevice(string deviceHandle)
         {
             return null != GetDevice(deviceHandle);
         }
 
+        /// <summary>
+        /// 获取批量类型的设备列表
+        /// </summary>
+        /// <param name="deviceType">设备类型</param>
+        /// <returns>设备列表</returns>
         public List<QLDevice> GetDevicesByType(DeviceType deviceType)
         {
             return devices.Where(d => d.DeviceType == deviceType).ToList();
         }
         #endregion
 
-        #region Sound
+        #region 声音播放
         /// <summary>
         /// 播放声音
         /// </summary>
@@ -187,13 +234,14 @@ namespace QLSDK.Core
         {
             if (null != CurrentAudioOutputDevice)
             {
-                log.Info("startPlayingAlert filePath:" + filePath);
                 var errno = PlcmProxy.StartPlayAlert(filePath, isLoop, interval);
                 if (ErrorNumber.OK != errno)
                 {
-                    log.Error("开启铃声播放失败，ErrorNo=" + errno);
-                    //throw new Exception("开启铃声播放失败，ErrorNo=" + errno);
+                    var errMsg = "开启铃声播放失败，ErrorNo=" + errno;
+                    log.Error(errMsg);
+                    throw new Exception(errMsg);
                 }
+                log.Info("开启铃声播放成功 filePath:" + filePath);
             }
         }
         /// <summary>
@@ -206,11 +254,111 @@ namespace QLSDK.Core
                 var errno = PlcmProxy.StopPlayAlert();
                 if (ErrorNumber.OK != errno)
                 {
-                    log.Error("关闭铃声播放失败，ErrorNo=" + errno);
-                    //throw new Exception("关闭铃声播放失败，ErrorNo=" + errno);
+                    var errMsg = "关闭铃声播放失败，ErrorNo=" + errno;
+                    log.Error(errMsg);
+                    throw new Exception(errMsg);
                 }
+                log.Info("关闭铃声播放成功");
             }
         }
+        #endregion
+
+        #region 设备设置        
+        /// <summary>
+        /// 设置扬声器音量值
+        /// </summary>
+        /// <param name="volume">音量值</param>
+        public void SetMicVolume(int volume)
+        {
+            var errno = PlcmProxy.SetMicVolume(volume);
+            if (ErrorNumber.OK != errno)
+            {
+                var errMag = "麦克风音量设置失败,errno=" + errno;
+                log.Error(errMag);
+                throw new Exception(errMag);
+            }
+            log.Info("麦克风音量设置成功");
+        }
+        /// <summary>
+        /// 获取麦克风音量
+        /// </summary>
+        /// <returns>音量值</returns>
+        public int GetMicVolume()
+        {
+            log.Info("获取麦克风音量");
+            return PlcmProxy.GetMicVolume();
+        }
+
+        /// <summary>
+        /// 静音扬声器
+        /// </summary>
+        /// <param name="isMute">是否静音</param>
+        public void MuteSpeaker(bool isMute)
+        {
+            var errno = PlcmProxy.MuteSpeaker(isMute);
+            if (ErrorNumber.OK != errno)
+            {
+                var errMsg = "扬声器静音设置失败,errno=" + errno;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
+            log.Info("扬声器静音设置成功");
+        }
+        /// <summary>
+        /// 设置扬声器音量值
+        /// </summary>
+        /// <param name="volume">音量值</param>
+        public void SetSpeakerVolume(int volume)
+        {
+            var errno = PlcmProxy.SetSpeakerVolume(volume);
+            if (ErrorNumber.OK != errno)
+            {
+                var errMsg = "扬声器音量设置失败,errno=" + errno;
+                log.Error(errMsg);
+                throw new Exception(errMsg);
+            }
+            log.Info("扬声器音量设置成功");
+        }
+        /// <summary>
+        /// 获取扬声器音量
+        /// </summary>
+        /// <returns>音量值</returns>
+        public int GetSpeakerVolume()
+        {
+            log.Info("获取扬声器音量");
+            return PlcmProxy.GetSpeakerVolume();
+        }
+
+
+        /// <summary>
+        /// 打开摄像头
+        /// </summary>
+        public void StartCamera()
+        {
+            var errno = PlcmProxy.StartCamera();
+            if (ErrorNumber.OK != errno)
+            {
+                var errMag = "开启摄像头失败,errno=" + errno;
+                log.Error(errMag);
+                throw new Exception(errMag);
+            }
+            log.Info("开启摄像头成功");
+        }
+        /// <summary>
+        /// 关闭摄像头
+        /// </summary>
+        public void StopCamera()
+        {
+            var errno = PlcmProxy.StopCamera();
+            if (ErrorNumber.OK != errno)
+            {
+                var errMag = "关闭摄像头失败,errno=" + errno;
+                log.Error(errMag);
+                throw new Exception(errMag);
+            }
+            log.Info("关闭摄像头成功");
+        }
+
         #endregion
     }
 }

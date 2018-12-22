@@ -1,25 +1,55 @@
 ﻿
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 呼叫状态
+    /// </summary>
     public enum CallState
     {
+        /// <summary>
+        /// 未知状态
+        /// </summary>
         SIP_UNKNOWN,
-
-        SIP_INCOMING_INVITE,        /* UAS received INVITE, from CC */
-        SIP_INCOMING_CONNECTED,     /* from CC */
-
-        SIP_CALL_HOLD,              /* local hold */
-        SIP_CALL_HELD,              /* far site hold */
-        SIP_CALL_DOUBLE_HOLD,       /* both far-site and local hold */
-
-
-        SIP_OUTGOING_TRYING,         /* UAC get 100, from CC */
-        SIP_OUTGOING_RINGING,       /* UAC get 180 from CC */
-                                    //SIP_OUTGOING_ANSWERED,  /* UAC get 200 from CC */
-        SIP_OUTGOING_CONNECTED,     /* from CC */
+        /// <summary>
+        /// 呼入待接听中
+        /// </summary>
+        SIP_INCOMING_INVITE,
+        /// <summary>
+        /// 呼入通话中
+        /// </summary>
+        SIP_INCOMING_CONNECTED,
+        /// <summary>
+        /// 呼叫主动保持
+        /// </summary>
+        SIP_CALL_HOLD,
+        /// <summary>
+        /// 呼叫被动保持
+        /// </summary>
+        SIP_CALL_HELD, 
+        /// <summary>
+        /// 呼叫双向保持
+        /// </summary>
+        SIP_CALL_DOUBLE_HOLD,
+        /// <summary>
+        /// 尝试呼出中
+        /// </summary>
+        SIP_OUTGOING_TRYING,
+        /// <summary>
+        /// 呼出响铃中
+        /// </summary>
+        SIP_OUTGOING_RINGING, 
+        /// <summary>
+        /// 呼出通话中
+        /// </summary>
+        SIP_OUTGOING_CONNECTED,
+        /// <summary>
+        /// 呼出失败
+        /// </summary>
         SIP_OUTGOING_FAILURE,
-        SIP_CALL_CLOSED,
-        NULL_CALL
+        /// <summary>
+        /// 呼叫关闭结束
+        /// </summary>
+        SIP_CALL_CLOSED
     }
 
 }

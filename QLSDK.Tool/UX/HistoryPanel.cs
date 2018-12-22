@@ -197,7 +197,6 @@ namespace QLSDK.Tool.UX
                             case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                 status = "呼出失败";
                                 break;
-                            case QLSDK.Core.CallState.NULL_CALL: break;
                         }
                         e.Value = status;
                         e.FormattingApplied = true;
@@ -241,7 +240,6 @@ namespace QLSDK.Tool.UX
                     {
                         case QLSDK.Core.CallState.SIP_UNKNOWN:
                         case QLSDK.Core.CallState.SIP_CALL_CLOSED:
-                        case QLSDK.Core.CallState.NULL_CALL:
                         case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                             {
                                 switch(columnName)
@@ -351,7 +349,6 @@ namespace QLSDK.Tool.UX
                                 switch(call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                         break;
@@ -359,11 +356,11 @@ namespace QLSDK.Tool.UX
                                         {
                                             if(null == QLDeviceManager.GetInstance().CurrentVideoInputDevice)
                                             {
-                                                QLManager.GetInstance().AnswerCall(call, QLSDK.Core.CallMode.AUDIO);
+                                                call.AnswerCall(QLSDK.Core.CallMode.AUDIO);
                                             }
                                             else
                                             {
-                                                QLManager.GetInstance().AnswerCall(call, call.CallMode);
+                                                call.AnswerCall(call.CallMode);
                                             }                                            
                                         }break;
                                     case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
@@ -383,7 +380,6 @@ namespace QLSDK.Tool.UX
                                 switch (call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                         break;
@@ -392,7 +388,7 @@ namespace QLSDK.Tool.UX
                                     case QLSDK.Core.CallState.SIP_INCOMING_CONNECTED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_CONNECTED:
                                         {
-                                            QLManager.GetInstance().HoldCall(call);
+                                            call.HoldCall();
                                         }
                                         break;
                                     case QLSDK.Core.CallState.SIP_CALL_HOLD:
@@ -411,7 +407,6 @@ namespace QLSDK.Tool.UX
                                 switch (call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                         break;
@@ -425,7 +420,7 @@ namespace QLSDK.Tool.UX
                                     case QLSDK.Core.CallState.SIP_CALL_HOLD:
                                     case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
                                         {
-                                            QLManager.GetInstance().ResumeCall(call);
+                                            call.ResumeCall();
                                         }
                                         break;
                                 }
@@ -438,7 +433,6 @@ namespace QLSDK.Tool.UX
                                 switch (call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                         break;
@@ -451,7 +445,7 @@ namespace QLSDK.Tool.UX
                                     case QLSDK.Core.CallState.SIP_CALL_HOLD:
                                     case QLSDK.Core.CallState.SIP_CALL_DOUBLE_HOLD:
                                         {
-                                            QLManager.GetInstance().EndCall(call);
+                                            call.HangUpCall();
                                         }
                                         break;
                                 }
@@ -464,11 +458,10 @@ namespace QLSDK.Tool.UX
                                 switch (call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
-                                        {
-                                            QLManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.AUDIO);
+                                        {                                            
+                                            QLCallManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.AUDIO);
                                         }
                                         break;
                                     case QLSDK.Core.CallState.SIP_INCOMING_INVITE:
@@ -490,11 +483,10 @@ namespace QLSDK.Tool.UX
                                 switch (call.CallState)
                                 {
                                     case QLSDK.Core.CallState.SIP_UNKNOWN:
-                                    case QLSDK.Core.CallState.NULL_CALL:
                                     case QLSDK.Core.CallState.SIP_CALL_CLOSED:
                                     case QLSDK.Core.CallState.SIP_OUTGOING_FAILURE:
                                         {
-                                            QLManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.VIDEO);
+                                            QLCallManager.GetInstance().DialCall(call.CallName, QLSDK.Core.CallMode.VIDEO);
                                         }
                                         break;
                                     case QLSDK.Core.CallState.SIP_INCOMING_INVITE:

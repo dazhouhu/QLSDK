@@ -19,7 +19,7 @@ namespace QLSDK.Core
         #endregion
 
         #region Constructors
-        public ChannelView(QLChannel channel)
+        internal ChannelView(QLChannel channel)
         {
             InitializeComponent();
             _channel = channel;
@@ -35,9 +35,14 @@ namespace QLSDK.Core
             {
                 lblName.Visible = !value;
                 lblChannelName.Visible = value;
+                /*
                 btnAudio.Visible = value;
                 btnVideo.Visible = value;
                 PaintView();
+                */
+
+                btnAudio.Visible = false;
+                btnVideo.Visible = false;
             }
         }
         #endregion
@@ -134,7 +139,7 @@ namespace QLSDK.Core
             }
             catch (Exception ex)
             {
-
+                log.Error(ex.Message);
             }
         }
 
@@ -263,7 +268,7 @@ namespace QLSDK.Core
             }
             catch (Exception ex)
             {
-
+                log.Error(ex.Message);
             }
         }
     }

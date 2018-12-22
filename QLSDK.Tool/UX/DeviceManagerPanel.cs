@@ -21,14 +21,15 @@ namespace QLSDK.Tool.UX
 
         private void DeviceManagerPanel_Load(object sender, EventArgs e)
         {
+            //音频输入设备
             var audioInputDevices = deviceManager.GetDevicesByType(DeviceType.AUDIOINPUT);
             cbxAudioInput.DataSource = audioInputDevices;
             cbxAudioInput.SelectedItem = deviceManager.CurrentAudioInputDevice;
-
+            //音频输出设备
             var audioOutputDevices = deviceManager.GetDevicesByType(DeviceType.AUDIOOUTPUT);
             cbxAudioOutput.DataSource = audioOutputDevices;
             cbxAudioOutput.SelectedItem = deviceManager.CurrentAudioOutputDevice;
-
+            //视频输入设备
             var deviceInputDevices = deviceManager.GetDevicesByType(DeviceType.VIDEOINPUT);
             cbxVideoInput.DataSource = deviceInputDevices;
             cbxVideoInput.SelectedItem = deviceManager.CurrentVideoInputDevice;

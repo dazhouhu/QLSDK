@@ -23,7 +23,7 @@ namespace QLSDK.Tool.UX
             grdMediaStatistics.AutoGenerateColumns = false;
 
             this.txtCallRate.Text = "SIP";
-            this.txtCallRate.Text = QLConfig.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
+            this.txtCallRate.Text = QLConfigManager.GetInstance().GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate);
         }
         private static SignalPanel GetInstamce()
         {

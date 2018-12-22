@@ -1,8 +1,6 @@
 ﻿using log4net;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -141,11 +139,26 @@ namespace QLSDK.Core
         public T data;
     }
 
+    /// <summary>
+    ///认证数据
+    /// </summary>
     internal class AuthorizeData
     {
+        /// <summary>
+        /// SIP服务器地址
+        /// </summary>
         public string sip_addr { get; set; }
+        /// <summary>
+        /// SIP服务器用户名
+        /// </summary>
         public string account { get; set; }
+        /// <summary>
+        /// SIP服务器密码
+        /// </summary>
         public string pass { get; set; }
+        /// <summary>
+        /// 日志等级
+        /// </summary>
         public string log_level { get; set; }
     }
 }

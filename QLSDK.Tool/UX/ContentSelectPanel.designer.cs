@@ -88,13 +88,13 @@
             // 
             // cbxApp
             // 
-            this.cbxApp.DisplayMember = "DeviceName";
+            this.cbxApp.DisplayMember = "AppName";
             this.cbxApp.FormattingEnabled = true;
             this.cbxApp.Location = new System.Drawing.Point(138, 104);
             this.cbxApp.Name = "cbxApp";
             this.cbxApp.Size = new System.Drawing.Size(163, 20);
             this.cbxApp.TabIndex = 9;
-            this.cbxApp.ValueMember = "DeviceHandle";
+            this.cbxApp.ValueMember = "AppHandle";
             // 
             // label1
             // 

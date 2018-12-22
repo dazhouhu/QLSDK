@@ -20,10 +20,10 @@ namespace QLSDK.Core
         #region Fields
         private static ILog log = LogUtil.GetLogger("QLSDK.QLManager");
         private static Action<ObservableCollection<QLMediaStatistics>> mediaStatisticsCallBack;
-        private static Action<ObservableCollection<QLDevice>> appCallBack;
+        private static Action<ObservableCollection<QLApp>> appCallBack;
         private ObservableCollection<QLMediaStatistics> mediaStatistics = new ObservableCollection<QLMediaStatistics>();
-        private ObservableCollection<QLDevice> apps = new ObservableCollection<QLDevice>();
-        private static QLConfig qlConfig = QLConfig.GetInstance();
+        private ObservableCollection<QLApp> apps = new ObservableCollection<QLApp>();
+        private static QLConfigManager qlConfig = QLConfigManager.GetInstance();
         private static QLCallView callView = QLCallView.GetInstance();
         private static QLDeviceManager deviceManager = QLDeviceManager.GetInstance();
         private static QLCallManager callManager = QLCallManager.GetInstance();
@@ -43,6 +43,8 @@ namespace QLSDK.Core
             {
                 appCallBack?.Invoke(apps);
             };
+
+            this.InternalQLEvent += callManager.QLEventHandle;
         }
         public static QLManager GetInstance()
         {
@@ -78,8 +80,11 @@ namespace QLSDK.Core
         #endregion
 
         #region Events
+        /// <summary>
+        /// Poly核心事件
+        /// </summary>
         public event QLEventHandle QLEvent;
-        internal static event QLEventHandle InternalQLEvent;
+        internal event QLEventHandle InternalQLEvent;
         #endregion
 
         /// <summary>
@@ -158,6 +163,9 @@ namespace QLSDK.Core
         private DisplayCodecCapabilities displayCodecCapabilities = new DisplayCodecCapabilities(DisplayCodecCapabilitiesF);
         private AddAppCallback addAppCallback = new AddAppCallback(AddAppCallbackF);
 
+        /// <summary>
+        /// 事件回调
+        /// </summary>
         private static void AddEventCallbackF(IntPtr eventHandle, int call, IntPtr placeId, int eventType, IntPtr callerName,
                  IntPtr calleeName, int userCode, IntPtr reason, int wndWidth, int wndHeight, bool plugDeviceStatus, IntPtr plugDeviceName, IntPtr deviceHandle, IntPtr ipAddress, int callMode,
                  int streamId, int activeSpeakerStreamId, int remoteVideoChannelNum, IntPtr remoteChannelDisplayName, bool isActiveSpeaker, int isTalkingFlag, IntPtr regID, IntPtr sipCallId, IntPtr version, IntPtr serialNumber, IntPtr notBefore, IntPtr notAfter,
@@ -223,7 +231,9 @@ namespace QLSDK.Core
                                 (AutoDiscoveryStatus)discoveryStatus);
             AddEvent(evt);
         }
-
+        /// <summary>
+        /// 事件释放回调
+        /// </summary>
         private static void DispatchEventsCallbackF()
         {
             DispatchEvents();
@@ -465,11 +475,13 @@ namespace QLSDK.Core
                     */
                     #endregion
             }
-            QLManager.InternalQLEvent?.Invoke(evt);
+            QLManager.GetInstance().InternalQLEvent?.Invoke(evt);
             QLManager.GetInstance().QLEvent?.Invoke(evt);
         }
         #endregion
-        
+        /// <summary>
+        /// 日志回调
+        /// </summary>
         private static void AddLogCallbackF(long timestamp, bool expired, int funclevel, int pid, int tid, IntPtr lev, IntPtr comp, IntPtr msg, int len)
         {
             var output = string.Empty;
@@ -480,15 +492,15 @@ namespace QLSDK.Core
             {
                 component = "wrapper";
             }
-            output += component;
 
             output += string.Format(" [PID:{0}][TID:{1}] ", pid, tid); ;
+
+            output += component+"  "+message;
 
             for (int i = 0; i < funclevel; i++)
             {
                 output += "  ";
             }
-            output += level.ToString();
 
             if (level == "DEBUG")
             {
@@ -511,22 +523,26 @@ namespace QLSDK.Core
                 log.Fatal(output);
             }
         }
-
+        /// <summary>
+        /// 应用程序回调
+        /// </summary>
         private static void AddAppCallbackF(IntPtr appHandle, IntPtr appNamePtr)
         {
             var appName = IntPtrHelper.IntPtrTostring(appNamePtr);
             log.Info("AddAppCallbackF: appHandle:" + appHandle + "  appName:" + appName);
-            var app = new QLDevice(DeviceType.APPLICATIONS, appHandle.ToString(), appName);
+            var app = new QLApp(appHandle, appName);
             callView.Invoke(new Action(() =>
             {
                 QLManager.GetInstance().apps.Add(app);
             }));
         }
 
-
+        /// <summary>
+        /// 设备回调
+        /// </summary>
         private static void AddDeviceCallbackF(int deviceType, IntPtr deviceHandlePtr, IntPtr deviceNamePtr)
         {
-            if (deviceType < (int)DeviceType.APPLICATIONS)
+            if (deviceType <= (int)DeviceType.MONITOR)
             {
                 var deviceHandle = IntPtrHelper.IntPtrToUTF8string(deviceHandlePtr);
                 var deviceName = IntPtrHelper.IntPtrToUTF8string(deviceNamePtr);
@@ -540,7 +556,9 @@ namespace QLSDK.Core
             }
         }
 
-
+        /// <summary>
+        /// 统计信息回调
+        /// </summary>
         private static void DisplayMediaStatisticsCallbackF(IntPtr channelNamePtr, IntPtr participantNamePtr, IntPtr remoteSystemIdPtr, IntPtr callRatePtr, IntPtr packetsLostPtr, IntPtr packetLossPtr,
                  IntPtr videoProtocolPtr, IntPtr videoRatePtr, IntPtr videoRateUsedPtr, IntPtr videoFrameRatePtr, IntPtr videoPacketsLostPtr, IntPtr videoJitterPtr,
                  IntPtr videoFormatPtr, IntPtr errorConcealmentPtr, IntPtr audioProtocolPtr, IntPtr audioRatePtr, IntPtr audioPacketsLostPtr, IntPtr audioJitterPtr,
@@ -614,6 +632,9 @@ namespace QLSDK.Core
                 }));
             }
         }
+        /// <summary>
+        /// 呼叫信息回调
+        /// </summary>
         private static void DisplayCallStatisticsCallbackF(int timeInLastCall, int totalTime, int callPlaced, int callReceived, int callConnected)
         {
             /*
@@ -621,7 +642,9 @@ namespace QLSDK.Core
             callStatisticsDisplay.displayCallStatistics(callStatistics);
             */
         }
-
+        /// <summary>
+        /// 编码能力回调
+        /// </summary>
         private static void DisplayCodecCapabilitiesF(IntPtr typePtr, IntPtr codecNamePtr)
         {
             /*
@@ -732,6 +755,7 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
+            //设置呼叫数自动
             errNo = PlcmProxy.SetRemoteVideoStreamNumber(-1, 0, 0);
             if (ErrorNumber.OK != errNo)
             {
@@ -750,32 +774,12 @@ namespace QLSDK.Core
         {
             callView.AttachViewContainer(container);
         }
-        #region 不提供的接口
-        /// <summary>
-        /// 获取plcm核心句柄
-        /// </summary>
-        /// <returns></returns>
-        //public IntPtr GetCoreHandle();
-
-        /// <summary>
-        /// 登录绑定polc服务
-        /// </summary>
-        /// <param name="userName">用户名</param>
-        /// <param name="passWord">密码</param>
-        /// <param name="displayName">显示名</param>
-        //public void Login(string userName, string passWord, string displayName) { }
-
-        /// <summary>
-        /// 切换摄像头
-        /// </summary>
-        //public void SwitchCamera() { }
-        #endregion
-
+        
         /// <summary>
         /// 获取当前的regId
         /// </summary>
         /// <returns>当前的regId</returns>
-        public string GetRegId()
+        public string GetRegID()
         {
             return qlConfig.GetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID);
         }
@@ -788,233 +792,6 @@ namespace QLSDK.Core
             PlcmProxy.UnregisterClient();
         }
 
-        /// <summary>
-        /// 呼叫
-        /// </summary>
-        /// <param name="dialUri">被呼叫方Uri</param>
-        /// <param name="callType">呼叫模式 默认：VIDEO</param>
-        /// <returns>呼叫处理器ID</returns>
-        public QLCall DialCall(string dialUri, CallMode callMode = CallMode.VIDEO)
-        {
-            int callHandle = -1;
-            qlConfig.SetProperty(PropertyKey.CalleeAddr, dialUri);
-            var errno= PlcmProxy.PlaceCall(dialUri, ref callHandle, callMode);
-            if(ErrorNumber.OK== errno)
-            {
-                var call = new QLCall(callHandle)
-                {
-                    CallHandle = callHandle,
-                    CallName = dialUri,
-                    CallMode = callMode,
-                    ActiveSpeakerId = 0,
-                    CallState = CallState.SIP_UNKNOWN,
-                    CallType = CallType.UNKNOWN,
-                    StartTime = DateTime.Now,
-                };
-                callManager.AddCall(call);
-                callManager.CurrentCall = call;
-                return call;
-            }
-            else
-            {
-                throw new Exception("呼叫失败，ErrorNo="+errno);
-            }
-        }
-
-        /// <summary>
-        /// 开启铃声播放
-        /// </summary>
-        /// <param name="assetPath">铃声文件路径</param>
-        /// <param name="isLoop">是否循环</param>
-        /// <param name="interval">事件间隔</param>
-        public void StartAlert(string assetPath, bool isLoop, int interval)
-        {
-            deviceManager.PlaySound(assetPath, isLoop, interval);
-        }
-
-        /// <summary>
-        /// 关闭铃声播放
-        /// </summary>
-        public void StopAlert()
-        {
-            deviceManager.StopSound();
-        }
-        /// <summary>
-        /// 挂断呼叫
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        public void EndCall(QLCall call=null)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) return;  //throw new Exception("呼叫不存在，不能挂断");
-            var errno = PlcmProxy.TerminateCall(call.CallHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("挂断呼叫失败，ErrorNo=" + errno);
-            }
-        }
-        /// <summary>
-        /// 保持呼叫
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        public void HoldCall(QLCall call = null)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能保持呼叫");
-            var errno = PlcmProxy.HoldCall(call.CallHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("保持呼叫失败，ErrorNo=" + errno);
-            }
-        }
-        /// <summary>
-        /// 恢复保持的呼叫
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        public void ResumeCall(QLCall call = null)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能恢复");
-            var errno = PlcmProxy.ResumeCall(call.CallHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("恢复呼叫失败，ErrorNo=" + errno);
-            }
-        }
-
-        /// <summary>
-        /// 接听/应答呼叫
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        /// <param name="callMode">响应呼叫类型  默认 VIDEO</param>
-        public void AnswerCall(QLCall call = null, CallMode callMode=CallMode.VIDEO)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能接听");
-            var errno=PlcmProxy.AnswerCall(call, callMode);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("接听应答呼叫失败，ErrorNo=" + errno);
-            }
-        }
-
-        /// <summary>
-        /// 切换音频视频模式
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        /// <param name="callMode">呼叫类型,默认为Video</param>
-        public void ChangeCallType(QLCall call=null, CallMode callMode=CallMode.VIDEO)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能切换音频视频模式"); 
-            var errno = PlcmProxy.ChangeCallMode(call.CallHandle, callMode);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("切换音频视频模式失败，ErrorNo=" + errno);
-            }
-        }
-
-        /// <summary>
-        /// 修改扬声器的音量
-        /// </summary>
-        /// <param name="volume">音量</param>
-        public void AdjustSpeakerVolume(int volume)
-        {
-            var errno = PlcmProxy.SetSpeakerVolume(volume);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("修改扬声器的音量失败，ErrorNo=" + errno);
-            }
-        }
-
-        /// <summary>
-        /// 开启发送content
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        /// <param name="bufType">BufType类型</param>
-        public void StartSendContent(QLCall call, string monitorHandle, string appHandle)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能内容共享");
-            var errno = PlcmProxy.StartShareContent(call.CallHandle, monitorHandle,new IntPtr(int.Parse(appHandle)));
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("内容共享失败，ErrorNo=" + errno);
-            }
-        }
-
-        /// <summary>
-        /// 停止发送content
-        /// </summary>
-        /// <param name="call">呼叫处理器,为空时为当前呼叫</param>
-        public void StopSendContent(QLCall call=null)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) return; //throw new Exception("呼叫不存在，不能停止内容共享");
-            var errno = PlcmProxy.StopShareContent(call.CallHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("停止内容共享失败，ErrorNo=" + errno);
-            }
-        }
-
-        /*
-        public void StartShareContent(string deviceHandle, IntPtr appWndHandle)
-        {
-            if (null != callManager.CurrentCall)
-            {
-                var errno = PlcmProxy.StartShareContent(callManager.CurrentCall.CallHandle, deviceHandle, appWndHandle);
-                if (ErrorNumber.OK != errno)
-                {
-                    throw new Exception("开始共享内容失败,errno=" + errno);
-                }
-            }
-            else
-            {
-                throw new Exception("当前呼叫为空，不能共享内容");
-            }
-        }
-        public void StartBFCPContent()
-        {
-            if (null != callManager.CurrentCall)
-            {
-                var errno = PlcmProxy.StartBFCPContent(callManager.CurrentCall.CallHandle);
-                if (ErrorNumber.OK != errno)
-                {
-                    throw new Exception("开始共享内容失败,errno=" + errno);
-                }
-            }
-            else
-            {
-                throw new Exception("当前呼叫为空，不能共享内容");
-            }
-        }
-
-        public void StopShareContent()
-        {
-            if (null != callManager.CurrentCall)
-            {
-                var errno = PlcmProxy.StopShareContent(callManager.CurrentCall.CallHandle);
-                if (ErrorNumber.OK != errno)
-                {
-                    throw new Exception("结束共享内容失败,errno=" + errno);
-                }
-            }
-            else
-            {
-                throw new Exception("当前呼叫为空，不能结束共享内容");
-            }
-        }
-
-        public void SetContentBuffer(ImageFormat format, int width, int height)
-        {
-            var errno = PlcmProxy.SetContentBuffer(format, width, height);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("开始共享内容失败,errno=" + errno);
-            }
-        }
-        */
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -1034,93 +811,17 @@ namespace QLSDK.Core
         {
             qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate, callRate.ToString());
         }
+        
 
-
-        #region Device Setting
-        public void MuteLocalVideo(bool isMute)
-        {
-            var errno = PlcmProxy.MuteLocalVideo(isMute);
-            if (errno != ErrorNumber.OK)
-            {
-                log.Error("mute local video failed. ErrorNum = " + errno);
-            }
-        }
-        public void MuteMic(bool isMute)
-        {
-            if (null != callManager.CurrentCall)
-            {
-                var errno = PlcmProxy.MuteMic(callManager.CurrentCall.CallHandle, isMute);
-                if (ErrorNumber.OK != errno)
-                {
-                    throw new Exception("麦克风静音设置失败,errno=" + errno);
-                }
-            }
-            else
-            {
-                throw new Exception("当前呼叫为空，不能进行麦克风静音设置");
-            }
-        }
-
-        public void MuteSpeaker(bool isMute)
-        {
-            var errno = PlcmProxy.MuteSpeaker(isMute);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("扬声器静音设置失败,errno=" + errno);
-            }
-        }
-
-        public void SetMicVolume(int volume)
-        {
-            var errno = PlcmProxy.SetMicVolume(volume);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("麦克风音量设置失败,errno=" + errno);
-            }
-        }
-
-        public int GetMicVolume()
-        {
-            return PlcmProxy.GetMicVolume();
-        }
-
-        public void SetSpeakerVolume(int volume)
-        {
-            var errno = PlcmProxy.SetSpeakerVolume(volume);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("扬声器音量设置失败,errno=" + errno);
-            }
-        }
-
-        public int GetSpeakerVolume()
-        {
-            return PlcmProxy.GetSpeakerVolume();
-        }
-        public void StartCamera()
-        {
-            var errno = PlcmProxy.StartCamera();
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("开启摄像头失败,errno=" + errno);
-            }
-        }
-
-        public void StopCamera()
-        {
-            var errno = PlcmProxy.StopCamera();
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("关闭摄像头失败,errno=" + errno);
-            }
-        }
-
-        #endregion
         #region 获取统计信息
+        /// <summary>
+        /// 获取呼叫信号统计信息
+        /// </summary>
+        /// <param name="callBack">获取结果回调函数</param>
         public void GetMediaStatistics(Action<ObservableCollection<QLMediaStatistics>> callBack)
         {
             mediaStatistics.Clear();
-            if (null !=callManager.CurrentCall)
+            if (null != callManager.CurrentCall)
             {
                 mediaStatisticsCallBack = callBack;
                 var errno = PlcmProxy.GetMediaStatistics(callManager.CurrentCall.CallHandle);
@@ -1134,26 +835,28 @@ namespace QLSDK.Core
                 throw new Exception("当前呼叫为空，获取信号流信息");
             }
         }
-        public void GetApps(Action<ObservableCollection<QLDevice>> callback)
+        /// <summary>
+        /// 获取应该程序列表
+        /// </summary>
+        /// <param name="callback">获取结果回调函数</param>
+        public void GetApps(Action<ObservableCollection<QLApp>> callback)
         {
             apps.Clear();
-            if (null != callManager.CurrentCall)
+
+            appCallBack = callback;
+            var errno = PlcmProxy.GetApplicationInfo();
+            if (ErrorNumber.OK != errno)
             {
-                appCallBack = callback;
-                var errno = PlcmProxy.GetApplicationInfo();
-                if (ErrorNumber.OK != errno)
-                {
-                    throw new Exception("获取信号流信息失败,errno=" + errno);
-                }
-            }
-            else
-            {
-                throw new Exception("当前呼叫为空，获取信号流信息");
+                throw new Exception("获取信号流信息失败,errno=" + errno);
             }
         }
         #endregion
 
         #region ViewLayout
+        /// <summary>
+        /// 设置布局
+        /// </summary>
+        /// <param name="layout">布局类型</param>
         public void SetLayout(LayoutType layout)
         {
             qlConfig.SetProperty(PropertyKey.LayoutType, layout.ToString());
@@ -1161,56 +864,5 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region Call
-        /// <summary>
-        /// 获取当前呼叫
-        /// </summary>
-        /// <returns></returns>
-        public QLCall GetCurrentCall()
-        {
-            return callManager.CurrentCall;
-        }
-
-        /// <summary>
-        /// 发送DTMF key
-        /// </summary>
-        /// <param name="call">呼叫，为空时默认为当前呼叫</param>
-        /// <param name="key">DTMFkey</param>
-        public void SendDTMFKey(QLCall call,DTMFKey key)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能发送DTMF Key");
-
-            var errno = PlcmProxy.SendDTMFKey(call.CallHandle, key);
-            if (errno != ErrorNumber.OK)
-            {
-                var errMsg = "发送DTMF Key失败，errno=" + errno;
-                log.Error(errMsg);
-                throw new Exception(errMsg);
-            }
-            log.Info(string.Format("发送DTMF Key({0})成功.",key));
-        }
-
-        /// <summary>
-        /// 发送FECC
-        /// </summary>
-        /// <param name="call">呼叫，为空时默认为当前呼叫<</param>
-        /// <param name="key">FECC Key</param>
-        /// <param name="action">FECC Action</param>
-        public void SendFECC(QLCall call,FECCKey key,FECCAction action)
-        {
-            if (null == call) call = GetCurrentCall();
-            if (null == call) throw new Exception("呼叫不存在，不能发送FECC");
-
-            var errno = PlcmProxy.SendFECCKey(call.CallHandle, key,action);
-            if (errno != ErrorNumber.OK)
-            {
-                var errMsg = "发送FECC失败，errno=" + errno;
-                log.Error(errMsg);
-                throw new Exception(errMsg);
-            }
-            log.Info(string.Format("发送FECC({0})成功.", key));
-        }
-        #endregion
-    }
+   }
 }

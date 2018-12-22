@@ -158,7 +158,7 @@ namespace QLSDK.Core
             SetLength(0);
         }
 
-#if !(NET_1_1)
+        #if !(NET_1_1)
         /// <summary>
         /// Releases all resources used by this object.
         /// </summary>
@@ -173,7 +173,7 @@ namespace QLSDK.Core
             }
             base.Dispose(disposing);
         }
-#endif
+        #endif
 
         /// <summary>
         /// Flips this buffer. The limit is set to the current position and then 

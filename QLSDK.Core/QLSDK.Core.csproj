@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\AutoDiscoveryStatus.cs" />
-    <Compile Include="Enums\CallEventState.cs" />
     <Compile Include="Enums\CallMode.cs" />
     <Compile Include="Enums\CallState.cs" />
     <Compile Include="Enums\CallStreamType.cs" />
@@ -68,21 +67,15 @@
     <Compile Include="Enums\LayoutType.cs" />
     <Compile Include="Enums\MediaType.cs" />
     <Compile Include="Enums\PropertyKey.cs" />
-    <Compile Include="Enums\Protocal.cs" />
-    <Compile Include="Enums\QoECaptureType.cs" />
-    <Compile Include="Enums\QoEMediaType.cs" />
     <Compile Include="Enums\QoEType.cs" />
-    <Compile Include="Enums\RecordingPlaybackStatus.cs" />
     <Compile Include="Enums\RecordPipeType.cs" />
-    <Compile Include="Enums\RecordWaveFormat.cs" />
-    <Compile Include="Enums\ResolutionFormat.cs" />
-    <Compile Include="Enums\SelectMode.cs" />
     <Compile Include="Helper\ByteBuffer.cs" />
     <Compile Include="Helper\HttpUtil.cs" />
     <Compile Include="Helper\IntPtrHelper.cs" />
     <Compile Include="Helper\LogUtil.cs" />
     <Compile Include="Helper\SerializerUtil.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\QLApp.cs" />
     <Compile Include="Model\QLCall.cs" />
     <Compile Include="Model\QLChannel.cs" />
     <Compile Include="Model\QLDevice.cs" />
@@ -97,7 +90,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QLCallManager.cs" />
-    <Compile Include="QlConfig.cs" />
+    <Compile Include="QlConfigManager.cs" />
     <Compile Include="QLDeviceManager.cs" />
     <Compile Include="QLManager.cs" />
     <Compile Include="UX\QLChannelView.cs">

@@ -10,17 +10,25 @@ namespace QLSDK.Core
     /// </summary>
     internal class IntPtrHelper
     {
+        /// <summary>
+        /// 转换IntPtr到byte数据
+        /// </summary>
         public static byte[] IntPtrToBytes(IntPtr ptr, int length)
         {
             var bytes = new byte[length];
             Marshal.Copy(ptr, bytes, 0, length);
             return bytes;
         }
-
+        /// <summary>
+        /// 转换IntPtr到字符串数据
+        /// </summary>
         public static string IntPtrTostring(IntPtr ptr)
         {
             return Marshal.PtrToStringAnsi(ptr);
         }
+        /// <summary>
+        /// 转换IntPtr到UTF8数据
+        /// </summary>
         public static string IntPtrToUTF8string(IntPtr ptr)
         {
             if (ptr == IntPtr.Zero)
@@ -37,7 +45,9 @@ namespace QLSDK.Core
             }
             return Encoding.UTF8.GetString(bytes.ToArray(), 0, bytes.Count);
         }
-
+        /// <summary>
+        /// 转换byte到IntPtr数据
+        /// </summary>
         public static IntPtr IntPtrFromBytes(byte[] bytes)
         {
             int size = bytes.Length;
@@ -52,7 +62,9 @@ namespace QLSDK.Core
                 Marshal.FreeHGlobal(buffer);
             }
         }
-
+        /// <summary>
+        /// 转换object到IntPtr数据
+        /// </summary>
         public static IntPtr IntPtrFromObject(object obj)
         {
             var hwnd = GCHandle.Alloc(obj);

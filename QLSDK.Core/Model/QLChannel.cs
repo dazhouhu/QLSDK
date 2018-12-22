@@ -1,44 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace QLSDK.Core
 {
-    public class QLChannel : BaseModel
+    /// <summary>
+    /// 呼叫通道
+    /// </summary>
+    internal class QLChannel : BaseModel
     {
         #region Constructors
-        public QLChannel(QLCall call)
-        {
-            this._call = call;
-
-        }
-        public QLChannel(QLCall call, int id, MediaType mediaType, bool isActive = false)
+        internal QLChannel(QLCall call, int id, MediaType mediaType, bool isActive = false)
         {
             this._call = call;
             this.ChannelID = id;
-            this._mediaType = mediaType;
-            this.IsActive = isActive;
-        }
-        public QLChannel(QLCall call, int id, string name, MediaType mediaType, bool isActive = false)
-        {
-            this._call = call;
-            this.ChannelID = id;
-            this.ChannelName = name;
             this._mediaType = mediaType;
             this.IsActive = isActive;
         }
         #endregion
 
-        #region Field
+        #region 所属呼叫
         private QLCall _call;
+        /// <summary>
+        /// 所属呼叫
+        /// </summary>
         public QLCall Call { get { return _call; } }
         #endregion
 
-        #region ChannelID
+        #region 通道ID
         private int _channelID = 0;
+        /// <summary>
+        /// 通道ID
+        /// </summary>
         public int ChannelID
         {
             get { return _channelID; }
@@ -50,8 +41,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region ChannelName
+        #region 通道名
         private string _channelName;
+        /// <summary>
+        /// 通道名
+        /// </summary>
         public string ChannelName
         {
             get { return _channelName; }
@@ -66,8 +60,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region IsActive
+        #region 是否活动
         private bool _isActive;
+        /// <summary>
+        /// 是否活动
+        /// </summary>
         public bool IsActive
         {
             get { return _isActive; }
@@ -82,8 +79,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region IsVideo
+        #region 是否视频通道
         private bool _isVideo;
+        /// <summary>
+        /// 是否视频通道
+        /// </summary>
         public bool IsVideo
         {
             get { return _isVideo; }
@@ -98,8 +98,11 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region IsAudio
+        #region 是否音频通道
         private bool _isAudio;
+        /// <summary>
+        /// 是否音频通道
+        /// </summary>
         public bool IsAudio
         {
             get { return _isAudio; }
@@ -111,16 +114,22 @@ namespace QLSDK.Core
         }
         #endregion
 
-        #region MediaType
+        #region 通道流类型
         private MediaType _mediaType;
+        /// <summary>
+        /// 通道流类型
+        /// </summary>
         public MediaType MediaType
         {
             get { return _mediaType; }
         }
         #endregion
 
-        #region Size
+        #region 区域大小
         private Size _size = new Size(400, 300);
+        /// <summary>
+        /// 区域大小
+        /// </summary>
         public Size Size
         {
             get { return _size; }

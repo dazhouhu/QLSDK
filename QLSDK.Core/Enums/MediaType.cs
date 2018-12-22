@@ -1,11 +1,25 @@
 ﻿namespace QLSDK.Core
 {
+    /// <summary>
+    /// 媒体流类型
+    /// </summary>
     public enum MediaType
     {
-        UNKNOWN = 0
-
-        ,LOCAL         /**< Local video stream. */
-        ,REMOTE        /**< Remote video stream. */
-        ,CONTENT       /**< Content stream. */
+        /// <summary>
+        /// 未知
+        /// </summary>
+        UNKNOWN = 0,
+        /// <summary>
+        /// 本地视频
+        /// </summary>
+        LOCAL,         /**< Local video stream. */
+        /// <summary>
+        /// 远端视频
+        /// </summary>
+        REMOTE,        /**< Remote video stream. */
+        /// <summary>
+        /// 共享流视频
+        /// </summary>
+        CONTENT       /**< Content stream. */
     }
 }

@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
-    public class QLConfig
+    /// <summary>
+    /// 配置处理器
+    /// </summary>
+    public class QLConfigManager
     {
         #region Fields
         private IDictionary<PropertyKey, string> properties;
@@ -19,12 +19,12 @@ namespace QLSDK.Core
 
         #region Constructors
         private static readonly object lockObj = new object();
-        private static QLConfig instance = null;
-        private QLConfig()
+        private static QLConfigManager instance = null;
+        private QLConfigManager()
         {
             properties = new Dictionary<PropertyKey, string>();            
         }
-        public static QLConfig GetInstance()
+        public static QLConfigManager GetInstance()
         {
             if (null == instance)
             {
@@ -32,7 +32,7 @@ namespace QLSDK.Core
                 {
                     if (instance == null)
                     {
-                        instance = new QLConfig();
+                        instance = new QLConfigManager();
                     }
                 }
             }
@@ -41,6 +41,11 @@ namespace QLSDK.Core
         #endregion
 
         #region Set 
+        /// <summary>
+        /// 设置属性
+        /// </summary>
+        /// <param name="key">属性名</param>
+        /// <param name="value">属性值</param>
         public void SetProperty(PropertyKey key, string value)
         {
             log.Info(string.Format(string.Format("SetProperty:{0}={1}", key, value)));
@@ -157,9 +162,16 @@ namespace QLSDK.Core
                             #endregion
                         } break;
                     case PropertyKey.LayoutType:break;
+                    case PropertyKey.CryptoSuiteType:break;
+                    case PropertyKey.SRTPKey:break;
+                    case PropertyKey.AuthToken:break;
                 }
             }
         }
+        /// <summary>
+        /// 批量设置属性
+        /// </summary>
+        /// <param name="properties">属性集合</param>
         public void SetProperties(IDictionary<PropertyKey, string> properties)
         {
             if (null != properties && properties.Count > 0)
@@ -182,17 +194,29 @@ namespace QLSDK.Core
         #endregion
 
         #region Get
+        /// <summary>
+        /// 获取所有属性
+        /// </summary>
+        /// <returns>属性集合</returns>
         public IDictionary<PropertyKey, string> GetProerpties()
         {
             log.Info("GetProerpties");
             return properties;
         }
-
+        /// <summary>
+        /// 获取指定属性
+        /// </summary>
+        /// <param name="key">属性名</param>
+        /// <returns>属性值</returns>
         public string GetProperty(PropertyKey key)
         {
             log.Info(string.Format("GetProperty:{0}:{1}", key, properties[key]));
             return properties[key];
         }
+        /// <summary>
+        /// 获取默认配置属性
+        /// </summary>
+        /// <returns>属性集合</returns>
         public IDictionary<PropertyKey,string> GetDefaultConfig()
         {
             return  new Dictionary<PropertyKey, string>()
@@ -291,7 +315,10 @@ namespace QLSDK.Core
                 {PropertyKey.SOUND_HOLD,"hold.wav"},
                 {PropertyKey.ICE_AUTH_TOKEN,""},
                 {PropertyKey.StaticImage,"static_img_640_480.png" },
-                {PropertyKey.LayoutType,"Presentation" }
+                {PropertyKey.LayoutType,"Presentation" },
+                {PropertyKey.CryptoSuiteType,"AES_CM_128_HMAC_SHA1_80" },
+                {PropertyKey.SRTPKey,"HfVGG79oW5XStt9DewUYrdngYlV/QqDBGIDNFB7m" },
+                {PropertyKey.AuthToken,"AApzdG1lZXRpbmcxAAdzdHVzZXIxAAABPcJe1o4CsXgvirq1RQys3JCU0U8RvJ4uoA==" }
             };
         }
         #endregion

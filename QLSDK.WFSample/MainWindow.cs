@@ -165,52 +165,15 @@ namespace QLSDK.WFSample
                 e.Cancel = false;
                 return;
             }
-            var msg = string.Empty;
-            var currentCall = qlManager.GetCurrentCall();
-            if (null != currentCall)
+
+            var currentCall = callManager.CurrentCall;
+            if (null != currentCall && currentCall.IsActive())
             {
-                switch (currentCall.CallState)
+                var stateText= currentCall.CallStateText();
+                stateText += '\n' + "确定要挂断当前通话。";
+                if (MessageBox.Show(this, stateText, "确认信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
-                    case CallState.SIP_UNKNOWN:
-                    case CallState.NULL_CALL:
-                    case CallState.SIP_OUTGOING_FAILURE:
-                    case CallState.SIP_CALL_CLOSED:
-                        break;
-                    case CallState.SIP_INCOMING_INVITE:
-                        msg = string.Format("【{0}】正在呼入响铃中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_INCOMING_CONNECTED:
-                        msg = string.Format("【{0}】正在呼入通话中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_CALL_HOLD:
-                        msg = string.Format("【{0}】正在主动保持连接中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_CALL_HELD:
-                        msg = string.Format("【{0}】正在被动保持连接中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_CALL_DOUBLE_HOLD:
-                        msg = string.Format("【{0}】正在双方保持连接中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_OUTGOING_TRYING:
-                        msg = string.Format("【{0}】正在尝试呼出中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_OUTGOING_RINGING:
-                        msg = string.Format("【{0}】正在呼出响铃中", currentCall.CallName);
-                        break;
-                    case CallState.SIP_OUTGOING_CONNECTED:
-                        msg = string.Format("【{0}】正在呼出通话中", currentCall.CallName);
-                        break;
-                }
-            }
-            if (!string.IsNullOrEmpty(msg))
-            {
-                msg += '\n' + "确定要挂断当前通话。";
-                var okAction = new Action(() => {
-                    
-                });
-                if( MessageBox.Show(this,msg,"确认信息", MessageBoxButtons.OKCancel,MessageBoxIcon.Question)== DialogResult.OK)
-                {
-                    qlManager.EndCall();
+                    currentCall.HangUpCall();
                     e.Cancel = false;
                 }
                 else
@@ -222,7 +185,6 @@ namespace QLSDK.WFSample
             {
                 e.Cancel = false;
             }
-
         }
     }
 }

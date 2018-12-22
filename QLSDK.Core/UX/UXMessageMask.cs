@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 遮罩层显示控件
+    /// </summary>
     public partial class UXMessageMask : Panel
     {
         private UXMessageMask()
@@ -34,6 +37,17 @@ namespace QLSDK.Core
             base.OnPaint(pe);
         }
 
+        /// <summary>
+        /// 显示消息
+        /// </summary>
+        /// <param name="ownerContainer">所属容器</param>
+        /// <param name="isModal">是否模态框显示</param>
+        /// <param name="msg">消息</param>
+        /// <param name="btnType">按钮类型</param>
+        /// <param name="boxIcon">图标</param>
+        /// <param name="okAction">ok回调</param>
+        /// <param name="cancelAction">cancel回调</param>
+        /// <param name="noAction">no回调</param>
         public static void ShowMessage(Control ownerContainer, bool isModal, string msg, MessageBoxButtonsType btnType, MessageBoxIcon boxIcon
             , Action okAction = null, Action cancelAction = null, Action noAction = null)
         {
@@ -85,6 +99,10 @@ namespace QLSDK.Core
             }
         }
 
+        /// <summary>
+        /// 隐藏消息
+        /// </summary>
+        /// <param name="ownerContainer">容器控件</param>
         public static void HideMessage(Control ownerContainer)
         {
             if (null == ownerContainer)
@@ -97,7 +115,12 @@ namespace QLSDK.Core
             }
         }
 
-        public static void ShowForm(Control ownerContainer, Control container)
+        /// <summary>
+        /// 显示表单
+        /// </summary>
+        /// <param name="ownerContainer">所属容器</param>
+        /// <param name="form">表单控件</param>
+        public static void ShowForm(Control ownerContainer, Control form)
         {
             HideMessage(ownerContainer);
 
@@ -113,15 +136,20 @@ namespace QLSDK.Core
             ownerContainer.Controls.Add(msgPnl);
             msgPnl.BringToFront();
 
-            var x = (ownerContainer.Width - container.Width) / 2;
-            var y = (ownerContainer.Height - container.Height) / 2;
-            container.Location = new Point(x, y);
-            msgPnl.Controls.Add(container);
-            container.Disposed += (obj, args) => {
+            var x = (ownerContainer.Width - form.Width) / 2;
+            var y = (ownerContainer.Height - form.Height) / 2;
+            form.Location = new Point(x, y);
+            msgPnl.Controls.Add(form);
+            form.Disposed += (obj, args) => {
                 HideMessage(ownerContainer);
             };
         }
 
+        /// <summary>
+        /// 大小改变时，重绘
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UXMessageMask_SizeChanged(object sender, EventArgs e)
         {
             if(this.Controls.Count>0)
@@ -142,13 +170,37 @@ namespace QLSDK.Core
 
     public enum MessageBoxButtonsType
     {
+        /// <summary>
+        /// 无按钮
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// 确认按钮
+        /// </summary>  
         OK,
+        /// <summary>
+        /// 确认，取消按钮
+        /// </summary>
         OKCancel,
+        /// <summary>
+        /// 是，否按钮
+        /// </summary>
         YesNo,
+        /// <summary>
+        /// 是，否，取消按钮 
+        /// </summary>
         YesNoCancel,
+        /// <summary>
+        /// 接听按钮
+        /// </summary>
         Answer,
+        /// <summary>
+        /// 挂断按钮 
+        /// </summary>
         Hangup,
+        /// <summary>
+        /// 接听，挂断按钮
+        /// </summary>
         AnswerHangup
     }
 }
