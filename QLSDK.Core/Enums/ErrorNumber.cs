@@ -1,6 +1,6 @@
 ﻿namespace QLSDK.Core
 {
-    public enum ErrorNumber
+    internal enum ErrorNumber
     {
         /// <summary>
         /// 未知

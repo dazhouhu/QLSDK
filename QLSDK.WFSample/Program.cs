@@ -52,7 +52,7 @@ namespace QLSDK.WFSample
         {
             try
             {
-                QLSDK.Core.QLManager.GetInstance().Release();
+                QLSDK.Core.QLManager.GetInstance().Dispose();
                 Environment.Exit(0);
             }
             catch(Exception ex)

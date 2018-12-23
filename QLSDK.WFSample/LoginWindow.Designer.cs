@@ -78,7 +78,7 @@
             this.lblPawword.Name = "lblPawword";
             this.lblPawword.Size = new System.Drawing.Size(53, 12);
             this.lblPawword.TabIndex = 2;
-            this.lblPawword.Text = "用户名：";
+            this.lblPawword.Text = "密  码：";
             // 
             // txtPassword
             // 

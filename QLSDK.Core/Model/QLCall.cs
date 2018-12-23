@@ -7,6 +7,9 @@ using System.Windows.Forms;
 
 namespace QLSDK.Core
 {
+    /// <summary>
+    /// 呼叫处理类
+    /// </summary>
     public class QLCall : BaseModel
     {
         private ILog log = LogUtil.GetLogger("QLSDK.QLCall");
@@ -27,7 +30,8 @@ namespace QLSDK.Core
         /// <summary>
         /// 网络地址
         /// </summary>
-        public string NetworkIP
+        [JsonIgnore]
+        internal string NetworkIP
         {
             get { return _networkIP; }
             set
@@ -44,7 +48,7 @@ namespace QLSDK.Core
         /// 是否只能音频
         /// </summary>
         [JsonIgnore]
-        public bool IsAudioOnly
+        internal bool IsAudioOnly
         {
             get { return _isAudioOnly; }
             set
@@ -64,7 +68,7 @@ namespace QLSDK.Core
         /// 是否静音
         /// </summary>
         [JsonIgnore]
-        public bool IsMute
+        internal bool IsMute
         {
             get { return _isMute; }
             set
@@ -77,24 +81,7 @@ namespace QLSDK.Core
             }
         }
         #endregion
-        #region 打开/关闭 本地视频
-        private bool _muteVideo;
-        /// <summary>
-        /// 打开/关闭 本地视频
-        /// </summary>
-        public bool MuteVideo
-        {
-            get { return _muteVideo; }
-            set
-            {
-                if (_muteVideo != value)
-                {
-                    _muteVideo = value;
-                    NotifyPropertyChanged("MuteVideo");
-                }
-            }
-        }
-        #endregion
+        
 
         #region 当前活动通道
         private QLChannel _currentChannel;
@@ -345,7 +332,26 @@ namespace QLSDK.Core
             }
         }
         #endregion
-        
+        #region 打开/关闭 本地视频
+        private bool _muteVideo;
+        /// <summary>
+        /// 打开/关闭 本地视频
+        /// </summary>
+        [JsonIgnore]
+        public bool MuteVideo
+        {
+            get { return _muteVideo; }
+            set
+            {
+                if (_muteVideo != value)
+                {
+                    _muteVideo = value;
+                    NotifyPropertyChanged("MuteVideo");
+                }
+            }
+        }
+        #endregion
+
         #region 开始时间
         /// <summary>
         /// 开始时间

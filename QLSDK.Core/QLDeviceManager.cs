@@ -213,7 +213,7 @@ namespace QLSDK.Core
         }
 
         /// <summary>
-        /// 获取批量类型的设备列表
+        /// 获取指定类型的设备列表
         /// </summary>
         /// <param name="deviceType">设备类型</param>
         /// <returns>设备列表</returns>

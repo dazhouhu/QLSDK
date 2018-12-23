@@ -39,6 +39,7 @@
             this.menuItemP = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemVAS = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCP = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSignal = new System.Windows.Forms.Button();
             this.btnMore = new System.Windows.Forms.Button();
             this.btnCall = new System.Windows.Forms.Button();
@@ -47,7 +48,6 @@
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnSpeaker = new System.Windows.Forms.Button();
             this.btnMic = new System.Windows.Forms.Button();
-            this.menuItemSingle = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tbSpeakerVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMicVolume)).BeginInit();
             this.moreMenu.SuspendLayout();
@@ -87,7 +87,7 @@
             this.menuItemDeviceManager,
             this.menuItemLayout});
             this.moreMenu.Name = "moreMenu";
-            this.moreMenu.Size = new System.Drawing.Size(154, 92);
+            this.moreMenu.Size = new System.Drawing.Size(181, 114);
             // 
             // menuItemDTMF
             // 
@@ -141,6 +141,13 @@
             this.menuItemCP.Size = new System.Drawing.Size(225, 22);
             this.menuItemCP.Text = "Continuous Presence 布局";
             this.menuItemCP.Click += new System.EventHandler(this.menuItemCP_Click);
+            // 
+            // menuItemSingle
+            // 
+            this.menuItemSingle.Name = "menuItemSingle";
+            this.menuItemSingle.Size = new System.Drawing.Size(225, 22);
+            this.menuItemSingle.Text = "单视图布局";
+            this.menuItemSingle.Click += new System.EventHandler(this.menuItemSingle_Click);
             // 
             // btnSignal
             // 
@@ -292,13 +299,6 @@
             this.btnMic.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnMic.UseVisualStyleBackColor = true;
             this.btnMic.Click += new System.EventHandler(this.btnMic_Click);
-            // 
-            // menuItemSingle
-            // 
-            this.menuItemSingle.Name = "menuItemSingle";
-            this.menuItemSingle.Size = new System.Drawing.Size(225, 22);
-            this.menuItemSingle.Text = "单图布局";
-            this.menuItemSingle.Click += new System.EventHandler(this.menuItemSingle_Click);
             // 
             // QLToolBar
             // 

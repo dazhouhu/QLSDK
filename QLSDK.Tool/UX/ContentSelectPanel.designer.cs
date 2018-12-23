@@ -42,6 +42,7 @@
             // rdoBFCP
             // 
             this.rdoBFCP.AutoSize = true;
+            this.rdoBFCP.Checked = true;
             this.rdoBFCP.Location = new System.Drawing.Point(23, 26);
             this.rdoBFCP.Name = "rdoBFCP";
             this.rdoBFCP.Size = new System.Drawing.Size(95, 16);
@@ -54,19 +55,17 @@
             // rdMonitor
             // 
             this.rdMonitor.AutoSize = true;
-            this.rdMonitor.Checked = true;
+            this.rdMonitor.Enabled = false;
             this.rdMonitor.Location = new System.Drawing.Point(23, 56);
             this.rdMonitor.Name = "rdMonitor";
             this.rdMonitor.Size = new System.Drawing.Size(107, 16);
             this.rdMonitor.TabIndex = 8;
-            this.rdMonitor.TabStop = true;
             this.rdMonitor.Text = "监视器内容共享";
             this.rdMonitor.UseVisualStyleBackColor = true;
             this.rdMonitor.CheckedChanged += new System.EventHandler(this.rdMonitor_CheckedChanged);
             // 
             // cbxFormat
             // 
-            this.cbxFormat.Enabled = false;
             this.cbxFormat.FormattingEnabled = true;
             this.cbxFormat.Items.AddRange(new object[] {
             "YUV",
@@ -79,6 +78,7 @@
             // cbxMonitor
             // 
             this.cbxMonitor.DisplayMember = "DeviceName";
+            this.cbxMonitor.Enabled = false;
             this.cbxMonitor.FormattingEnabled = true;
             this.cbxMonitor.Location = new System.Drawing.Point(138, 78);
             this.cbxMonitor.Name = "cbxMonitor";
@@ -89,6 +89,7 @@
             // cbxApp
             // 
             this.cbxApp.DisplayMember = "AppName";
+            this.cbxApp.Enabled = false;
             this.cbxApp.FormattingEnabled = true;
             this.cbxApp.Location = new System.Drawing.Point(138, 104);
             this.cbxApp.Name = "cbxApp";

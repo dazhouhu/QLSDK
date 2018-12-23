@@ -795,7 +795,7 @@ namespace QLSDK.Core
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Release()
+        private void Release()
         {
             if (IsRegisted)
             {
