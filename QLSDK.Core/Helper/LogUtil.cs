@@ -2,6 +2,7 @@
 using log4net.Core;
 using log4net.Appender;
 using System.Windows.Forms;
+using log4net.Repository.Hierarchy;
 
 namespace QLSDK.Core
 {
@@ -10,6 +11,7 @@ namespace QLSDK.Core
     /// </summary>
     public class LogUtil
     {
+        private static Level logLevel = Level.Error;
         static LogUtil()
         {
             RollingFileAppender rfa = new RollingFileAppender();
@@ -25,7 +27,7 @@ namespace QLSDK.Core
             rfa.ImmediateFlush = true;
             rfa.MaxSizeRollBackups = 100;
             rfa.ActivateOptions();
-            rfa.Threshold = Level.Debug;
+            rfa.Threshold = Level.Error;
             log4net.Config.BasicConfigurator.Configure(rfa);
         }
         /// <summary>
@@ -58,7 +60,26 @@ namespace QLSDK.Core
                 case "fatal": logLevel = Level.Fatal; break;
                 case "off": logLevel = Level.Off; break;
             }
-            LogManager.GetLogger("QLSDKFileAppender").Logger.Repository.Threshold = logLevel;
+            var hierarchy = LogManager.GetRepository() as Hierarchy;
+
+            // Get the list of Appenders
+            if (hierarchy != null)
+            {
+                var appenders = hierarchy.GetAppenders();
+
+                if (appenders != null)
+                {
+                    foreach(var appender in appenders)
+                    {
+                        if (appender is AppenderSkeleton)
+                        {
+                            AppenderSkeleton appenderSkeleton = appender as AppenderSkeleton;
+
+                            appenderSkeleton.Threshold = logLevel;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -47,7 +47,8 @@ namespace QLSDK.WFSample
             try
             {
                 var qlConfig = new Dictionary<PropertyKey, string>();
-                qlConfig.Add(PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName, "SDKSample测试用户");
+                //qlConfig.Add(PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName, "SDKSample测试用户");
+                qlConfig.Add(PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel, "Debug");
                 QLManager.GetInstance().Login(server, userName, pwd, qlConfig);
                 this.DialogResult = DialogResult.OK;
                 this.Close();

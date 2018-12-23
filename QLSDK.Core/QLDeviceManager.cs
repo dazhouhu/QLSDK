@@ -64,7 +64,7 @@ namespace QLSDK.Core
                 if (_currentAudioInputDevice != value)
                 {
                     _currentAudioInputDevice = value;
-                    qlConfig.SetProperty(PropertyKey.AUDIO_INPUT_DEVICE, _currentAudioInputDevice?.DeviceHandle);
+                    qlConfig.SetProperty(PropertyKey.AUDIO_INPUT_DEVICE, _currentAudioInputDevice?.DeviceHandle,true);
                     NotifyPropertyChanged("CurrentAudioInputDevice");
                 }
             }
@@ -81,7 +81,7 @@ namespace QLSDK.Core
                 if (_currentAudioOutputDevice != value)
                 {
                     _currentAudioOutputDevice = value;
-                    qlConfig.SetProperty(PropertyKey.AUDIO_OUTPUT_DEVICE, _currentAudioOutputDevice?.DeviceHandle);
+                    qlConfig.SetProperty(PropertyKey.AUDIO_OUTPUT_DEVICE, _currentAudioOutputDevice?.DeviceHandle,true);
                     NotifyPropertyChanged("CurrentAudioOutputDevice");
                 }
             }
@@ -98,7 +98,7 @@ namespace QLSDK.Core
                 if (_currentVideoInputDevice != value)
                 {
                     _currentVideoInputDevice = value;
-                    qlConfig.SetProperty(PropertyKey.VIDEO_INPUT_DEVICE, _currentVideoInputDevice?.DeviceHandle);
+                    qlConfig.SetProperty(PropertyKey.VIDEO_INPUT_DEVICE, _currentVideoInputDevice?.DeviceHandle,true);
                     NotifyPropertyChanged("CurrentVideoInputDevice");
                 }
             }

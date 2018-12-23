@@ -46,7 +46,8 @@ namespace QLSDK.Core
         /// </summary>
         /// <param name="key">属性名</param>
         /// <param name="value">属性值</param>
-        public void SetProperty(PropertyKey key, string value)
+        /// <param name="isPersistence">是否持久化保存</param>
+        public void SetProperty(PropertyKey key, string value,bool isPersistence)
         {
             log.Info(string.Format(string.Format("SetProperty:{0}={1}", key, value)));
             properties[key] = value;
@@ -59,15 +60,16 @@ namespace QLSDK.Core
                     log.Error(errMsg);
                     throw new Exception(errMsg);
                 }
-                /*
-                errno = PlcmProxy.UpdateConfig();
-                if (errno != ErrorNumber.OK)
+                if (isPersistence)
                 {
-                    var errMsg = string.Format("{0}更新配置失败,err={1}", key, errno);
-                    log.Error(errMsg);
-                    throw new Exception(errMsg);
+                    errno = PlcmProxy.UpdateConfig();
+                    if (errno != ErrorNumber.OK)
+                    {
+                        var errMsg = string.Format("{0}更新配置失败,err={1}", key, errno);
+                        log.Error(errMsg);
+                        throw new Exception(errMsg);
+                    }
                 }
-                */
             }
             else
             {
@@ -172,23 +174,25 @@ namespace QLSDK.Core
         /// 批量设置属性
         /// </summary>
         /// <param name="properties">属性集合</param>
-        public void SetProperties(IDictionary<PropertyKey, string> properties)
+        /// <param name="isPersistence">是否持久化保存</param>
+        public void SetProperties(IDictionary<PropertyKey, string> properties, bool isPersistence)
         {
             if (null != properties && properties.Count > 0)
             {
                 foreach (var propertyKV in properties)
                 {
-                    SetProperty(propertyKV.Key, propertyKV.Value);                    
+                    SetProperty(propertyKV.Key, propertyKV.Value,false);                    
                 }
-                /*
-                errno = PlcmProxy.UpdateConfig();
-                if (errno != ErrorNumber.OK)
+                if (isPersistence)
                 {
-                    var errMsg = string.Format("更新配置失败,err={0}", errno);
-                    log.Error(errMsg);
-                    throw new Exception(errMsg);
+                    var errno = PlcmProxy.UpdateConfig();
+                    if (errno != ErrorNumber.OK)
+                    {
+                        var errMsg = string.Format("更新配置失败,err={0}", errno);
+                        log.Error(errMsg);
+                        throw new Exception(errMsg);
+                    }
                 }
-                */
             }
         }
         #endregion
@@ -244,7 +248,7 @@ namespace QLSDK.Core
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_SIPClientListeningPort,"5060"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_SIPClientListeningTLSPort,"5061"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_EnableSVC,"true"},
-                {PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel,"DEBUG"},
+                {PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel,"Error"},
                 {PropertyKey.PLCM_MFW_KVLIST_KEY_User_Agent,"MFW_SDK"},
                 {PropertyKey.PLCM_MFW_KVLIST_ICE_UserName,""},
                 {PropertyKey.PLCM_MFW_KVLIST_ICE_Password,""},

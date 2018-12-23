@@ -871,7 +871,7 @@ namespace QLSDK.Core
         private void diallCallDiret(string dialUri, CallMode callMode = CallMode.VIDEO)
         {
             int callHandle = -1;
-            qlConfig.SetProperty(PropertyKey.CalleeAddr, dialUri);
+            qlConfig.SetProperty(PropertyKey.CalleeAddr, dialUri,true);
             var errno = PlcmProxy.PlaceCall(dialUri, ref callHandle, callMode);
             if (ErrorNumber.OK == errno)
             {

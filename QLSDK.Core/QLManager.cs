@@ -132,14 +132,16 @@ namespace QLSDK.Core
                 ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Password] = postResult.data.pass;
                 if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID]))
                 {
-                   // ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = postResult.data.account + "@" + postResult.data.sip_addr;
+                    ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = postResult.data.account + "@" + postResult.data.sip_addr;
                 }
+                /*
                 if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName]))
                 {
                     ps[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName] = postResult.data.account;
                 }
-                
-                if(!string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel]))
+                */
+
+                if (!string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel]))
                 {
                     LogUtil.SetLogLevel(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_LogLevel]);
                 }
@@ -691,7 +693,7 @@ namespace QLSDK.Core
             {
                 config[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName] = string.Empty;
             }
-            qlConfig.SetProperties(config);
+            qlConfig.SetProperties(config,false);
             //初始化
             errno = PlcmProxy.Initialize();
             if (ErrorNumber.OK != errno)
@@ -721,7 +723,7 @@ namespace QLSDK.Core
             }
             if(!string.IsNullOrWhiteSpace(dispName))
             {
-                qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName, dispName);
+                qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName, dispName,true);
             }
             //获取音频输入设备信息
             var errNo = PlcmProxy.GetDevice(DeviceType.AUDIOINPUT);
@@ -809,7 +811,7 @@ namespace QLSDK.Core
         /// 设置网络带宽HcallRate">呼叫速率</param>
         public void SetNetworkCallRate(int callRate)
         {
-            qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate, callRate.ToString());
+            qlConfig.SetProperty(PropertyKey.PLCM_MFW_KVLIST_KEY_CallSettings_NetworkCallRate, callRate.ToString(),true);
         }
         
 
@@ -859,7 +861,7 @@ namespace QLSDK.Core
         /// <param name="layout">布局类型</param>
         public void SetLayout(LayoutType layout)
         {
-            qlConfig.SetProperty(PropertyKey.LayoutType, layout.ToString());
+            qlConfig.SetProperty(PropertyKey.LayoutType, layout.ToString(),true);
             callView.ViewRender();
         }
         #endregion
