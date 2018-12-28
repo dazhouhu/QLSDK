@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\..\QLSDK doc\QLSDKLib\log4net.dll</HintPath>
+      <HintPath>..\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -56,6 +56,7 @@
     <Compile Include="Enums\CallStreamType.cs" />
     <Compile Include="Enums\CallType.cs" />
     <Compile Include="Enums\CertificateChoiceType.cs" />
+    <Compile Include="Enums\ContentType.cs" />
     <Compile Include="Enums\DeviceType.cs" />
     <Compile Include="Enums\DTMFKey.cs" />
     <Compile Include="Enums\ErrorNumber.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Enums\RecordPipeType.cs" />
     <Compile Include="Helper\ByteBuffer.cs" />
     <Compile Include="Helper\HttpUtil.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="Helper\IntPtrHelper.cs" />
     <Compile Include="Helper\LogUtil.cs" />
     <Compile Include="Helper\SerializerUtil.cs" />
@@ -93,6 +95,12 @@
     <Compile Include="QlConfigManager.cs" />
     <Compile Include="QLDeviceManager.cs" />
     <Compile Include="QLManager.cs" />
+    <Compile Include="UX\ContentRegion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UX\ContentRegion.Designer.cs">
+      <DependentUpon>ContentRegion.cs</DependentUpon>
+    </Compile>
     <Compile Include="UX\QLChannelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,6 +137,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UX\ContentRegion.resx">
+      <DependentUpon>ContentRegion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UX\QLChannelView.resx">
       <DependentUpon>QLChannelView.cs</DependentUpon>
     </EmbeddedResource>
@@ -158,12 +169,6 @@
     <None Include="Resources\call24.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\camera.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\camera_mute.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\cancel.png" />
   </ItemGroup>
   <ItemGroup>
@@ -183,12 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\mic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\mic_mute.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\more.png" />
@@ -216,6 +215,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\speaker_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic_mute.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera_mute.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera_mute.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mic_mute.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

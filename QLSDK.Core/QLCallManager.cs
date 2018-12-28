@@ -24,6 +24,7 @@ namespace QLSDK.Core
         private QLCallView callView = null;
 
         private ObservableCollection<QLCall> _callList = null;
+        private ContentRegion _contentRegion = null;
         #endregion
         #region Constructors
         private static readonly object lockObj = new object();
@@ -135,12 +136,14 @@ namespace QLSDK.Core
                     case EventType.SIP_REGISTER_FAILURE:
                         {                            
                             CurrentCall = null;
+                            _contentRegion?.Close();
                             throw new Exception("注册失败");
                         }
                         break;
                     case EventType.SIP_REGISTER_UNREGISTERED:
                         {
                             CurrentCall = null;
+                            _contentRegion?.Close();
                             throw new Exception("未注册");
                         }
                         break;
@@ -199,6 +202,7 @@ namespace QLSDK.Core
                                 catch(Exception ex)
                                 {
                                     log.Error(ex.Message);
+                                    call.RejectCall();
                                     callView.ShowMessage(false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                                 }
                             };
@@ -498,6 +502,60 @@ namespace QLSDK.Core
                             }
                         }
                         break;
+                    case EventType.SIP_CALL_MODE_UPGRADE_REQ:
+                        {
+                            var call = GetCall(evt.CallHandle, true, evt);
+                            if (null == call) throw new Exception("呼叫不存在");
+                            evt.Call = call;
+
+                            var msg = string.Format("【{0}】请求中，是否接听？", evt.CallMode == CallMode.VIDEO ? "视频通话" : "语言通话");
+                            Action yesAction = () =>
+                            {
+                                try
+                                {
+                                    if (null != this.CurrentCall && this.CurrentCall.IsActive())
+                                    {
+                                        this.CurrentCall.HangUpCall();
+                                    }
+                                    var callMode = evt.CallMode;
+                                    if (null == deviceManager.CurrentVideoInputDevice)
+                                    { //当前视频设备为空时，只能语音通话
+                                        callMode = CallMode.AUDIO;
+                                    }
+                                    call.AnswerCall(callMode);
+                                    call.CallMode = callMode;
+                                }
+                                catch (Exception ex)
+                                {
+                                    log.Error(ex.Message);
+                                    callView.ShowMessage(false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
+                                }
+                            };
+                            Action noAction = () =>
+                            {
+                                try
+                                {
+                                    if (null != this.CurrentCall && this.CurrentCall.IsActive())
+                                    {
+                                        this.CurrentCall.HangUpCall();
+                                    }
+                                    var callMode = call.CallMode;
+                                    if (null == deviceManager.CurrentVideoInputDevice)
+                                    { //当前视频设备为空时，只能语音通话
+                                        callMode = CallMode.AUDIO;
+                                    }
+                                    call.AnswerCall(callMode);
+                                }
+                                catch (Exception ex)
+                                {
+                                    log.Error(ex.Message);
+                                    callView.ShowMessage(false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
+                                }
+                            };
+                            callView.ShowMessage(true, msg, MessageBoxButtonsType.YesNo, MessageBoxIcon.Question
+                                                        , yesAction, noAction);
+                        }
+                        break;
                     #endregion
                     #region Content
                     case EventType.SIP_CONTENT_INCOMING:
@@ -506,31 +564,23 @@ namespace QLSDK.Core
                             if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
 
+                            #region ContentChannel
                             var contentChannel = call.GetContentChannel();
                             if (null != contentChannel)
                             {
                                 call.RemoveChannel(contentChannel.ChannelID);
                             }
                             contentChannel = new QLChannel(call, evt.StreamId, MediaType.CONTENT);
+                            contentChannel.ChannelName = "远端共享流";
                             call.AddChannel(contentChannel);
                             contentChannel.Size = new Size(evt.WndWidth, evt.WndHeight);
                             contentChannel.IsVideo = true;
+                            #endregion
+
                             call.IsContentSupported = true;
                             call.IsContentIdle = false;
-                        }
-                        break;
-                    case EventType.SIP_CONTENT_CLOSED:
-                        {
-                            var call = GetCall(evt.CallHandle, true, evt);
-                            if (null == call) throw new Exception("呼叫不存在");
-                            evt.Call = call;
-                            var contentChannel = call.GetContentChannel();
-                            if (null != contentChannel)
-                            {
-                                call.RemoveChannel(contentChannel.ChannelID);
-                            }
-                            call.IsContentSupported = true;
-                            call.IsContentIdle = true;
+
+                            _contentRegion?.Close();
                         }
                         break;
                     case EventType.SIP_CONTENT_SENDING:
@@ -539,16 +589,33 @@ namespace QLSDK.Core
                             if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
 
+                            #region ContentChannel
+                            var contentChannel = call.GetLocalContentChannel();
+                            if (null != contentChannel)
+                            {
+                                call.RemoveChannel(contentChannel.ChannelID);
+                            }
+                            contentChannel = new QLChannel(call, -1, MediaType.LOCALCONTENT);
+                            contentChannel.ChannelName = "本地共享流";
+                            call.AddChannel(contentChannel);
+                            contentChannel.IsVideo = true;
+                            #endregion
+
                             call.IsContentSupported = true;
                             call.IsContentIdle = false;
-
+                            /*
                             Action unSharedAction = () =>
                             {
                                 _currentCall?.StopSendContent();
                             };
-
+                            
                             callView.ShowMessage(false, "共享内容中，确认停止共享吗？", MessageBoxButtonsType.OK, MessageBoxIcon.Question
                                                         , unSharedAction);
+                            */
+                            #region 显示共享区域
+                            _contentRegion?.Close();
+                            _contentRegion = new ContentRegion(_currentCall, contentChannel);
+                            #endregion
                         }
                         break;
                     case EventType.SIP_CONTENT_IDLE:
@@ -558,16 +625,49 @@ namespace QLSDK.Core
                             evt.Call = call;
                             call.IsContentSupported = true;
                             call.IsContentIdle = true;
+
+                            _contentRegion?.Close();
                         }
                         break;
                     case EventType.SIP_CONTENT_UNSUPPORTED:
                         {
                             var call = GetCall(evt.CallHandle, true, evt);
+                            if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
                             call.IsContentSupported = false;
                             call.IsContentIdle = false;
+
+                            _contentRegion?.Close();
                         }
                         break;
+                    case EventType.SIP_CONTENT_CLOSED:
+                        {
+                            var call = GetCall(evt.CallHandle, true, evt);
+                            if (null == call) throw new Exception("呼叫不存在");
+                            evt.Call = call;
+
+                            #region ContentChannel
+                            var contentChannel = call.GetContentChannel();
+                            if (null != contentChannel)
+                            {
+                                call.RemoveChannel(contentChannel.ChannelID);
+                            }
+
+                            var localContentChannel = call.GetLocalContentChannel();
+                            if (null != localContentChannel)
+                            {
+                                call.RemoveChannel(localContentChannel.ChannelID);
+                            }
+                            #endregion
+
+                            call.IsContentSupported = true;
+                            call.IsContentIdle = true;
+
+                            _contentRegion?.Close();
+                            callView.HideMessage();
+                        }
+                        break;
+                    
                     #endregion
 
                     #region Device
@@ -583,7 +683,7 @@ namespace QLSDK.Core
                     #region Stream
                     case EventType.STREAM_VIDEO_LOCAL_RESOLUTIONCHANGED:
                         {
-                            var call = GetCall(evt.CallHandle, true, evt);
+                            var call = CurrentCall;
                             if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
                             var localChannel = call.GetLocalChannel();
@@ -595,15 +695,12 @@ namespace QLSDK.Core
                             }
                             localChannel.Size = new Size(evt.WndWidth, evt.WndHeight);
                             localChannel.IsVideo = true;
-                            if (call == CurrentCall)
-                            {
-                                callView.HideMessage();
-                            }
+                            callView.HideMessage();
                         }
                         break;
                     case EventType.STREAM_VIDEO_REMOTE_RESOLUTIONCHANGED:
                         {
-                            var call = GetCall(evt.CallHandle, true, evt);
+                            var call = CurrentCall;
                             if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
                             var channel = call.GetChannel(evt.StreamId);
@@ -615,11 +712,8 @@ namespace QLSDK.Core
                             }
                             channel.Size = new Size(evt.WndWidth, evt.WndHeight);
                             channel.IsVideo = true;
-                           
-                            if (call == CurrentCall)
-                            {
-                                callView.HideMessage();
-                            }
+
+                            callView.HideMessage();
                         }
                         break;
                     #endregion
@@ -687,24 +781,11 @@ namespace QLSDK.Core
                             if (null == call) throw new Exception("呼叫不存在");
                             evt.Call = call;
                             call.CallMode = evt.CallMode;
-                            if (evt.CallMode == CallMode.VIDEO)
-                            {
-                                call.IsAudioOnly = false;
-                            }
-                            else
-                            {
-                                call.IsAudioOnly = true;
-                                call.IsContentSupported = false;
-                            }
-                            if (call == CurrentCall)
-                            {
-                                callView.HideMessage();
-                            }
                         }
                         break;
                     #endregion
 
-                    case EventType.SIP_CALL_MODE_UPGRADE_REQ: break;
+                    
                     case EventType.IS_TALKING_STATUS_CHANGED: break;
                     case EventType.CERTIFICATE_VERIFY: break;
                     case EventType.TRANSCODER_FINISH: break;
@@ -735,7 +816,7 @@ namespace QLSDK.Core
         /// <returns>呼叫</returns>
         internal QLCall GetCall(int callHandle, bool isCreate = false, QLEvent evt = null)
         {
-            var call = _callList.FirstOrDefault(c => c.CallHandle == callHandle);
+            var call = _callList.FirstOrDefault(c => c.CallHandle == callHandle && c.IsActive());
             if (null == call)
             {
                 if (isCreate)
@@ -745,7 +826,6 @@ namespace QLSDK.Core
                         CallHandle = callHandle,
                         CallMode = evt.CallMode,
                         ActiveSpeakerId = evt.ActiveSpeakerStreamId,
-                        NetworkIP = evt.IPAddress,
                         Reason = evt.Reason,
                         ChannelNumber = evt.RemoteVideoChannelNum,
                         CallState = CallState.SIP_UNKNOWN,

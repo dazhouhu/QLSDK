@@ -25,6 +25,15 @@ namespace QLSDK.Core
             _channel = channel;
             _channel.PropertyChanged += OnPropertyChangedEventHandler;
             this.Disposed += OnDisposed;
+
+            //防止抖动
+            if (channel.MediaType == MediaType.LOCALCONTENT)
+            {
+                this.DoubleBuffered = true;
+                SetStyle(ControlStyles.UserPaint, true);
+                SetStyle(ControlStyles.AllPaintingInWmPaint, true); // 禁止擦除背景.
+                SetStyle(ControlStyles.DoubleBuffer, true); // 双缓冲
+            }
         }
         #endregion
 
@@ -32,17 +41,17 @@ namespace QLSDK.Core
         public bool IsShowBar
         {
             set
-            {
+            {  /*
                 lblName.Visible = !value;
                 lblChannelName.Visible = value;
-                /*
+              
                 btnAudio.Visible = value;
                 btnVideo.Visible = value;
                 PaintView();
-                */
+              
 
                 btnAudio.Visible = false;
-                btnVideo.Visible = false;
+                btnVideo.Visible = false;  */
             }
         }
         #endregion
@@ -82,8 +91,22 @@ namespace QLSDK.Core
                     break;
                 case "Size":
                     {
-
-                        PaintView();
+                        if (_channel.MediaType== MediaType.LOCALCONTENT)
+                        {
+                            if (null != _channel.LocalContentImage)
+                            {
+                                pnlVideo.BackgroundImageLayout = ImageLayout.Center;
+                                pnlVideo.BackgroundImage = ImageHelper.ScaleImage((Bitmap)_channel.LocalContentImage,this.Size);
+                            }
+                        }
+                        else { 
+                            PaintView();
+                        }
+                    }break;
+                case "LocalContentImage":
+                    {
+                        pnlVideo.BackgroundImageLayout = ImageLayout.Center;
+                        pnlVideo.BackgroundImage = ImageHelper.ScaleImage((Bitmap)_channel.LocalContentImage, this.Size);
                     }
                     break;
             }
@@ -98,7 +121,17 @@ namespace QLSDK.Core
             btnAudio.Image = _channel.IsAudio ? Properties.Resources.speaker : Properties.Resources.speaker_mute;
 
             this.IsShowBar = !_channel.IsActive;
-
+            this.SizeChanged += (obj, args) =>
+            {
+                if (_channel.MediaType == MediaType.LOCALCONTENT)
+                {
+                    if (null != _channel.LocalContentImage)
+                    {
+                        pnlVideo.BackgroundImageLayout = ImageLayout.Center;
+                        pnlVideo.BackgroundImage = ImageHelper.ScaleImage((Bitmap)_channel.LocalContentImage, this.Size);
+                    }
+                }
+            };
             RenderVedio();
         }
         private void OnDisposed(object sender, EventArgs e)
@@ -135,6 +168,7 @@ namespace QLSDK.Core
                             }
                         }
                         break;
+                    case MediaType.LOCALCONTENT: {}break;
                 }
             }
             catch (Exception ex)
@@ -228,7 +262,7 @@ namespace QLSDK.Core
                                 }
                             }
                             break;
-
+                        case MediaType.LOCALCONTENT: { } break;
                     }
                 }
                 else  //音频
@@ -263,6 +297,7 @@ namespace QLSDK.Core
                                 }
                             }
                             break;
+                        case MediaType.LOCALCONTENT: { } break;
                     }
                 }
             }

@@ -18,13 +18,11 @@ namespace QLSDK.Core
         private UXMessageMask()
         {
             InitializeComponent();
-            this.BackColor = Color.Transparent;
             SetStyle(ControlStyles.Opaque | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
         }
 
         protected override void OnPaint(PaintEventArgs pe)
         {
-            /*
             Color drawColor = Color.FromArgb(127, this.BackColor);
             //// 定义画笔
             Pen labelBorderPen = new Pen(drawColor, 0);
@@ -32,7 +30,6 @@ namespace QLSDK.Core
             //// 绘制背景色
             pe.Graphics.DrawRectangle(labelBorderPen, 0, 0, Size.Width, Size.Height);
             pe.Graphics.FillRectangle(labelBackColorBrush, 0, 0, Size.Width, Size.Height);
-            */
 
             base.OnPaint(pe);
         }

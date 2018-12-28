@@ -125,6 +125,22 @@ namespace QLSDK.Core
         }
         #endregion
 
+        #region 本地共享图像
+        private Image _localContentImage;
+        internal Image LocalContentImage
+        {
+            get { return _localContentImage; }
+            set
+            {
+                if (_localContentImage != value)
+                {
+                    _localContentImage = value;
+                    base.NotifyPropertyChanged("LocalContentImage");
+                }
+            }
+        }
+        #endregion
+
         #region 区域大小
         private Size _size = new Size(400, 300);
         /// <summary>

@@ -109,6 +109,7 @@ namespace QLSDK.Tool
                 case "CallState":
                 case "IsAudioOnly":
                 case "MuteVideo":
+                case "MuteMic":
                 case "CallMode":
                 case "IsContentSupported":
                 case "IsContentIdle":
@@ -194,13 +195,14 @@ namespace QLSDK.Tool
                             menuItemDTMF.Enabled = true;
                             menuItemFECC.Enabled = true;
                             menuItemLayout.Enabled = true;
-
+                            #region AudioInputDevice
                             if (null != deviceManager.CurrentAudioInputDevice)
                             {
                                 this.btnMic.Enabled = true;
                                 this.btnMic.Image = Properties.Resources.mic;
                                 var volume = deviceManager.GetMicVolume();
                                 this.tbMicVolume.Value = volume;
+                                this.btnMic.Image = _currentCall.MuteMic ? Properties.Resources.mic_mute : Properties.Resources.mic;
                             }
                             else
                             {
@@ -208,6 +210,8 @@ namespace QLSDK.Tool
                                 this.btnMic.Image = Properties.Resources.mic_mute;
                                 this.tbMicVolume.Value = 0;
                             }
+                            #endregion
+                            #region AudioOutputDevice
                             if (null != deviceManager.CurrentAudioOutputDevice)
                             {
                                 this.btnSpeaker.Enabled = true;
@@ -221,6 +225,8 @@ namespace QLSDK.Tool
                                 this.btnSpeaker.Image = Properties.Resources.speaker_mute;
                                 this.tbSpeakerVolume.Value = 0;
                             }
+                            #endregion
+                            #region VideoInputDevice
                             if (null != deviceManager.CurrentVideoInputDevice)
                             {
                                 switch (_currentCall.CallMode)
@@ -259,6 +265,7 @@ namespace QLSDK.Tool
                                 this.btnShare.Enabled = false;
                                 this.btnShare.Image = Properties.Resources.share_mute;
                             }
+                            #endregion
                         }
                         break;
                 }
@@ -338,23 +345,15 @@ namespace QLSDK.Tool
                 return;
             var contentSelectWin = new ContentSelectPanel()
             {
-                OKAction = (type, format, monitor, app) => {
+                OKAction = (imageFormat, contentType,contentHandle) => {
                     try
                     {
-                        switch (type)
+                        if(null == _currentCall)
                         {
-                            case "Monitor":
-                                {
-                                    _currentCall?.StartSendContent(monitor, app);
-                                }
-                                break;
-                            case "BFCP":
-                                {
-                                    _currentCall?.StartBFCPContent(format);                                    
-                                }
-                                break;
+                            throw new Exception("当前呼叫不存在");
                         }
-                        return false;
+                        _currentCall.StartSendContent(imageFormat, contentType, contentHandle);
+                        return true;
                     }
                     catch (Exception ex)
                     {
@@ -485,13 +484,11 @@ namespace QLSDK.Tool
                 deviceManager.SetMicVolume(volume);
                 if (0 == volume)
                 {
-                    _currentCall?.MuteMic(true);
-                    this.btnMic.Image = Properties.Resources.mic_mute;
+                    _currentCall?.MuteLocalMic(true);
                 }
                 else
                 {
-                    _currentCall?.MuteMic(false);
-                    this.btnMic.Image = Properties.Resources.mic;
+                    _currentCall?.MuteLocalMic(false);
                 }
 
             }

@@ -23,60 +23,35 @@ namespace QLSDK.Tool.UX
             cbxApp.DataSource = apps.ToList();
         }
 
-        private void rdoBFCP_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rdoBFCP.Checked)
-            {
-                cbxFormat.Enabled = true;
-                cbxMonitor.Enabled = false;
-                cbxApp.Enabled = false;
-            }
-            else
-            {
-                cbxFormat.Enabled = false;
-                cbxMonitor.Enabled = true;
-                cbxApp.Enabled = true;
-            }
-        }
-
-        private void rdMonitor_CheckedChanged(object sender, EventArgs e)
-        {
-            if (rdMonitor.Checked)
-            {
-                cbxMonitor.Enabled = true;
-                cbxApp.Enabled = true;
-                cbxFormat.Enabled = false;
-            }
-            else
-            {
-                cbxMonitor.Enabled = false;
-                cbxApp.Enabled = false;
-                cbxFormat.Enabled = false;
-            }
-        }
-
-        public Func<string, ImageFormat, string,IntPtr,bool> OKAction { get; set; }
+        public Func<ImageFormat,ContentType,object,bool> OKAction { get; set; }
         private void btnOK_Click(object sender, EventArgs e)
         {
             if(null != OKAction)
             {
-                var type = rdMonitor.Checked ? "Monitor" : "BFCP";
-                var format = ImageFormat.YV12;
-                if (cbxFormat.SelectedIndex >= 0)
+                var imageFormat = ImageFormat.RGBA;
+                if (cbxFormat.SelectedIndex > 0)
                 {
-                    format = (ImageFormat)cbxFormat.SelectedIndex;
+                    imageFormat = (ImageFormat)cbxFormat.SelectedIndex;
                 }
-                string monitor = null;
-                if(cbxMonitor.SelectedIndex >= 0)
+
+                var contentType = rdoMonitor.Checked ? ContentType.Monitor:ContentType.Application;
+                
+                object contentHandle=null;
+                if (rdoMonitor.Checked)
                 {
-                    monitor = cbxMonitor.SelectedValue.ToString();
+                    if (cbxMonitor.SelectedIndex >= 0)
+                    {
+                        contentHandle = cbxMonitor.SelectedValue;
+                    }
                 }
-                IntPtr app = IntPtr.Zero;
-                if(cbxApp.SelectedIndex>=0)
+                else
                 {
-                    app =  (IntPtr)cbxApp.SelectedValue;
+                    if (cbxApp.SelectedIndex >= 0)
+                    {
+                        contentHandle = cbxApp.SelectedValue;
+                    }
                 }
-                var result = OKAction(type,format,monitor, app);
+                var result = OKAction(imageFormat,contentType, contentHandle);
                 if(result)
                 {
                     this.Dispose();
@@ -98,6 +73,34 @@ namespace QLSDK.Tool.UX
 
             cbxMonitor.DataSource = QLDeviceManager.GetInstance().GetDevicesByType(DeviceType.MONITOR);
             cbxMonitor.SelectedIndex = 0;
+        }
+
+        private void rdoMonitor_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoMonitor.Checked)
+            {
+                cbxMonitor.Enabled = true;
+                cbxApp.Enabled = false;
+            }
+            else
+            {
+                cbxMonitor.Enabled = false;
+                cbxApp.Enabled = true;
+            }
+        }
+
+        private void rdoApp_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoApp.Checked)
+            {
+                cbxMonitor.Enabled = false;
+                cbxApp.Enabled = true;
+            }
+            else
+            {
+                cbxMonitor.Enabled = true;
+                cbxApp.Enabled = false;
+            }
         }
     }
 }

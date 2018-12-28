@@ -59,17 +59,26 @@ namespace QLSDK.Core
                 _currentCall.PropertyChanged -= OnCallPropertyChangedHandle;
                 _currentCall.Channels.CollectionChanged -= OnChannelsCllectionChangedHandle;
             }
-            this.Controls.Clear();
-            foreach (var channelView in channelViews)
-            {
-                //  channelView.Value.Dispose();
-            }
             channelViews.Clear();
             this.Controls.Clear();
 
             _currentCall = call;
+            localChannel = null;
+            contentChannel = null;
             if (null != _currentCall)
             {
+                foreach (var channel in _currentCall.Channels)
+                {
+                    var channelView = new ChannelView(channel);
+                    channelViews.Add(channel, channelView);
+                    this.Controls.Add(channelView);
+                    switch (channel.MediaType)
+                    {
+                        case MediaType.LOCAL: localChannel = channel; break;
+                        case MediaType.CONTENT: contentChannel = channel; break;
+                        case MediaType.LOCALCONTENT: contentChannel = channel; break;
+                    }
+                }
                 _currentCall.PropertyChanged += OnCallPropertyChangedHandle;
                 _currentCall.Channels.CollectionChanged += OnChannelsCllectionChangedHandle;
             }
@@ -109,6 +118,7 @@ namespace QLSDK.Core
                                 {
                                     case MediaType.LOCAL: localChannel = channel; break;
                                     case MediaType.CONTENT: contentChannel = channel; break;
+                                    case MediaType.LOCALCONTENT: contentChannel = channel;break;
                                 }
                             }
                         }
@@ -132,6 +142,7 @@ namespace QLSDK.Core
                                 {
                                     case MediaType.LOCAL: localChannel = null; break;
                                     case MediaType.CONTENT: contentChannel = null; break;
+                                    case MediaType.LOCALCONTENT:contentChannel = null;break;
                                 }
                             }
                         }
@@ -212,12 +223,8 @@ namespace QLSDK.Core
             var cols = viewWidth / cellWidth;
             var rows = viewHeight / cellHeight;
 
-            var activeChannel = contentChannel;
             #region ActiveChannel
-            if (null == activeChannel)
-            {
-                activeChannel = contentChannel;
-            }
+            var activeChannel = contentChannel;
             if (null == activeChannel && null != _currentCall.CurrentChannel)
             {
                 activeChannel = _currentCall.CurrentChannel;

@@ -28,17 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChannelView));
             this.pnlVideo = new System.Windows.Forms.Panel();
-            this.lblChannelName = new System.Windows.Forms.Label();
-            this.lblName = new System.Windows.Forms.Label();
             this.btnVideo = new System.Windows.Forms.Button();
             this.btnAudio = new System.Windows.Forms.Button();
+            this.lblChannelName = new System.Windows.Forms.Label();
+            this.lblName = new System.Windows.Forms.Label();
             this.pnlVideo.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlVideo
             // 
-            this.pnlVideo.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.pnlVideo.BackColor = System.Drawing.Color.Black;
             this.pnlVideo.Controls.Add(this.btnVideo);
             this.pnlVideo.Controls.Add(this.btnAudio);
             this.pnlVideo.Controls.Add(this.lblChannelName);
@@ -49,6 +50,36 @@
             this.pnlVideo.Name = "pnlVideo";
             this.pnlVideo.Size = new System.Drawing.Size(324, 244);
             this.pnlVideo.TabIndex = 0;
+            // 
+            // btnVideo
+            // 
+            this.btnVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnVideo.BackColor = System.Drawing.Color.Transparent;
+            this.btnVideo.Enabled = false;
+            this.btnVideo.FlatAppearance.BorderSize = 0;
+            this.btnVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVideo.Image = ((System.Drawing.Image)(resources.GetObject("btnVideo.Image")));
+            this.btnVideo.Location = new System.Drawing.Point(275, 201);
+            this.btnVideo.Name = "btnVideo";
+            this.btnVideo.Size = new System.Drawing.Size(40, 40);
+            this.btnVideo.TabIndex = 1;
+            this.btnVideo.UseVisualStyleBackColor = false;
+            this.btnVideo.Visible = false;
+            // 
+            // btnAudio
+            // 
+            this.btnAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAudio.BackColor = System.Drawing.Color.Transparent;
+            this.btnAudio.Enabled = false;
+            this.btnAudio.FlatAppearance.BorderSize = 0;
+            this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAudio.Image = global::QLSDK.Core.Properties.Resources.speaker;
+            this.btnAudio.Location = new System.Drawing.Point(229, 201);
+            this.btnAudio.Name = "btnAudio";
+            this.btnAudio.Size = new System.Drawing.Size(40, 40);
+            this.btnAudio.TabIndex = 0;
+            this.btnAudio.UseVisualStyleBackColor = false;
+            this.btnAudio.Visible = false;
             // 
             // lblChannelName
             // 
@@ -62,6 +93,7 @@
             this.lblChannelName.TabIndex = 0;
             this.lblChannelName.Text = "Channel Name";
             this.lblChannelName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblChannelName.Visible = false;
             // 
             // lblName
             // 
@@ -74,34 +106,6 @@
             this.lblName.Size = new System.Drawing.Size(33, 12);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "Name";
-            // 
-            // btnVideo
-            // 
-            this.btnVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnVideo.BackColor = System.Drawing.Color.Transparent;
-            this.btnVideo.Enabled = false;
-            this.btnVideo.FlatAppearance.BorderSize = 0;
-            this.btnVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnVideo.Image = Properties.Resources.camera;
-            this.btnVideo.Location = new System.Drawing.Point(275, 201);
-            this.btnVideo.Name = "btnVideo";
-            this.btnVideo.Size = new System.Drawing.Size(40, 40);
-            this.btnVideo.TabIndex = 1;
-            this.btnVideo.UseVisualStyleBackColor = false;
-            // 
-            // btnAudio
-            // 
-            this.btnAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAudio.BackColor = System.Drawing.Color.Transparent;
-            this.btnAudio.Enabled = false;
-            this.btnAudio.FlatAppearance.BorderSize = 0;
-            this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAudio.Image = Properties.Resources.speaker;
-            this.btnAudio.Location = new System.Drawing.Point(229, 201);
-            this.btnAudio.Name = "btnAudio";
-            this.btnAudio.Size = new System.Drawing.Size(40, 40);
-            this.btnAudio.TabIndex = 0;
-            this.btnAudio.UseVisualStyleBackColor = false;
             // 
             // ChannelView
             // 

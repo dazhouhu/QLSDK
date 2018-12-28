@@ -21,67 +21,162 @@ namespace QLSDK.Core
         }
         ~QLCall()
         {
-            shareTimer?.Dispose();
-        }
-        #endregion
-
-        #region 网络地址
-        private string _networkIP;
-        /// <summary>
-        /// 网络地址
-        /// </summary>
-        [JsonIgnore]
-        internal string NetworkIP
-        {
-            get { return _networkIP; }
-            set
-            {
-                _networkIP = value;
-                NotifyPropertyChanged("NetworkIP");
-            }
-        }
-        #endregion
-        #region 是否只能音频
-        private bool _isAudioOnly = false;
-
-        /// <summary>
-        /// 是否只能音频
-        /// </summary>
-        [JsonIgnore]
-        internal bool IsAudioOnly
-        {
-            get { return _isAudioOnly; }
-            set
-            {
-                if (_isAudioOnly != value)
-                {
-                    _isAudioOnly = value;
-                    NotifyPropertyChanged("IsAudioOnly");
-                }
-            }
-        }
-        #endregion
-        #region 是否静音
-        private bool _isMute;
-
-        /// <summary>
-        /// 是否静音
-        /// </summary>
-        [JsonIgnore]
-        internal bool IsMute
-        {
-            get { return _isMute; }
-            set
-            {
-                if (_isMute != value)
-                {
-                    _isMute = value;
-                    NotifyPropertyChanged("IsMute");
-                }
-            }
+            feccTimer?.Dispose();
         }
         #endregion
         
+
+        #region 呼叫ID
+        private int _callHandle = -1;
+        /// <summary>
+        /// 呼叫ID
+        /// </summary>
+        public int CallHandle
+        {
+            get { return _callHandle; }
+            internal set
+            {
+                _callHandle = value;
+                NotifyPropertyChanged("CallHandle");
+            }
+        }
+        #endregion
+        #region 呼叫名
+        private string _callName;
+        /// <summary>
+        /// 呼叫名
+        /// </summary>
+        public string CallName
+        {
+            get { return _callName; }
+            internal set
+            {
+                _callName = value;
+                NotifyPropertyChanged("CallName");
+            }
+        }
+        #endregion
+        #region 呼叫模式
+        private CallMode _callMode;
+        /// <summary>
+        /// 呼叫模式
+        /// </summary>
+        public CallMode CallMode
+        {
+            get { return _callMode; }
+            internal set
+            {
+                _callMode = value;
+                NotifyPropertyChanged("CallMode");
+            }
+        }
+        #endregion
+        #region 呼叫状态
+        private CallState _callState;
+        /// <summary>
+        /// 呼叫状态
+        /// </summary>
+        public CallState CallState
+        {
+            get { return _callState; }
+            internal set
+            {
+                _callState = value;
+                NotifyPropertyChanged("CallState");
+            }
+        }
+        #endregion
+        #region 是否共享内容支持
+        private bool _isContentSupported = false;
+        /// <summary>
+        /// 是否共享内容支持
+        /// </summary>
+        [JsonIgnore]
+        public bool IsContentSupported
+        {
+            get { return _isContentSupported; }
+            internal set
+            {
+                if (_isContentSupported != value)
+                {
+                    _isContentSupported = value;
+                    NotifyPropertyChanged("IsContentSupported");
+                }
+            }
+        }
+        #endregion
+        #region 是否共享内容空闲
+        private bool _isContentIdle = false;
+        /// <summary>
+        /// 是否共享内容空闲
+        /// </summary>
+        [JsonIgnore]
+        public bool IsContentIdle
+        {
+            get { return _isContentIdle; }
+            internal set
+            {
+                if (_isContentIdle != value)
+                {
+                    _isContentIdle = value;
+                    base.NotifyPropertyChanged("IsContentIdle");
+                }
+            }
+        }
+        #endregion
+        #region 呼叫结束原因
+        private string _reason;
+        /// <summary>
+        /// 呼叫结束原因
+        /// </summary>
+        public string Reason
+        {
+            get { return _reason; }
+            internal set
+            {
+                _reason = value;
+                NotifyPropertyChanged("Reason");
+            }
+        }
+        #endregion
+        #region 打开/关闭 本地视频
+        private bool _muteVideo;
+        /// <summary>
+        /// 打开/关闭 本地视频
+        /// </summary>
+        [JsonIgnore]
+        public bool MuteVideo
+        {
+            get { return _muteVideo; }
+            internal set
+            {
+                if (_muteVideo != value)
+                {
+                    _muteVideo = value;
+                    NotifyPropertyChanged("MuteVideo");
+                }
+            }
+        }
+        #endregion
+        #region 打开/关闭麦克风
+        private bool _muteMic;
+        /// <summary>
+        /// 打开/关闭麦克风
+        /// </summary>
+        [JsonIgnore]
+        public bool MuteMic
+        {
+            get { return _muteMic; }
+            internal set
+            {
+                if (_muteMic != value)
+                {
+                    _muteMic = value;
+                    NotifyPropertyChanged("MuteMic");
+                }
+            }
+        }
+        #endregion
 
         #region 当前活动通道
         private QLChannel _currentChannel;
@@ -182,6 +277,10 @@ namespace QLSDK.Core
         {
             return _channels.FirstOrDefault(c => c.MediaType == MediaType.CONTENT);
         }
+        internal QLChannel GetLocalContentChannel()
+        {
+            return _channels.FirstOrDefault(c => c.MediaType == MediaType.LOCALCONTENT);
+        }
         #endregion
         #region ChannelNumber
         private int _channelNumber;
@@ -217,138 +316,35 @@ namespace QLSDK.Core
             }
         }
         #endregion
-               
 
-        #region 呼叫ID
-        private int _callHandle = -1;
-        /// <summary>
-        /// 呼叫ID
-        /// </summary>
-        public int CallHandle
-        {
-            get { return _callHandle; }
-            set
-            {
-                _callHandle = value;
-                NotifyPropertyChanged("CallHandle");
-            }
-        }
-        #endregion
-        #region 呼叫名
-        private string _callName;
-        /// <summary>
-        /// 呼叫名
-        /// </summary>
-        public string CallName
-        {
-            get { return _callName; }
-            set
-            {
-                _callName = value;
-                NotifyPropertyChanged("CallName");
-            }
-        }
-        #endregion
-        #region 呼叫模式
-        private CallMode _callMode;
-        /// <summary>
-        /// 呼叫模式
-        /// </summary>
-        public CallMode CallMode
-        {
-            get { return _callMode; }
-            set
-            {
-                _callMode = value;
-                NotifyPropertyChanged("CallMode");
-            }
-        }
-        #endregion
-        #region 呼叫状态
-        private CallState _callState;
-        /// <summary>
-        /// 呼叫状态
-        /// </summary>
-        public CallState CallState
-        {
-            get { return _callState; }
-            set
-            {
-                _callState = value;
-                NotifyPropertyChanged("CallState");
-            }
-        }
-        #endregion
-        #region 是否共享内容支持
-        private bool _isContentSupported = false;
-        /// <summary>
-        /// 是否共享内容支持
-        /// </summary>
+        #region 共享内容图像格式
+        private ImageFormat _contentImageFormat = ImageFormat.RGBA;
         [JsonIgnore]
-        public bool IsContentSupported
+        internal ImageFormat ContentImageFormat
         {
-            get { return _isContentSupported; }
+            get { return _contentImageFormat; }
             set
             {
-                if (_isContentSupported != value)
-                {
-                    _isContentSupported = value;
-                    NotifyPropertyChanged("IsContentSupported");
-                }
+                _contentImageFormat = value;
             }
         }
         #endregion
-        #region 是否共享内容空闲
-        private bool _isContentIdle = false;
-        /// <summary>
-        /// 是否共享内容空闲
-        /// </summary>
+        #region 共享内容类型
+        private ContentType _contentType = ContentType.Monitor;
         [JsonIgnore]
-        public bool IsContentIdle
+        internal ContentType ContentType
         {
-            get { return _isContentIdle; }
-            set
-            {
-                if (_isContentIdle != value)
-                {
-                    _isContentIdle = value;
-                    base.NotifyPropertyChanged("IsContentIdle");
-                }
-            }
+            get { return _contentType; }
+            set { _contentType = value; }
         }
         #endregion
-        #region 呼叫结束原因
-        private string _reason;
-        /// <summary>
-        /// 呼叫结束原因
-        /// </summary>
-        public string Reason
-        {
-            get { return _reason; }
-            set
-            {
-                _reason = value;
-                NotifyPropertyChanged("Reason");
-            }
-        }
-        #endregion
-        #region 打开/关闭 本地视频
-        private bool _muteVideo;
-        /// <summary>
-        /// 打开/关闭 本地视频
-        /// </summary>
+        #region 共享内容句柄
+        private object _contentHandle;
         [JsonIgnore]
-        public bool MuteVideo
+        internal object ContentHandle
         {
-            get { return _muteVideo; }
-            set
-            {
-                if (_muteVideo != value)
-                {
-                    _muteVideo = value;
-                    NotifyPropertyChanged("MuteVideo");
-                }
-            }
+            get { return _contentHandle; }
+            set { _contentHandle = value; }
         }
         #endregion
 
@@ -356,31 +352,31 @@ namespace QLSDK.Core
         /// <summary>
         /// 开始时间
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; internal set; }
         #endregion
         #region 终止时间
         /// <summary>
         /// 终止时间
         /// </summary>
-        public DateTime? StopTime { get; set; }
+        public DateTime? StopTime { get; internal set; }
         #endregion
         #region 通话开始时间 
         /// <summary>
         /// 通话开始时间
         /// </summary>
-        public DateTime? ConnectedTime { get; set; }
+        public DateTime? ConnectedTime { get; internal set; }
         #endregion
         #region 通话结束时间
         /// <summary>
         /// 通话结束时间
         /// </summary>
-        public DateTime? UnconnectedTime { get; set; }
+        public DateTime? UnconnectedTime { get; internal set; }
         #endregion
         #region 呼叫类型
         /// <summary>
         /// 呼叫类型
         /// </summary>
-        public CallType CallType { get; set; }
+        public CallType CallType { get; internal set; }
         #endregion
 
 
@@ -547,38 +543,10 @@ namespace QLSDK.Core
         /// <summary>
         /// 开启发送共享内容
         /// </summary>
-        /// <param name="monitorHandle">显示器句柄</param>
-        /// <param name="appHandle">应用程序句柄</param>
-        public void StartSendContent(string monitorHandle, IntPtr appHandle)
-        {
-            var errno = PlcmProxy.StartShareContent(this.CallHandle, monitorHandle, appHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("内容共享失败，ErrorNo=" + errno);
-            }
-            log.Info(string.Format("呼叫{0}开始发送共享内容", CallName));
-        }
-
-        /// <summary>
-        /// 停止发送共享内容
-        /// </summary>
-        public void StopSendContent()
-        {
-            shareTimer?.Stop();
-            var errno = PlcmProxy.StopShareContent(this.CallHandle);
-            if (ErrorNumber.OK != errno)
-            {
-                throw new Exception("停止内容共享失败，ErrorNo=" + errno);
-            }
-            log.Info(string.Format("呼叫{0}结束发送共享内容", CallName));
-        }
-
-        #region BFCP共享
-        private Timer shareTimer = null;
-        /// <summary>
-        /// 开始发送双流共享内容
-        /// </summary>
-        public void StartBFCPContent(ImageFormat imageFormat)
+        /// <param name="imageFormat">图像格式</param>
+        /// <param name="contentType">共享内容类型</param>
+        /// <param name="contentHandle">句柄</param>
+        public void StartSendContent(ImageFormat imageFormat, ContentType contentType, object contentHandle)
         {
             var errno = PlcmProxy.StartBFCPContent(this.CallHandle);
             if (ErrorNumber.OK != errno)
@@ -586,25 +554,27 @@ namespace QLSDK.Core
                 throw new Exception("内容共享失败，ErrorNo=" + errno);
             }
             log.Info(string.Format("呼叫{0}开始发送BFCP共享内容", CallName));
+            this.ContentImageFormat = imageFormat;
+            this.ContentType = contentType;
+            this.ContentHandle = contentHandle;
 
-            shareTimer?.Dispose();
-            shareTimer = new Timer() { Interval = 1000 };
-            shareTimer.Tick += (sender, args) =>
-            {
-                //var width = Screen.PrimaryScreen.Bounds.Width;
-                //var height = Screen.PrimaryScreen.Bounds.Height;
-                var width = 1280;
-                var height = 720;
-                errno = PlcmProxy.SetContentBuffer(imageFormat, width, height);
-                if (ErrorNumber.OK != errno)
-                {
-                    log.Error("SetContentBuffer 失败, ex:" + errno);
-                }
-                log.Info(string.Format("SetContentBuffer({0},{1},{2}", imageFormat, width, height));
-            };
-            shareTimer.Start();
         }
-        #endregion
+
+        /// <summary>
+        /// 停止发送共享内容
+        /// </summary>
+        public void StopSendContent()
+        {
+            var errno = PlcmProxy.StopShareContent(this.CallHandle);
+            if (ErrorNumber.OK != errno)
+            {
+                throw new Exception("停止内容共享失败，ErrorNo=" + errno);
+            }
+            log.Info(string.Format("呼叫{0}结束发送共享内容", CallName));
+
+            RemoveChannel(-1);
+        }
+
 
         /// <summary>
         /// 发送DTMF key
@@ -699,7 +669,7 @@ namespace QLSDK.Core
         /// 打开/关闭麦克风
         /// </summary>
         /// <param name="isMute">关闭：true, 打开：false</param>
-        public void MuteMic(bool isMute)
+        public void MuteLocalMic(bool isMute)
         {
             var errno = PlcmProxy.MuteMic(this.CallHandle, isMute);
             if (ErrorNumber.OK != errno)
@@ -708,6 +678,7 @@ namespace QLSDK.Core
                 log.Error(errMsg);
                 throw new Exception(errMsg);
             }
+            MuteMic = isMute;
             log.Info(string.Format("麦克风静音设置{0}成功", isMute));
         }
         #endregion

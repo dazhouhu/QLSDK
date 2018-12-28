@@ -3,7 +3,7 @@
     /// <summary>
     /// 媒体流类型
     /// </summary>
-    public enum MediaType
+    internal enum MediaType
     {
         /// <summary>
         /// 未知
@@ -20,6 +20,11 @@
         /// <summary>
         /// 共享流视频
         /// </summary>
-        CONTENT       /**< Content stream. */
+        CONTENT,       /**< Content stream. */
+
+        /// <summary>
+        /// 本地共享流视频
+        /// </summary>
+        LOCALCONTENT
     }
 }

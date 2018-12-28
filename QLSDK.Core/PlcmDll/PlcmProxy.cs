@@ -159,6 +159,11 @@ namespace QLSDK.Core
         {
             return (ErrorNumber)PlcmHelper.SetContentBuffer((int)format, width, height);
         }
+        public static ErrorNumber SetContentBuffer(ImageFormat format, byte[] buffer, int width, int height)
+        {
+            var timespan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return (ErrorNumber)PlcmHelper.setContentBuffer((int)format,buffer,0,buffer.Length, width, height, (uint)timespan.TotalMilliseconds);
+        }
 
         public static ErrorNumber DestroyExit()
         {

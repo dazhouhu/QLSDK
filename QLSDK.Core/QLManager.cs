@@ -127,12 +127,13 @@ namespace QLSDK.Core
                         ps[config.Key] = config.Value;
                     }
                 }
-                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ProxyServer] = postResult.data.sip_addr;
-                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName] = postResult.data.account;
-                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Password] = postResult.data.pass;
+                var data = postResult.data ?? postResult.result;
+                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_ProxyServer] = data.sip_addr;
+                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_UserName] = data.account;
+                ps[PropertyKey.PLCM_MFW_KVLIST_KEY_SIP_Password] = data.pass;
                 if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID]))
                 {
-                    ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = postResult.data.account + "@" + postResult.data.sip_addr;
+                    ps[PropertyKey.PLCM_MFW_KVLIST_KEY_REG_ID] = data.account + "@" + data.sip_addr;
                 }
                 /*
                 if (string.IsNullOrEmpty(ps[PropertyKey.PLCM_MFW_KVLIST_KEY_DisplayName]))

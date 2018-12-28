@@ -251,11 +251,17 @@ namespace QLSDK.Core
         internal static extern int stopShareContent(int callhandle);
 
         /**
-         * <ref>PLCM_Wrapper_Errno setContentBuffer(PLCM_MFW_Image_Format format, void *buffer, int offset, int length, int width, int height, unsigned int timestamp);</ref>
+         * <ref>
          * MYLIBAPI int SetContentBuffer(PLCM_MFW_Image_Format format, int width, int height);
          * */
         [DllImport("wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int SetContentBuffer(int format, int width, int height);
+
+        /**
+         * <ref>PLCM_Wrapper_Errno setContentBuffer(PLCM_MFW_Image_Format format, void *buffer, int offset, int length, int width, int height, unsigned int timestamp);</ref>
+         * */
+        [DllImport("wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int setContentBuffer(int format,byte[] buffer, int offset,int length, int width, int height,uint timestamp);
 
         /**
 	     * destroy when exit application

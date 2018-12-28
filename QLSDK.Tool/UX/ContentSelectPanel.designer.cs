@@ -28,48 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.rdoBFCP = new System.Windows.Forms.RadioButton();
-            this.rdMonitor = new System.Windows.Forms.RadioButton();
             this.cbxFormat = new System.Windows.Forms.ComboBox();
             this.cbxMonitor = new System.Windows.Forms.ComboBox();
             this.cbxApp = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.rdoMonitor = new System.Windows.Forms.RadioButton();
+            this.rdoApp = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
-            // 
-            // rdoBFCP
-            // 
-            this.rdoBFCP.AutoSize = true;
-            this.rdoBFCP.Checked = true;
-            this.rdoBFCP.Location = new System.Drawing.Point(23, 26);
-            this.rdoBFCP.Name = "rdoBFCP";
-            this.rdoBFCP.Size = new System.Drawing.Size(95, 16);
-            this.rdoBFCP.TabIndex = 8;
-            this.rdoBFCP.TabStop = true;
-            this.rdoBFCP.Text = "BFCP内容共享";
-            this.rdoBFCP.UseVisualStyleBackColor = true;
-            this.rdoBFCP.CheckedChanged += new System.EventHandler(this.rdoBFCP_CheckedChanged);
-            // 
-            // rdMonitor
-            // 
-            this.rdMonitor.AutoSize = true;
-            this.rdMonitor.Enabled = false;
-            this.rdMonitor.Location = new System.Drawing.Point(23, 56);
-            this.rdMonitor.Name = "rdMonitor";
-            this.rdMonitor.Size = new System.Drawing.Size(107, 16);
-            this.rdMonitor.TabIndex = 8;
-            this.rdMonitor.Text = "监视器内容共享";
-            this.rdMonitor.UseVisualStyleBackColor = true;
-            this.rdMonitor.CheckedChanged += new System.EventHandler(this.rdMonitor_CheckedChanged);
             // 
             // cbxFormat
             // 
             this.cbxFormat.FormattingEnabled = true;
             this.cbxFormat.Items.AddRange(new object[] {
-            "YUV",
-            "RGBA"});
+            "RGBA",
+            "YUV"});
             this.cbxFormat.Location = new System.Drawing.Point(138, 25);
             this.cbxFormat.Name = "cbxFormat";
             this.cbxFormat.Size = new System.Drawing.Size(163, 20);
@@ -78,7 +52,6 @@
             // cbxMonitor
             // 
             this.cbxMonitor.DisplayMember = "DeviceName";
-            this.cbxMonitor.Enabled = false;
             this.cbxMonitor.FormattingEnabled = true;
             this.cbxMonitor.Location = new System.Drawing.Point(138, 78);
             this.cbxMonitor.Name = "cbxMonitor";
@@ -96,24 +69,6 @@
             this.cbxApp.Size = new System.Drawing.Size(163, 20);
             this.cbxApp.TabIndex = 9;
             this.cbxApp.ValueMember = "AppHandle";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 82);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 12);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "显示器监视器：";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(65, 107);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "应用程序：";
             // 
             // btnCancel
             // 
@@ -149,18 +104,50 @@
             this.btnOK.UseVisualStyleBackColor = false;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(43, 28);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(83, 12);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "共享图像格式:";
+            // 
+            // rdoMonitor
+            // 
+            this.rdoMonitor.AutoSize = true;
+            this.rdoMonitor.Checked = true;
+            this.rdoMonitor.Location = new System.Drawing.Point(56, 79);
+            this.rdoMonitor.Name = "rdoMonitor";
+            this.rdoMonitor.Size = new System.Drawing.Size(71, 16);
+            this.rdoMonitor.TabIndex = 12;
+            this.rdoMonitor.TabStop = true;
+            this.rdoMonitor.Text = "显示器：";
+            this.rdoMonitor.UseVisualStyleBackColor = true;
+            this.rdoMonitor.CheckedChanged += new System.EventHandler(this.rdoMonitor_CheckedChanged);
+            // 
+            // rdoApp
+            // 
+            this.rdoApp.AutoSize = true;
+            this.rdoApp.Location = new System.Drawing.Point(56, 105);
+            this.rdoApp.Name = "rdoApp";
+            this.rdoApp.Size = new System.Drawing.Size(83, 16);
+            this.rdoApp.TabIndex = 13;
+            this.rdoApp.Text = "应用程序：";
+            this.rdoApp.UseVisualStyleBackColor = true;
+            this.rdoApp.CheckedChanged += new System.EventHandler(this.rdoApp_CheckedChanged);
+            // 
             // ContentSelectPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.Controls.Add(this.rdoApp);
+            this.Controls.Add(this.rdoMonitor);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.cbxApp);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.cbxMonitor);
             this.Controls.Add(this.cbxFormat);
-            this.Controls.Add(this.rdMonitor);
-            this.Controls.Add(this.rdoBFCP);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Name = "ContentSelectPanel";
@@ -175,12 +162,11 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.RadioButton rdoBFCP;
-        private System.Windows.Forms.RadioButton rdMonitor;
         private System.Windows.Forms.ComboBox cbxFormat;
         private System.Windows.Forms.ComboBox cbxMonitor;
         private System.Windows.Forms.ComboBox cbxApp;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton rdoMonitor;
+        private System.Windows.Forms.RadioButton rdoApp;
     }
 }

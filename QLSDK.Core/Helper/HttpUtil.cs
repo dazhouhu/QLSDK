@@ -137,6 +137,9 @@ namespace QLSDK.Core
         /// 附加对象
         /// </summary>
         public T data;
+
+        public string msg;
+        public T result;
     }
 
     /// <summary>
