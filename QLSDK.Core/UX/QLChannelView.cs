@@ -21,8 +21,8 @@ namespace QLSDK.Core
         #region Constructors
         internal ChannelView(QLChannel channel)
         {
-            InitializeComponent();
             _channel = channel;
+            InitializeComponent();
             _channel.PropertyChanged += OnPropertyChangedEventHandler;
             this.Disposed += OnDisposed;
 
@@ -184,44 +184,53 @@ namespace QLSDK.Core
 
         private void PaintView()
         {
-            var streamWidth = _channel.Size.Width;
-            var streamHeight = _channel.Size.Height;
-            int ratio_w = 0;
-            int ratio_h = 0;
-            if (streamWidth * 9 == streamHeight * 16)
+            try
             {
-                log.Info("resizeResolutionChange: 16:9");
-                ratio_w = 16;
-                ratio_h = 9;
-            }
-            else if (streamWidth * 3 == streamHeight * 4)
-            {
-                log.Info("resizeResolutionChange: 4:3");
-                ratio_w = 4;
-                ratio_h = 3;
-            }
-            else
-            {
-                ratio_w = streamWidth;
-                ratio_h = streamHeight;
-                log.Warn("resizeResolutionChange: not normal aspect ratio.");
-            }
-            var hostWidth = this.Width;
-            var hostHeight = this.Height - (_channel.IsActive ? 0 : 40);
-            var viewHeight = hostHeight;
-            var viewWidth = hostHeight * ratio_w / ratio_h;
+                if (null == _channel) return;
 
-            if (viewWidth > hostWidth)
-            {
-                viewWidth = hostWidth;
-                viewHeight = viewWidth * ratio_h / ratio_w;
+                var streamWidth = _channel.Size.Width;
+                var streamHeight = _channel.Size.Height;
+                int ratio_w = 0;
+                int ratio_h = 0;
+                if (streamWidth * 9 == streamHeight * 16)
+                {
+                    log.Info("resizeResolutionChange: 16:9");
+                    ratio_w = 16;
+                    ratio_h = 9;
+                }
+                else if (streamWidth * 3 == streamHeight * 4)
+                {
+                    log.Info("resizeResolutionChange: 4:3");
+                    ratio_w = 4;
+                    ratio_h = 3;
+                }
+                else
+                {
+                    ratio_w = streamWidth;
+                    ratio_h = streamHeight;
+                    log.Warn("resizeResolutionChange: not normal aspect ratio.");
+                }
+                var hostWidth = this.Width;
+                var hostHeight = this.Height - (_channel.IsActive ? 0 : 40);
+                var viewHeight = hostHeight;
+                var viewWidth = hostHeight * ratio_w / ratio_h;
+
+                if (viewWidth > hostWidth)
+                {
+                    viewWidth = hostWidth;
+                    viewHeight = viewWidth * ratio_h / ratio_w;
+                }
+                this.pnlVideo.Width = (int)viewWidth;
+                this.pnlVideo.Height = (int)viewHeight;
+                var x = (hostWidth - pnlVideo.Width) / 2;
+                var y = (hostHeight - pnlVideo.Height) / 2;
+                this.pnlVideo.Left = x;
+                this.pnlVideo.Top = y;
             }
-            this.pnlVideo.Width = (int)viewWidth;
-            this.pnlVideo.Height = (int)viewHeight;
-            var x = (hostWidth - pnlVideo.Width) / 2;
-            var y = (hostHeight - pnlVideo.Height) / 2;
-            this.pnlVideo.Left = x;
-            this.pnlVideo.Top = y;
+            catch(Exception ex)
+            {
+                log.Error("PaintView 异常：ex=" + ex.Message);
+            }
         }
 
 

@@ -126,6 +126,7 @@ namespace QLSDK.Core
         /// <param name="evt">事件</param>
         internal void QLEventHandle(QLEvent evt)
         {
+            log.Debug("evt:" + evt.EventType);
             try
             {
                 switch (evt.EventType)
@@ -460,7 +461,7 @@ namespace QLSDK.Core
                             if (call == CurrentCall)
                             {
                                 var msg = string.Format("呼出【{0}】失败,原因:{1}", call.CallName, call.Reason);
-                                log.Info(msg);
+                                log.Error(msg);
                                 callView.ShowMessage(false, msg, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
                                 CurrentCall = null;
                             }
@@ -801,6 +802,7 @@ namespace QLSDK.Core
             }
             catch(Exception ex)
             {
+                log.Error(string.Format("Event 异常，ex={0},{1}",ex.Message,ex.StackTrace));
                 callView.ShowMessage(false, ex.Message, MessageBoxButtonsType.OK, MessageBoxIcon.Error);
             }
         }
@@ -967,6 +969,7 @@ namespace QLSDK.Core
                 };
                 this.AddCall(call);
                 this.CurrentCall = call;
+                log.Info("呼叫成功！");
             }
             else
             {
